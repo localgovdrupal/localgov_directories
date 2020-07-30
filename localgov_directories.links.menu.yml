@@ -1,0 +1,5 @@
+entity.localgov_directories_facets_type.collection:
+  title: 'Directory Facets types'
+  parent: system.admin_structure
+  description: 'Manage and CRUD actions on Directory Facets type.'
+  route_name: entity.localgov_directories_facets_type.collection

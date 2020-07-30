@@ -1,0 +1,15 @@
+{
+  "name": "localgovdrupal/localgov_directories",
+  "description": "LocalGovDrupal distribution: Directories feature.",
+  "type": "drupal-module",
+  "homepage": "https://github.com/localgovdrupal/localgov_directories",
+  "license": "GPL-2.0-or-later",
+  "minimum-stability": "dev",
+  "require": {
+    "localgovdrupal/localgov_core": "dev-master",
+    "drupal/pathauto": "^1.6"
+  },
+  "require-dev": {
+    "localgovdrupal/localgov_services": "dev-master"
+  }
+}

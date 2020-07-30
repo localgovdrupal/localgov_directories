@@ -1,0 +1,14 @@
+name: 'LocalGov: Directories'
+type: module
+description: 'Provides a directory facets entity.'
+package: LocalGov
+core: 8.x
+core_version_requirement: ^8 || ^9
+dependencies:
+  - drupal:path
+  - drupal:views
+  - pathauto:pathauto
+  - search_api:search_api
+  - search_api:search_api_db
+  - localgov_core:localgov_core
+configure: entity.localgov_directories_facets_type.collection

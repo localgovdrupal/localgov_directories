@@ -1,0 +1,22 @@
+uuid: e0591b29-699f-4e05-8566-df22c6ee84e2
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: localgov_directory_channel
+label: 'Directory channel'
+type: 'canonical_entities:node'
+pattern: '[node:title]'
+selection_criteria:
+  bf66b3bc-02c2-48db-9c7e-4f9cb2915bc6:
+    id: node_type
+    bundles:
+      localgov_directory: localgov_directory
+    negate: false
+    context_mapping:
+      node: node
+    uuid: bf66b3bc-02c2-48db-9c7e-4f9cb2915bc6
+selection_logic: and
+weight: -5
+relationships: {  }

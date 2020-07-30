@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the LocalGov Directories module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function localgov_directories_install() {
+  $services = \Drupal::moduleHandler()->moduleExists('localgov_services_navigation');
+  if ($services) {
+    localgov_directories_optional_fields_settings($services);
+  }
+}
