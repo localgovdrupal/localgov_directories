@@ -28,10 +28,15 @@ class ChannelFacetInteractions {
     $form_state->setRebuild();
 
     $renderer = \Drupal::service('renderer');
-    $facets_field = $renderer->render($form['localgov_directory_facets_select']);
+    // Render just this field, alone, no matter how it's placed on the form.
+    $field = $form['localgov_directory_facets_select'];
+    unset($field['#parents']);
+    unset($field['#group']);
+    unset($field['#groups']);
+    $facets_field = $renderer->render($field);
 
+    // And replace it.
     $response = new AjaxResponse();
-    #$response->addCommand(new ReplaceCommand('#localgov-directory-channel-facet-options', $facets_field));
     $response->addCommand(new ReplaceCommand('[data-drupal-selector=edit-localgov-directory-facets-select-wrapper', $facets_field));
 
     return $response;
