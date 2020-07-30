@@ -4,8 +4,6 @@ dependencies:
   config:
     - field.storage.node.localgov_directory_channels
     - node.type.localgov_directories_page
-  module:
-    - localgov_directories
 id: node.localgov_directories_page.localgov_directory_channels
 field_name: localgov_directory_channels
 entity_type: node
