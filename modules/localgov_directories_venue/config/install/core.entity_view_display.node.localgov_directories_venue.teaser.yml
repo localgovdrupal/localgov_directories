@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.localgov_directories_venue.body
+    - field.field.node.localgov_directories_venue.localgov_directory_channels
+    - field.field.node.localgov_directories_venue.localgov_directory_facets_select
+    - node.type.localgov_directories_venue
+  module:
+    - text
+    - user
+id: node.localgov_directories_venue.teaser
+targetEntityType: node
+bundle: localgov_directories_venue
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  localgov_directory_channels: true
+  localgov_directory_facets_select: true
