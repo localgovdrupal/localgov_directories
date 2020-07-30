@@ -8,4 +8,5 @@ dependencies:
   - drupal:telephone
   - address:address
   - field_group:field_group
+  - localgov_core:localgov_media
   - localgov_directories:localgov_directories
