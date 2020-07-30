@@ -56,8 +56,7 @@ class PathIntegrationTest extends BrowserTestBase {
 
     $this->adminUser = $this->drupalCreateUser(['bypass node access', 'administer nodes']);
     $this->nodeStorage = $this->container->get('entity_type.manager')->getStorage('node');
-
-   }
+  }
 
   /**
    * Post page into a channel.
