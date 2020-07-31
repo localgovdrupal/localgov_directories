@@ -1,19 +1,23 @@
-uuid: 3e048ce3-0cea-4e1c-94ae-9c1b85e018d7
 langcode: en
 status: true
 dependencies:
   config:
     - core.entity_view_mode.node.directory_index
     - field.field.node.localgov_directories_venue.body
+    - field.field.node.localgov_directories_venue.localgov_directory_notes
+    - field.field.node.localgov_directories_venue.localgov_directory_opening_times
     - field.field.node.localgov_directories_venue.localgov_directory_channels
     - field.field.node.localgov_directories_venue.localgov_directory_facets_select
+    - field.field.node.localgov_directories_venue.localgov_directory_files
+    - field.field.node.localgov_directories_venue.localgov_directory_job_title
+    - field.field.node.localgov_directories_venue.localgov_directory_name
+    - field.field.node.localgov_directories_venue.localgov_directory_phone
+    - field.field.node.localgov_directories_venue.localgov_directory_website
     - field.field.node.localgov_directories_venue.localgov_location
     - node.type.localgov_directories_venue
   module:
     - text
     - user
-_core:
-  default_config_hash: 9WM8SYwaXorIplA8nq3GIMghhkYbNw2tA8aHnsvugRo
 id: node.localgov_directories_venue.directory_index
 targetEntityType: node
 bundle: localgov_directories_venue
@@ -57,4 +61,11 @@ content:
     type: entity_reference_entity_view
     region: content
 hidden:
+  localgov_directory_notes: true
+  localgov_directory_opening_times: true
+  localgov_directory_files: true
+  localgov_directory_job_title: true
+  localgov_directory_name: true
+  localgov_directory_phone: true
+  localgov_directory_website: true
   search_api_excerpt: true

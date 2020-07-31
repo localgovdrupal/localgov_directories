@@ -4,8 +4,9 @@ dependencies:
   config:
     - field.storage.node.localgov_directory_facets_select
     - node.type.localgov_directories_venue
-  module:
-    - localgov_directories
+  enforced:
+    module:
+      - localgov_directories
 id: node.localgov_directories_venue.localgov_directory_facets_select
 field_name: localgov_directory_facets_select
 entity_type: node

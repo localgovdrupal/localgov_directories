@@ -20,6 +20,9 @@ dependencies:
     - telephone
     - text
     - user
+  enforced:
+    module:
+      - localgov_directories
 third_party_settings:
   field_group:
     group_enquiries:

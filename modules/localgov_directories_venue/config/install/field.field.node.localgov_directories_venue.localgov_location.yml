@@ -1,4 +1,3 @@
-uuid: 923e9977-758a-466a-9ce3-f5f4ed29c674
 langcode: en
 status: true
 dependencies:
@@ -6,6 +5,9 @@ dependencies:
     - field.storage.node.localgov_location
     - localgov_geo.localgov_geo_type.address
     - node.type.localgov_directories_venue
+  enforced:
+    module:
+      - localgov_geo
 id: node.localgov_directories_venue.localgov_location
 field_name: localgov_location
 entity_type: node
