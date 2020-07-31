@@ -3,13 +3,14 @@ status: true
 dependencies:
   config:
     - field.field.node.localgov_directories_venue.body
-    - field.field.node.localgov_directories_venue.localgov_directory_notes
-    - field.field.node.localgov_directories_venue.localgov_directory_opening_times
     - field.field.node.localgov_directories_venue.localgov_directory_channels
+    - field.field.node.localgov_directories_venue.localgov_directory_email
     - field.field.node.localgov_directories_venue.localgov_directory_facets_select
     - field.field.node.localgov_directories_venue.localgov_directory_files
     - field.field.node.localgov_directories_venue.localgov_directory_job_title
     - field.field.node.localgov_directories_venue.localgov_directory_name
+    - field.field.node.localgov_directories_venue.localgov_directory_notes
+    - field.field.node.localgov_directories_venue.localgov_directory_opening_times
     - field.field.node.localgov_directories_venue.localgov_directory_phone
     - field.field.node.localgov_directories_venue.localgov_directory_website
     - field.field.node.localgov_directories_venue.localgov_location
@@ -27,7 +28,22 @@ third_party_settings:
         - localgov_directory_name
         - localgov_directory_job_title
         - localgov_directory_phone
+        - localgov_directory_email
         - localgov_directory_website
+      parent_name: ''
+      weight: 4
+      format_type: fieldset
+      region: content
+      format_settings:
+        id: ''
+        classes: ''
+        description: ''
+      label: Enquiries
+    group_venue:
+      children:
+        - localgov_location
+        - localgov_directory_opening_times
+        - localgov_directory_notes
       parent_name: ''
       weight: 3
       format_type: fieldset
@@ -36,7 +52,7 @@ third_party_settings:
         id: ''
         classes: ''
         description: ''
-      label: Enquiries
+      label: Venue
 id: node.localgov_directories_venue.default
 targetEntityType: node
 bundle: localgov_directories_venue
@@ -49,19 +65,12 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-  localgov_directory_notes:
-    weight: 13
-    label: above
+  localgov_directory_email:
+    weight: 8
+    label: inline
     settings: {  }
     third_party_settings: {  }
-    type: text_default
-    region: content
-  localgov_directory_opening_times:
-    weight: 12
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: text_default
+    type: basic_string
     region: content
   localgov_directory_files:
     weight: 1
@@ -72,8 +81,8 @@ content:
     type: entity_reference_label
     region: content
   localgov_directory_job_title:
-    weight: 5
-    label: above
+    weight: 6
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -81,22 +90,36 @@ content:
     region: content
   localgov_directory_name:
     weight: 4
-    label: above
+    label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
     type: string
     region: content
-  localgov_directory_phone:
-    weight: 6
+  localgov_directory_notes:
+    weight: 4
     label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  localgov_directory_opening_times:
+    weight: 3
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  localgov_directory_phone:
+    weight: 7
+    label: inline
     settings:
       title: ''
     third_party_settings: {  }
     type: telephone_link
     region: content
   localgov_directory_website:
-    weight: 7
+    weight: 9
     label: above
     settings:
       trim_length: 80
@@ -109,10 +132,10 @@ content:
     region: content
   localgov_location:
     weight: 2
-    label: above
+    label: hidden
     settings:
-      link: true
       view_mode: default
+      link: false
     third_party_settings: {  }
     type: entity_reference_entity_view
     region: content
