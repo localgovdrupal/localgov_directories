@@ -11,7 +11,7 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Render\Element;
 use Drupal\field\FieldConfigInterface;
-use Drupal\localgov_directories\DirectoryChannelDisplay;
+use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 use Drupal\node\NodeInterface;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\search_api\Entity\Index;
@@ -23,6 +23,9 @@ function localgov_directories_theme() {
   return [
     'localgov_directories_facets' => [
       'render element' => 'elements',
+    ],
+    'facets_item_list__links__localgov_directories_facets' => [
+      'base hook' => 'facets_item_list',
     ],
   ];
 }
@@ -39,28 +42,11 @@ function localgov_directories_modules_installed($modules) {
 }
 
 /**
- * Prepares variables for directory facets templates.
- *
- * Default template: localgov-directories-facets.html.twig.
- *
- * @param array $variables
- *   An associative array containing:
- *   - elements: An associative array containing the directory facets
- *     information and any fields attached to the entity.
- *   - attributes: HTML attributes for the containing element.
- */
-function template_preprocess_localgov_directories_facets(array &$variables) {
-  foreach (Element::children($variables['elements']) as $key) {
-    $variables['content'][$key] = $variables['elements'][$key];
-  }
-}
-
-/**
  * Implements hook_entity_extra_field_info().
  */
 function localgov_directories_entity_extra_field_info() {
   return \Drupal::service('class_resolver')
-    ->getInstanceFromDefinition(DirectoryChannelDisplay::class)
+    ->getInstanceFromDefinition(DirectoryExtraFieldDisplay::class)
     ->entityExtraFieldInfo();
 }
 
@@ -69,7 +55,7 @@ function localgov_directories_entity_extra_field_info() {
  */
 function localgov_directories_node_view(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
   return \Drupal::service('class_resolver')
-    ->getInstanceFromDefinition(DirectoryChannelDisplay::class)
+    ->getInstanceFromDefinition(DirectoryExtraFieldDisplay::class)
     ->nodeView($build, $node, $display, $view_mode);
 }
 
@@ -192,5 +178,36 @@ function localgov_directories_field_config_delete(FieldConfigInterface $field) {
     }
     $datasource->setConfiguration($configuration);
     $index->save();
+  }
+}
+
+/**
+ * Implements theme preprocess_facets_item_list().
+ *
+ * @see facets_preprocess_facets_item_list()
+ */
+function localgov_directories_preprocess_facets_item_list(array &$variables) {
+  if ($variables['facet']->id() == 'localgov_directories_facets') {
+    \Drupal::service('class_resolver')
+      ->getInstanceFromDefinition(DirectoryExtraFieldDisplay::class)
+      ->preprocessFacetList($variables);
+  }
+
+}
+
+/**
+ * Prepares variables for directory facets templates.
+ *
+ * Default template: localgov-directories-facets.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An associative array containing the directory facets
+ *     information and any fields attached to the entity.
+ *   - attributes: HTML attributes for the containing element.
+ */
+function template_preprocess_localgov_directories_facets(array &$variables) {
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
   }
 }
