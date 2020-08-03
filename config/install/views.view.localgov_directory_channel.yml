@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.localgov_directory_facets_select
     - search_api.index.localgov_directories_index_default
   module:
     - search_api
@@ -24,7 +23,7 @@ display:
         type: none
         options: {  }
       cache:
-        type: tag
+        type: none
         options: {  }
       query:
         type: search_api_query
@@ -147,71 +146,6 @@ display:
             multi_separator: ', '
             display_methods: {  }
       filters:
-        localgov_directory_facets_select:
-          id: localgov_directory_facets_select
-          table: search_api_index_localgov_directories_index_default
-          field: localgov_directory_facets_select
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: localgov_directory_facets_select_op
-            label: Facets
-            description: null
-            use_operator: false
-            operator: localgov_directory_facets_select_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: localgov_directory_facets_select
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            placeholder: null
-            min_placeholder: null
-            max_placeholder: null
-          is_grouped: true
-          group_info:
-            label: Facets
-            description: ''
-            identifier: facets
-            optional: true
-            widget: select
-            multiple: true
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items:
-              1:
-                title: ''
-                operator: '='
-                value:
-                  value: ''
-                  min: ''
-                  max: ''
-              2:
-                title: ''
-                operator: '='
-                value:
-                  value: ''
-                  min: ''
-                  max: ''
-              3:
-                title: ''
-                operator: '='
-                value:
-                  value: ''
-                  min: ''
-                  max: ''
-          plugin_id: search_api_numeric
         search_api_fulltext:
           id: search_api_fulltext
           table: search_api_index_localgov_directories_index_default
@@ -219,7 +153,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          operator: and
+          operator: or
           value: ''
           group: 1
           exposed: true
@@ -231,7 +165,7 @@ display:
             operator: search_api_fulltext_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: fulltext
+            identifier: search_api_fulltext
             required: false
             remember: false
             multiple: false
@@ -296,13 +230,11 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
         - 'user.node_grants:view'
       tags:
-        - 'config:field.storage.node.localgov_directory_facets_select'
         - 'config:search_api.index.localgov_directories_index_default'
   node_embed:
     display_plugin: embed
@@ -318,11 +250,9 @@ display:
     cache_metadata:
       max-age: -1
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
         - 'user.node_grants:view'
       tags:
-        - 'config:field.storage.node.localgov_directory_facets_select'
         - 'config:search_api.index.localgov_directories_index_default'

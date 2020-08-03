@@ -1,7 +1,6 @@
 langcode: en
 status: true
 dependencies: {  }
-third_party_settings: {  }
 name: 'Directory Channel'
 type: localgov_directory
 description: ''

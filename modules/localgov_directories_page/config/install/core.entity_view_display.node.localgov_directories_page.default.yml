@@ -4,14 +4,14 @@ dependencies:
   config:
     - field.field.node.localgov_directories_page.body
     - field.field.node.localgov_directories_page.localgov_directory_address
+    - field.field.node.localgov_directories_page.localgov_directory_channels
     - field.field.node.localgov_directories_page.localgov_directory_email
+    - field.field.node.localgov_directories_page.localgov_directory_facets_select
     - field.field.node.localgov_directories_page.localgov_directory_files
     - field.field.node.localgov_directories_page.localgov_directory_job_title
     - field.field.node.localgov_directories_page.localgov_directory_name
     - field.field.node.localgov_directories_page.localgov_directory_phone
     - field.field.node.localgov_directories_page.localgov_directory_website
-    - field.field.node.localgov_directories_page.localgov_directory_channels
-    - field.field.node.localgov_directories_page.localgov_directory_facets_select
     - node.type.localgov_directories_page
   module:
     - address
@@ -98,6 +98,11 @@ content:
     third_party_settings: {  }
     type: telephone_link
     region: content
+  localgov_directory_search:
+    weight: -20
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   localgov_directory_website:
     weight: 8
     label: above

@@ -8,7 +8,7 @@ id: node.localgov_directory.localgov_directory_channel_types
 field_name: localgov_directory_channel_types
 entity_type: node
 bundle: localgov_directory
-label: 'Enabled content types'
+label: 'Enabled Content types'
 description: ''
 required: false
 translatable: false

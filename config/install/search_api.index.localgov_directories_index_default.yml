@@ -18,7 +18,7 @@ field_settings:
     label: 'Directory channels'
     datasource_id: 'entity:node'
     property_path: localgov_directory_channels
-    type: string
+    type: integer
     dependencies:
       config:
         - field.storage.node.localgov_directory_channels
@@ -33,18 +33,20 @@ field_settings:
   rendered_item:
     label: 'Rendered HTML output'
     property_path: rendered_item
-    type: integer
+    type: text
     configuration:
       roles:
         anonymous: anonymous
       view_mode:
         'entity:node':
+          localgov_directories_page: directory_index
           node: directory_index
 datasource_settings:
   'entity:node':
     bundles:
       default: false
-      selected: {  }
+      selected:
+        - localgov_directories_page
     languages:
       default: true
       selected: {  }
@@ -55,8 +57,7 @@ processor_settings:
   ignorecase:
     all_fields: true
     fields:
-      - aggregated_field
-      - localgov_directory_channels
+      - rendered_item
     weights:
       preprocess_index: -20
       preprocess_query: -20
@@ -65,7 +66,7 @@ processor_settings:
   stemmer:
     all_fields: true
     fields:
-      - aggregated_field
+      - rendered_item
     exceptions:
       mexican: mexic
       texan: texa
@@ -75,7 +76,7 @@ processor_settings:
   stopwords:
     all_fields: true
     fields:
-      - aggregated_field
+      - rendered_item
     stopwords:
       - a
       - an
@@ -118,7 +119,7 @@ processor_settings:
   tokenizer:
     all_fields: true
     fields:
-      - aggregated_field
+      - rendered_item
     spaces: ''
     overlap_cjk: 1
     minimum_word_size: '3'
@@ -128,8 +129,7 @@ processor_settings:
   transliteration:
     all_fields: true
     fields:
-      - aggregated_field
-      - localgov_directory_channels
+      - rendered_item
     weights:
       preprocess_index: -20
       preprocess_query: -20

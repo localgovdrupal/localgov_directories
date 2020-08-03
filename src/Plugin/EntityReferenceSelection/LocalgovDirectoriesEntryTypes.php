@@ -87,6 +87,7 @@ class LocalgovDirectoriesEntryTypes extends SelectionPluginBase implements Conta
    */
   public function getReferenceableEntities($match = NULL, $match_operator = 'CONTAINS', $limit = 0) {
     $options = [];
+    // Logic repeated in DirectoryExtraFieldDisplay::directoryEntryTypes().
     $entities = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
     foreach ($entities as $entity_id => $entity) {
       $fields = $this->entityFieldManager->getFieldDefinitions('node', $entity_id);

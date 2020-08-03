@@ -5,6 +5,7 @@ dependencies:
     - field.field.node.localgov_directory.body
     - field.field.node.localgov_directory.localgov_directory_channel_types
     - field.field.node.localgov_directory.localgov_directory_facets_enable
+    - field.field.node.localgov_directory.localgov_services_parent
     - node.type.localgov_directory
   module:
     - text
@@ -21,22 +22,11 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
-  localgov_directory_channel_types:
-    weight: 3
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    type: entity_reference_label
-    region: content
-  localgov_directory_facets_enable:
+  localgov_directory_facets:
     weight: 2
-    label: above
-    settings:
-      link: true
-    third_party_settings: {  }
-    type: entity_reference_label
     region: content
+    settings: {  }
+    third_party_settings: {  }
   localgov_directory_view:
     weight: 1
     region: content
@@ -44,4 +34,7 @@ content:
     third_party_settings: {  }
 hidden:
   links: true
+  localgov_directory_channel_types: true
+  localgov_directory_facets_enable: true
+  localgov_services_parent: true
   search_api_excerpt: true

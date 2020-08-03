@@ -49,10 +49,13 @@ class FacetFieldWidget extends OptionsWidgetBase {
     }
     else {
       foreach ($items->getEntity()->localgov_directory_channels as $channel) {
-        foreach ($channel->entity->localgov_directory_facets_enable as $facet_item) {
-          $facet = $facet_item->entity;
-          assert($facet instanceof LocalgovDirectoriesFacetsType);
-          $enabled[$facet->label()] = $facet->label();
+        if ($node = $channel->entity) {
+          foreach ($node->localgov_directory_facets_enable as $facet_item) {
+            if ($facet = $facet_item->entity) {
+              assert($facet instanceof LocalgovDirectoriesFacetsType);
+              $enabled[$facet->label()] = $facet->label();
+            }
+          }
         }
       }
     }

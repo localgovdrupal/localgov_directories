@@ -8,7 +8,7 @@ id: node.localgov_directory.localgov_directory_facets_enable
 field_name: localgov_directory_facets_enable
 entity_type: node
 bundle: localgov_directory
-label: Facets
+label: 'Enabled Facets'
 description: 'Which facets are enabled to be shown on this directory channel, and will be added when editing content to be added to this directory.'
 required: true
 translatable: false

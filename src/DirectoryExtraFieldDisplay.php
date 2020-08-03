@@ -6,8 +6,11 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Block\BlockManagerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormBuilder;
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
@@ -36,6 +39,12 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
    * @var \Drupal\Core\Entity\EntityRepositoryInterface
    */
   protected $entityRepository;
+  
+  /**
+   * Entity field manager.
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   */
+  protected $entityFieldManager;
 
   /**
    * The block plugin manager.
@@ -45,19 +54,32 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
   protected $pluginBlockManager;
 
   /**
+   * Form builder.
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
    * DirectoryExtraFieldDisplay constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager.
    * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
    *   Entity repository.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *   Entity Field Manager.
    * @param \Drupal\Core\Block\BlockManagerInterface $plugin_manager_block
    *   Plugin Block Manager.
+   * @param \Drupal\Core\Form\FormBuilderInterface
+   *   Form Builder.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, BlockManagerInterface $plugin_manager_block) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EntityFieldManagerInterface $entity_field_manager, BlockManagerInterface $plugin_manager_block, FormBuilder $form_builder) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityRepository = $entity_repository;
+    $this->entityFieldManager = $entity_field_manager;
     $this->pluginBlockManager = $plugin_manager_block;
+    $this->formBuilder = $form_builder;
   }
 
   /**
@@ -67,7 +89,9 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('entity.repository'),
-      $container->get('plugin.manager.block')
+      $container->get('entity_field.manager'),
+      $container->get('plugin.manager.block'),
+      $container->get('form_builder')
     );
   }
 
@@ -91,7 +115,36 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
       'visible' => TRUE,
     ];
 
+    foreach ($this->directoryEntryTypes() as $type_id) {
+      $fields['node'][$type_id]['display']['localgov_directory_search'] = [
+        'label' => $this->t('Directory search'),
+        'description' => $this->t("Free text search field for directories the entry is in."),
+        'weight' => -20,
+        'visible' => TRUE,
+      ];
+    }
+
     return $fields;
+  }
+
+  /**
+   * Get all node bundles that are directory entry types.
+   *
+   * return string[]
+   *   Bundle IDs.
+   */
+  public function directoryEntryTypes() {
+    $entry_types = [];
+    
+    $node_types = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
+    foreach ($node_types as $type_id => $type) {
+      $fields = $this->entityFieldManager->getFieldDefinitions('node', $type_id);
+      if (isset($fields['localgov_directory_channels'])) {
+        $entry_types[$type_id] = $type_id;
+      }
+    }
+
+    return $entry_types;
   }
 
   /**
@@ -106,6 +159,9 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
     }
     if ($display->getComponent('localgov_directory_facets')) {
       $build['localgov_directory_facets'] = $this->getFacetsBlock($node);
+    }
+    if ($display->getComponent('localgov_directory_search')) {
+      $build['localgov_directory_search'] = $this->getSearchBlock($node);
     }
   }
 
@@ -137,6 +193,46 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
 
     $block = $this->pluginBlockManager->createInstance('facet_block' . PluginBase::DERIVATIVE_SEPARATOR . 'localgov_directories_facets');
     return $block->build();
+  }
+
+  /**
+   * Retrieves the search blocks from the view for directories.
+   */
+  protected function getSearchBlock(NodeInterface $node) {
+    $forms = $form_list = [];
+    foreach ($node->localgov_directory_channels as $delta => $channel) {
+      $view = Views::getView('localgov_directory_channel');
+      if ($view && ($node = $channel->entity)) {
+        $view->setDisplay('node_embed');
+        $view->setArguments([$node->id()]);
+        $view->initHandlers();
+        $form_state = (new FormState())
+          ->setStorage([
+            'view' => $view,
+            'display' => &$view->display_handler->display,
+            'rerender' => NULL,
+          ])
+          ->setMethod('get')
+          ->setAlwaysProcess()
+          ->disableRedirect();
+        $form = $this->formBuilder->buildForm('\Drupal\views\Form\ViewsExposedForm', $form_state);
+        $form['#action'] = $node->toUrl()->toString();
+        $form['#attributes']['class'][] = $delta ? 'localgov-search-channel-secondary' : 'localgov-search-channel-primary';
+        $channel_label = $this->entityRepository->getTranslationFromContext($node)->label();
+        $form['#id'] .= '--' . $node->id();
+        $form["#info"]["filter-search_api_fulltext"]["label"] = $this->t('Search <span class="localgov-search-channel" id="' . $form['#id'] . '--channel">@channel</span>', ['@channel' => $channel_label]);
+        // Can we do this with the form builder?
+        // Do we need to deal with date-drupal-selector?
+        // Questions for search_api_autocomplete?
+        $form_list[$form['#id']] = $channel_label;
+        $form['#attached']['library'][] = 'localgov_directories/localgov_directories_search';
+        $forms[] = $form;
+      }
+      $forms['#attached']['drupalSettings']['localgovDirectories']['directoriesSearch'] = $form_list;
+    }
+    // $contexts = $this->view->display_handler->getCacheMetadata()->getCacheContexts();
+
+    return $forms;
   }
 
   /**
