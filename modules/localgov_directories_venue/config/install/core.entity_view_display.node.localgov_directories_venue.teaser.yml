@@ -32,6 +32,11 @@ content:
       trim_length: 600
     third_party_settings: {  }
     region: content
+  localgov_directory_search:
+    weight: -20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
 hidden:
   links: true
   localgov_directory_channels: true

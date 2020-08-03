@@ -4,11 +4,11 @@ dependencies:
   config:
     - field.storage.node.localgov_directory_phone
     - node.type.localgov_directories_venue
-  module:
-    - telephone
   enforced:
     module:
       - localgov_directories
+  module:
+    - telephone
 id: node.localgov_directories_venue.localgov_directory_phone
 field_name: localgov_directory_phone
 entity_type: node

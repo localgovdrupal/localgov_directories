@@ -118,6 +118,11 @@ content:
     third_party_settings: {  }
     type: telephone_link
     region: content
+  localgov_directory_search:
+    weight: -20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   localgov_directory_website:
     weight: 9
     label: above
