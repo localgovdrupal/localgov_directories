@@ -6,9 +6,11 @@ core: 8.x
 core_version_requirement: ^8 || ^9
 dependencies:
   - drupal:path
+  - drupal:telephone
   - drupal:views
   - pathauto:pathauto
   - search_api:search_api
   - search_api:search_api_db
   - localgov_core:localgov_core
+  - localgov_core:localgov_media
 configure: entity.localgov_directories_facets_type.collection

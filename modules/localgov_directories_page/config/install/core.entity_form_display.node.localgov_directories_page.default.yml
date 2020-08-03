@@ -17,11 +17,13 @@ dependencies:
     - address
     - field_group
     - link
-    - localgov_directories
     - media_library
     - path
     - telephone
     - text
+  enforced:
+    module:
+      - localgov_directories
 third_party_settings:
   field_group:
     group_tabs:

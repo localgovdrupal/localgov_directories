@@ -2,15 +2,14 @@ langcode: en
 status: true
 dependencies:
   module:
-    - localgov_geo
     - node
-id: node.localgov_location
-field_name: localgov_location
+    - text
+id: node.localgov_directory_opening_times
+field_name: localgov_directory_opening_times
 entity_type: node
-type: entity_reference
-settings:
-  target_type: localgov_geo
-module: core
+type: text_long
+settings: {  }
+module: text
 locked: false
 cardinality: 1
 translatable: true
