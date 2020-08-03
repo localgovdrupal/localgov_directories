@@ -1,0 +1,60 @@
+uuid: 3e048ce3-0cea-4e1c-94ae-9c1b85e018d7
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.directory_index
+    - field.field.node.localgov_directories_venue.body
+    - field.field.node.localgov_directories_venue.localgov_directory_channels
+    - field.field.node.localgov_directories_venue.localgov_directory_facets_select
+    - field.field.node.localgov_directories_venue.localgov_location
+    - node.type.localgov_directories_venue
+  module:
+    - text
+    - user
+_core:
+  default_config_hash: 9WM8SYwaXorIplA8nq3GIMghhkYbNw2tA8aHnsvugRo
+id: node.localgov_directories_venue.directory_index
+targetEntityType: node
+bundle: localgov_directories_venue
+mode: directory_index
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  localgov_directory_channels:
+    weight: 103
+    label: above
+    settings:
+      link: false
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  localgov_directory_facets_select:
+    weight: 102
+    label: above
+    settings:
+      link: false
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  localgov_location:
+    weight: 104
+    label: above
+    settings:
+      link: true
+      view_mode: default
+    third_party_settings: {  }
+    type: entity_reference_entity_view
+    region: content
+hidden:
+  search_api_excerpt: true
