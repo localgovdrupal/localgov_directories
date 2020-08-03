@@ -7,6 +7,7 @@
   "minimum-stability": "dev",
   "require": {
     "localgovdrupal/localgov_core": "dev-master",
+    "localgovdrupal/localgov_geo": "dev-master",
     "drupal/pathauto": "^1.6"
   },
   "require-dev": {
