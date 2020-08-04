@@ -70,7 +70,7 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
       ->count()
       ->execute();
 
-    $build['summary']['#markup'] = $this->t('Total directory facetses: @total', ['@total' => $total]);
+    $build['summary']['#markup'] = $this->t('Total directory facets: @total', ['@total' => $total]);
     return $build;
   }
 
@@ -79,10 +79,9 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
    */
   public function buildHeader() {
     $header['id'] = $this->t('ID');
+    $header['bundle'] = $this->t('Facet Type');
     $header['title'] = $this->t('Title');
-    $header['uid'] = $this->t('Author');
-    $header['created'] = $this->t('Created');
-    $header['changed'] = $this->t('Updated');
+    $header['author'] = $this->t('Author');
     return $header + parent::buildHeader();
   }
 
@@ -92,13 +91,12 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\localgov_directories\LocalgovDirectoriesFacetsInterface */
     $row['id'] = $entity->id();
+    $row['bundle'] = $entity->bundle();
     $row['title'] = $entity->toLink();
     $row['uid']['data'] = [
       '#theme' => 'username',
       '#account' => $entity->getOwner(),
     ];
-    $row['created'] = $this->dateFormatter->format($entity->getCreatedTime());
-    $row['changed'] = $this->dateFormatter->format($entity->getChangedTime());
     return $row + parent::buildRow($entity);
   }
 
