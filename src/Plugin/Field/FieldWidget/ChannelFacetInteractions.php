@@ -37,7 +37,7 @@ class ChannelFacetInteractions {
 
     // And replace it.
     $response = new AjaxResponse();
-    $response->addCommand(new ReplaceCommand('[data-drupal-selector=edit-localgov-directory-facets-select-wrapper', $facets_field));
+    $response->addCommand(new ReplaceCommand('[data-drupal-selector=edit-localgov-directory-facets-select-wrapper]', $facets_field));
 
     return $response;
   }
