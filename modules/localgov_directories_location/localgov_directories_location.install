@@ -12,7 +12,7 @@ use Drupal\views\Entity\View;
  * Implements hook_install().
  */
 function localgov_directories_location_install() {
-  // Retrieve view display mode configuration, and add it to the existing configuration.
+  // Retrieve view display mode config and add it to the existing configuration.
   $view_with_attachment = Yaml::decode(file_get_contents(drupal_get_path('module', 'localgov_directories_location') . '/config/override/views.view.localgov_directory_channel.yml'));
   $view = View::load('localgov_directory_channel');
   if ($view) {

@@ -3,17 +3,9 @@
 namespace Drupal\localgov_directories\EventSubscriber;
 
 use Drupal\Core\Config\ConfigEvents;
-use Drupal\Core\Config\MemoryStorage;
-use Drupal\Core\Config\StorageCopyTrait;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Config\StorageTransformEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-
-use Drupal\Core\Messenger\MessengerInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * LocalGov: Directories event subscriber.
