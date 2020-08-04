@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * LocalGovDrupal directories location install file.
+ */
+
+use Drupal\Component\Serialization\Yaml;
+use Drupal\views\Entity\View;
+
+/**
+ * Implements hook_install().
+ */
+function localgov_directories_location_install() {
+  // Retrieve view display mode configuration, and add it to the existing configuration.
+  $view_with_attachment = Yaml::decode(file_get_contents(drupal_get_path('module', 'localgov_directories_location') . '/config/override/views.view.localgov_directory_channel.yml'));
+  $view = View::load('localgov_directory_channel');
+  if ($view) {
+    $display = $view->get('display');
+    $display['node_embed_map_attachment'] = $view_with_attachment['display']['node_embed_map_attachment'];
+    $view->set('display', $display);
+    $view->save();
+  }
+}
