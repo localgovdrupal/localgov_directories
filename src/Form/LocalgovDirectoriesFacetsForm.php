@@ -31,7 +31,7 @@ class LocalgovDirectoriesFacetsForm extends ContentEntityForm {
       $this->logger('localgov_directories')->notice('Updated new directory facets %label.', $logger_arguments);
     }
 
-    $form_state->setRedirect('entity.localgov_directories_facets.canonical', ['localgov_directories_facets' => $entity->id()]);
+    $form_state->setRedirect('entity.localgov_directories_facets.collection');
   }
 
 }
