@@ -1,16 +1,19 @@
 {
-  "name": "localgovdrupal/localgov_directories",
-  "description": "LocalGovDrupal distribution: Directories feature.",
-  "type": "drupal-module",
-  "homepage": "https://github.com/localgovdrupal/localgov_directories",
-  "license": "GPL-2.0-or-later",
-  "minimum-stability": "dev",
-  "require": {
-    "localgovdrupal/localgov_core": "dev-master",
-    "localgovdrupal/localgov_geo": "dev-master",
-    "drupal/pathauto": "^1.6"
-  },
-  "require-dev": {
-    "localgovdrupal/localgov_services": "dev-master"
-  }
+    "name": "localgovdrupal/localgov_directories",
+    "description": "LocalGovDrupal distribution: Directories feature.",
+    "type": "drupal-module",
+    "homepage": "https://github.com/localgovdrupal/localgov_directories",
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "require": {
+        "drupal/facets": "^1.5",
+        "drupal/pathauto": "^1.6",
+        "drupal/search_api": "^1.17",
+        "drupal/search_api_autocomplete": "^1.3",
+        "localgovdrupal/localgov_core": "dev-master",
+        "localgovdrupal/localgov_geo": "dev-master"
+    },
+    "require-dev": {
+        "localgovdrupal/localgov_services": "dev-master"
+    }
 }
