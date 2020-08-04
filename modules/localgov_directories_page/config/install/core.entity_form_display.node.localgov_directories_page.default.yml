@@ -4,26 +4,27 @@ dependencies:
   config:
     - field.field.node.localgov_directories_page.body
     - field.field.node.localgov_directories_page.localgov_directory_address
+    - field.field.node.localgov_directories_page.localgov_directory_channels
     - field.field.node.localgov_directories_page.localgov_directory_email
+    - field.field.node.localgov_directories_page.localgov_directory_facets_select
     - field.field.node.localgov_directories_page.localgov_directory_files
     - field.field.node.localgov_directories_page.localgov_directory_job_title
     - field.field.node.localgov_directories_page.localgov_directory_name
     - field.field.node.localgov_directories_page.localgov_directory_phone
     - field.field.node.localgov_directories_page.localgov_directory_website
-    - field.field.node.localgov_directories_page.localgov_directory_channels
-    - field.field.node.localgov_directories_page.localgov_directory_facets_select
     - node.type.localgov_directories_page
+  enforced:
+    module:
+      - localgov_directories
   module:
     - address
     - field_group
     - link
+    - localgov_directories
     - media_library
     - path
     - telephone
     - text
-  enforced:
-    module:
-      - localgov_directories
 third_party_settings:
   field_group:
     group_tabs:
@@ -117,6 +118,12 @@ content:
     third_party_settings: {  }
     type: address_default
     region: content
+  localgov_directory_channels:
+    weight: 8
+    settings: {  }
+    third_party_settings: {  }
+    type: localgov_directories_channel_selector
+    region: content
   localgov_directory_email:
     weight: 14
     settings:
@@ -124,6 +131,12 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: email_default
+    region: content
+  localgov_directory_facets_select:
+    weight: 9
+    settings: {  }
+    third_party_settings: {  }
+    type: localgov_directories_facet_checkbox
     region: content
   localgov_directory_files:
     type: media_library_widget
@@ -162,18 +175,6 @@ content:
       placeholder_title: ''
     third_party_settings: {  }
     type: link_default
-    region: content
-  localgov_directory_channels:
-    weight: 8
-    settings: {  }
-    third_party_settings: {  }
-    type: localgov_directories_channel_selector
-    region: content
-  localgov_directory_facets_select:
-    weight: 9
-    settings: {  }
-    third_party_settings: {  }
-    type: localgov_directories_facet_checkbox
     region: content
   path:
     type: path

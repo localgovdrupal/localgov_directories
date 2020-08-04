@@ -1,7 +1,6 @@
 langcode: en
 status: true
 dependencies: {  }
-third_party_settings: {  }
 name: 'Directory Page'
 type: localgov_directories_page
 description: 'A simple directory entry.'

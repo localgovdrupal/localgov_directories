@@ -9,7 +9,7 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Form\FormBuilder;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
@@ -39,10 +39,11 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
    * @var \Drupal\Core\Entity\EntityRepositoryInterface
    */
   protected $entityRepository;
-  
+
   /**
    * Entity field manager.
-   * @var \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
   protected $entityFieldManager;
 
@@ -71,10 +72,10 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
    *   Entity Field Manager.
    * @param \Drupal\Core\Block\BlockManagerInterface $plugin_manager_block
    *   Plugin Block Manager.
-   * @param \Drupal\Core\Form\FormBuilderInterface
+   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   Form Builder.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EntityFieldManagerInterface $entity_field_manager, BlockManagerInterface $plugin_manager_block, FormBuilder $form_builder) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EntityFieldManagerInterface $entity_field_manager, BlockManagerInterface $plugin_manager_block, FormBuilderInterface $form_builder) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityRepository = $entity_repository;
     $this->entityFieldManager = $entity_field_manager;
@@ -130,12 +131,12 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
   /**
    * Get all node bundles that are directory entry types.
    *
-   * return string[]
+   * @return string[]
    *   Bundle IDs.
    */
   public function directoryEntryTypes() {
     $entry_types = [];
-    
+
     $node_types = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
     foreach ($node_types as $type_id => $type) {
       $fields = $this->entityFieldManager->getFieldDefinitions('node', $type_id);

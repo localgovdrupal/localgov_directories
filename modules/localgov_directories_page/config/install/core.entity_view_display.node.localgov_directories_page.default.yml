@@ -13,6 +13,9 @@ dependencies:
     - field.field.node.localgov_directories_page.localgov_directory_phone
     - field.field.node.localgov_directories_page.localgov_directory_website
     - node.type.localgov_directories_page
+  enforced:
+    module:
+      - localgov_directories
   module:
     - address
     - field_group
@@ -20,9 +23,6 @@ dependencies:
     - telephone
     - text
     - user
-  enforced:
-    module:
-      - localgov_directories
 third_party_settings:
   field_group:
     group_enquiries:
