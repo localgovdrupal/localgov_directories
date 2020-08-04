@@ -46,10 +46,10 @@ use Drupal\user\UserInterface;
  *   links = {
  *     "add-form" = "/admin/content/directories/facets/add/{localgov_directories_facets_type}",
  *     "add-page" = "/admin/content/directories/facets/add",
- *     "canonical" = "/localgov_directories_facets/{localgov_directories_facets}",
+ *     "canonical" = "/admin/content/directories/facets/{localgov_directories_facets}",
  *     "edit-form" = "/admin/content/directories/facets/{localgov_directories_facets}/edit",
  *     "delete-form" = "/admin/content/directories/facets/{localgov_directories_facets}/delete",
- *     "collection" = "/admin/content/localgov-directories-facets"
+ *     "collection" = "/admin/content/directories/facets"
  *   },
  *   bundle_entity_type = "localgov_directories_facets_type",
  *   field_ui_base_route = "entity.localgov_directories_facets_type.edit_form"
@@ -62,8 +62,8 @@ class LocalgovDirectoriesFacets extends ContentEntityBase implements LocalgovDir
   /**
    * {@inheritdoc}
    *
-   * When a new directory facets entity is created, set the uid entity reference to
-   * the current user as the creator of the entity.
+   * When a new directory facets entity is created, set the uid entity reference
+   * to the current user as the creator of the entity.
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);

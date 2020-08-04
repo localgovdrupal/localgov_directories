@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\localgov_directories\Kernel;
 
-use Drupal\Component\Utility\Html;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\NodeType;

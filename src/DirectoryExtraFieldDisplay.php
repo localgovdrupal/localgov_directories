@@ -221,7 +221,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
         $form['#attributes']['class'][] = $delta ? 'localgov-search-channel-secondary' : 'localgov-search-channel-primary';
         $channel_label = $this->entityRepository->getTranslationFromContext($node)->label();
         $form['#id'] .= '--' . $node->id();
-        $form["#info"]["filter-search_api_fulltext"]["label"] = $this->t('Search <span class="localgov-search-channel" id="' . $form['#id'] . '--channel">@channel</span>', ['@channel' => $channel_label]);
+        $form["#info"]["filter-search_api_fulltext"]["label"] = $this->t('Search <span class="localgov-search-channel" id="@id--channel">@channel</span>', ['@id' => $form['#id'], '@channel' => $channel_label]);
         // Can we do this with the form builder?
         // Do we need to deal with date-drupal-selector?
         // Questions for search_api_autocomplete?
@@ -231,7 +231,6 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
       }
       $forms['#attached']['drupalSettings']['localgovDirectories']['directoriesSearch'] = $form_list;
     }
-    // $contexts = $this->view->display_handler->getCacheMetadata()->getCacheContexts();
 
     return $forms;
   }
