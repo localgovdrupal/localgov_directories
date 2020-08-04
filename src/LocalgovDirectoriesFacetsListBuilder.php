@@ -92,7 +92,7 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
     /* @var $entity \Drupal\localgov_directories\LocalgovDirectoriesFacetsInterface */
     $row['id'] = $entity->id();
     $row['bundle'] = $entity->bundle();
-    $row['title'] = $entity->toLink();
+    $row['title'] = $entity->toLink(NULL, 'edit-form');
     $row['uid']['data'] = [
       '#theme' => 'username',
       '#account' => $entity->getOwner(),

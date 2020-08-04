@@ -46,10 +46,10 @@ use Drupal\user\UserInterface;
  *   links = {
  *     "add-form" = "/admin/content/directories/facets/add/{localgov_directories_facets_type}",
  *     "add-page" = "/admin/content/directories/facets/add",
- *     "canonical" = "/localgov_directories_facets/{localgov_directories_facets}",
+ *     "canonical" = "/admin/content/directories/facets/{localgov_directories_facets}",
  *     "edit-form" = "/admin/content/directories/facets/{localgov_directories_facets}/edit",
  *     "delete-form" = "/admin/content/directories/facets/{localgov_directories_facets}/delete",
- *     "collection" = "/admin/content/localgov-directories-facets"
+ *     "collection" = "/admin/content/directories/facets"
  *   },
  *   bundle_entity_type = "localgov_directories_facets_type",
  *   field_ui_base_route = "entity.localgov_directories_facets_type.edit_form"
