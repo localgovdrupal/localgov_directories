@@ -149,7 +149,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
   }
 
   /**
-   * Adds view with arguements to view render array if required.
+   * Adds view with arguments to view render array if required.
    *
    * @see localgov_directories_node_view()
    */

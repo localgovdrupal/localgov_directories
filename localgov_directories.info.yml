@@ -5,6 +5,8 @@ package: LocalGov
 core: 8.x
 core_version_requirement: ^8 || ^9
 dependencies:
+  - drupal:address
+  - drupal:link
   - drupal:path
   - drupal:telephone
   - drupal:views

@@ -96,7 +96,7 @@ class ServicesIntegrationTest extends BrowserTestBase {
     $form->checkField('edit-status-value');
     $form->pressButton('edit-submit');
 
-    $this->assertText('Directory 1');
+    $this->assertSession()->pageTextContains('Directory 1');
     $trail = ['' => 'Home'];
     $trail += ['landing-page-1' => 'Landing Page 1'];
     $trail += ['landing-page-1/sublanding-1' => 'Sublanding 1'];

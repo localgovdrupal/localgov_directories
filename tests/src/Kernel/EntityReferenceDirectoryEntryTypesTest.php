@@ -22,12 +22,21 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'address',
+    'facets',
     'field',
     'filter',
-    'text',
+    'image',
+    'link',
     'node',
+    'media',
+    'search_api',
+    'search_api_db',
     'system',
+    'telephone',
+    'text',
     'user',
+    'views',
     'localgov_directories',
   ];
 
@@ -51,16 +60,17 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->installEntitySchema('user');
     $this->installEntitySchema('node');
+    $this->installEntitySchema('search_api_task');
+    $this->installEntitySchema('user');
     $this->installSchema('node', ['node_access']);
-
     $this->installConfig([
+      'facets',
       'filter',
       'node',
+      'search_api',
       'localgov_directories',
     ]);
-
   }
 
   /**
