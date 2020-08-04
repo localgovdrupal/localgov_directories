@@ -33,6 +33,25 @@ class FacetFieldWidget extends OptionsWidgetBase {
     $element = parent::formElement($items, $delta, $element, $form, $form_state);
 
     $options = $this->getOptions($items->getEntity());
+    // Trying to imagine the best way round this.
+    //
+    // EntityReferenceItem::getSettableOptions() called by ::getOptions()
+    // removes the bundle from the array if there is only one in the available
+    // results. At the moment in our case that would be if there is only one
+    // bundle, or if there are more, but one has accesible values.
+    //
+    // I'm lacking imagination at the moment. So this ugly blunt instrument puts
+    // it back for now.
+    $raw_options = \Drupal::service('plugin.manager.entity_reference_selection')->getSelectionHandler($this->fieldDefinition, $items->getEntity())->getReferenceableEntities();
+    if (count($raw_options) == 1) {
+      $target_type = $this->fieldDefinition->getSetting('target_type');
+      $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($target_type);
+      $bundle = key($raw_options);
+      $bundle_label = (string) $bundles[$bundle]['label'];
+      $options = [
+        $bundle_label => $options,
+      ];
+    }
     $selected = $this->getSelectedOptions($items);
 
     $enabled = [];
@@ -59,7 +78,7 @@ class FacetFieldWidget extends OptionsWidgetBase {
         }
       }
     }
-    // And only allow these.
+    // And only allow bundles associated with the channels.
     $options = array_intersect_key($options, $enabled);
 
     if ($this->required && count($options) == 1) {
