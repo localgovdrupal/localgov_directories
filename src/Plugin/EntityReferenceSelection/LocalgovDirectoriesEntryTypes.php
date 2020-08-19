@@ -112,8 +112,10 @@ class LocalgovDirectoriesEntryTypes extends SelectionPluginBase implements Conta
    * {@inheritdoc}
    */
   public function validateReferenceableEntities(array $ids) {
+    // Return only the $ids in $options, any others will be used in valdation
+    // to list as invalid.
     $options = $this->getReferenceableEntities();
-    return (0 === count(array_diff($ids, array_keys($options['node_type']))));
+    return array_intersect($ids, array_keys($options['node_type']));
   }
 
 }
