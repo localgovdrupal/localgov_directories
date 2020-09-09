@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\localgov_directories_venus\Functional;
+namespace Drupal\Tests\localgov_directories_venue\Functional;
 
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
