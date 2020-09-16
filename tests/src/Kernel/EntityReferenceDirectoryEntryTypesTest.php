@@ -121,9 +121,9 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
     $this->assert($this->selectionHandler->countReferenceableEntities(), 2);
 
     // Check validate.
-    $this->assertTrue($this->selectionHandler->validateReferenceableEntities([$other_type]));
-    $this->assertTrue($this->selectionHandler->validateReferenceableEntities([$page_type, $other_type]));
-    $this->assertFalse($this->selectionHandler->validateReferenceableEntities([$non_directory->id()]));
+    $this->assertGreaterThan(0, count($this->selectionHandler->validateReferenceableEntities([$other_type])));
+    $this->assertGreaterThan(0, count($this->selectionHandler->validateReferenceableEntities([$page_type, $other_type])));
+    $this->assertEqual(0, count($this->selectionHandler->validateReferenceableEntities([$non_directory->id()])));
   }
 
 }
