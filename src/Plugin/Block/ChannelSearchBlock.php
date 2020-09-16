@@ -2,7 +2,6 @@
 
 namespace Drupal\localgov_directories\Plugin\Block;
 
-use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
@@ -28,6 +27,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     "node" = @ContextDefinition("entity:node")
  *   }
  * )
+ *
+ * @todo Functional test for cache tag invalidation scenario.
  */
 class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInterface {
 

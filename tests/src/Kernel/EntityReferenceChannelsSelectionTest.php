@@ -24,6 +24,7 @@ class EntityReferenceChannelsSelectionTest extends KernelTestBase {
    */
   protected static $modules = [
     'address',
+    'block',
     'facets',
     'field',
     'filter',
