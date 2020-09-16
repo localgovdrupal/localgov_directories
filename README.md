@@ -57,3 +57,6 @@ added to them.
 The content type should be automatically added to the search index when you add
 the directory fields. You may want to create a `directory index` display mode
 as this will be used for the full text search indexing.
+
+## Block placement
+When using a theme other than the localgov_theme, the **Directory channel search** and **Directory facets** blocks should be made visible for the **Directory Channel** content type.  They can be added to a sidebar region (or equivalent) of the site theme.
