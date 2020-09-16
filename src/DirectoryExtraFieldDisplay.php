@@ -192,8 +192,13 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
     $view->setArguments([$node->id()]);
     $view->execute('node_embed');
 
-    $block = $this->pluginBlockManager->createInstance('facet_block' . PluginBase::DERIVATIVE_SEPARATOR . 'localgov_directories_facets');
-    return $block->build();
+    if (!empty($view->result)) {
+      $block = $this->pluginBlockManager->createInstance('facet_block' . PluginBase::DERIVATIVE_SEPARATOR . 'localgov_directories_facets');
+      return $block->build();
+    }
+    else {
+      return [];
+    }
   }
 
   /**
