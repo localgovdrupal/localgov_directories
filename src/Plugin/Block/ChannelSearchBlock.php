@@ -167,12 +167,16 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
    *
    * The given Directory entry belongs to these Directory channel nodes.
    */
-  protected function getCacheTagsForDirChannels(CacheableDependencyInterface $directory_entry): array {
+  protected function getCacheTagsForDirChannels(NodeInterface $directory_entry): array {
+
+    $directory_channels = array_filter(array_map(function (EntityReferenceItem $ref_item) {
+      return $ref_item->entity;
+    }, iterator_to_array($directory_entry->{self::CHANNEL_SELECTION_FIELD})));
 
     $cache_tags = array_reduce(
-      iterator_to_array($directory_entry->{self::CHANNEL_SELECTION_FIELD}),
-      function (array $carry, EntityReferenceItem $ref_item): array {
-        return Cache::mergeTags($carry, $ref_item->entity->getCacheTags());
+      $directory_channels,
+      function (array $carry, NodeInterface $directory_channel): array {
+        return Cache::mergeTags($carry, $directory_channel->getCacheTags());
       }, []
     );
 
