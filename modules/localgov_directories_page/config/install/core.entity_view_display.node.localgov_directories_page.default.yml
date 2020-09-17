@@ -101,6 +101,11 @@ content:
     third_party_settings: {  }
     type: telephone_link
     region: content
+  localgov_directory_search:
+    weight: -20
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   localgov_directory_website:
     weight: 8
     label: above
@@ -117,5 +122,4 @@ hidden:
   links: true
   localgov_directory_channels: true
   localgov_directory_facets_select: true
-  localgov_directory_search: true
   search_api_excerpt: true

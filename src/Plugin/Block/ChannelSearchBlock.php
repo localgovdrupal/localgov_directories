@@ -67,6 +67,10 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
       $build = [];
     }
 
+    if (!empty($build)) {
+      $build['#attached']['library'][] = 'localgov_directories/search_block';
+    }
+
     return $build;
   }
 
@@ -121,6 +125,7 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
         'view' => $channel_view,
         'display' => &$channel_view->display_handler->display,
         'rerender' => NULL,
+        'parent-source' => self::class,
       ])
       ->setMethod('get')
       ->setAlwaysProcess()

@@ -7,3 +7,8 @@ localgov_directories_search:
     js/localgov_directories_entry_search.js: {}
   dependencies:
     - core/drupalSettings
+
+search_block:
+  css:
+    state:
+      css/search-block.css: {}
