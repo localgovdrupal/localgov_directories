@@ -16,9 +16,7 @@ use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 use Drupal\node\NodeInterface;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\search_api\Entity\Index;
-
-const LOCALGOV_DIRECTORIES_CHANNEL_SELECTION_FIELD = 'localgov_directory_channels';
-const LOCALGOV_DIRECTORIES_CHANNEL_SEARCH_BLOCK = 'localgov_directories_channel_search_block';
+use Drupal\localgov_directories\Constants;
 
 /**
  * Implements hook_theme().
@@ -176,10 +174,11 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
   }
 
   $is_node_field = $field->getTargetEntityTypeId() === 'node';
-  $is_channel_selection_field = $field->getName() === LOCALGOV_DIRECTORIES_CHANNEL_SELECTION_FIELD;
-  if ($is_node_field and $is_channel_selection_field) {
+  $is_channel_selection_field = $field->getName() === Constants::CHANNEL_SELECTION_FIELD;
+  $is_new_directory_entry_content_type = ($is_node_field and $is_channel_selection_field);
+  if ($is_new_directory_entry_content_type) {
     $content_type = $field->getTargetBundle();
-    localgov_directories_add_block_to_content_type_sidebar(LOCALGOV_DIRECTORIES_CHANNEL_SEARCH_BLOCK, $content_type);
+    localgov_directories_add_block_to_content_type_sidebar(Constants::CHANNEL_SEARCH_BLOCK, $content_type);
   }
 }
 
@@ -213,10 +212,11 @@ function localgov_directories_field_config_delete(FieldConfigInterface $field) {
   }
 
   $is_node_field = $field->getTargetEntityTypeId() === 'node';
-  $is_channel_selection_field = $field->getName() === LOCALGOV_DIRECTORIES_CHANNEL_SELECTION_FIELD;
-  if ($is_node_field and $is_channel_selection_field) {
+  $is_channel_selection_field = $field->getName() === Constants::CHANNEL_SELECTION_FIELD;
+  $is_defunct_directory_entry_content_type = ($is_node_field and $is_channel_selection_field);
+  if ($is_defunct_directory_entry_content_type) {
     $content_type = $field->getTargetBundle();
-    localgov_directories_remove_block_from_content_type_sidebar(LOCALGOV_DIRECTORIES_CHANNEL_SEARCH_BLOCK, $content_type);
+    localgov_directories_remove_block_from_content_type_sidebar(Constants::CHANNEL_SEARCH_BLOCK, $content_type);
   }
 }
 
