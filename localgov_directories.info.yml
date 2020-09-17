@@ -1,7 +1,7 @@
-name: 'LocalGov: Directories'
+name: 'LocalGov Directories'
 type: module
 description: 'Provides a directory facets entity.'
-package: LocalGov
+package: LocalGov Drupal
 core: 8.x
 core_version_requirement: ^8 || ^9
 dependencies:
