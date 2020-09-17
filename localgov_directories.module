@@ -17,8 +17,8 @@ use Drupal\node\NodeInterface;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\search_api\Entity\Index;
 
-define('LOCALGOV_DIRECTORIES_CHANNEL_SELECTION_FIELD', 'localgov_directory_channels');
-define('LOCALGOV_DIRECTORIES_CHANNEL_SEARCH_BLOCK', 'localgov_directories_channel_search_block');
+const LOCALGOV_DIRECTORIES_CHANNEL_SELECTION_FIELD = 'localgov_directory_channels';
+const LOCALGOV_DIRECTORIES_CHANNEL_SEARCH_BLOCK = 'localgov_directories_channel_search_block';
 
 /**
  * Implements hook_theme().

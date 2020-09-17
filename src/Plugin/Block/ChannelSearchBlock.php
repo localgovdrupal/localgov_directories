@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\localgov_directories\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
