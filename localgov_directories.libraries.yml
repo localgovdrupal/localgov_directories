@@ -12,3 +12,5 @@ search_block:
   css:
     state:
       css/search-block.css: {}
+    theme:
+      css/search-block-style.css: {}
