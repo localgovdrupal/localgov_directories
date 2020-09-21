@@ -23,6 +23,7 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
    */
   protected static $modules = [
     'address',
+    'block',
     'facets',
     'field',
     'filter',

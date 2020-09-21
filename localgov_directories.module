@@ -5,6 +5,7 @@
  * Provides a directory facets entity type.
  */
 
+use Drupal\block\Entity\Block;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
@@ -15,6 +16,7 @@ use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 use Drupal\node\NodeInterface;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\search_api\Entity\Index;
+use Drupal\localgov_directories\Constants;
 
 /**
  * Implements hook_theme().
@@ -140,11 +142,11 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
     }
     $datasource->setConfiguration($configuration);
 
-    $field = $index->getField('rendered_item');
-    if ($field) {
-      $configuration = $field->getConfiguration();
+    $index_field = $index->getField('rendered_item');
+    if ($index_field) {
+      $configuration = $index_field->getConfiguration();
       $configuration['view_mode']['entity:node'][$entity_bundle] = 'directory_index';
-      $field->setConfiguration($configuration);
+      $index_field->setConfiguration($configuration);
     }
 
     $index->save();
@@ -169,6 +171,14 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
     //   $view->save();
     // }
     // @codingStandardsIgnoreEnd
+  }
+
+  $is_node_field = $field->getTargetEntityTypeId() === 'node';
+  $is_channel_selection_field = $field->getName() === Constants::CHANNEL_SELECTION_FIELD;
+  $is_new_directory_entry_content_type = ($is_node_field and $is_channel_selection_field);
+  if ($is_new_directory_entry_content_type) {
+    $content_type = $field->getTargetBundle();
+    localgov_directories_add_block_to_content_type_sidebar(Constants::CHANNEL_SEARCH_BLOCK, $content_type);
   }
 }
 
@@ -199,6 +209,14 @@ function localgov_directories_field_config_delete(FieldConfigInterface $field) {
     }
     $datasource->setConfiguration($configuration);
     $index->save();
+  }
+
+  $is_node_field = $field->getTargetEntityTypeId() === 'node';
+  $is_channel_selection_field = $field->getName() === Constants::CHANNEL_SELECTION_FIELD;
+  $is_defunct_directory_entry_content_type = ($is_node_field and $is_channel_selection_field);
+  if ($is_defunct_directory_entry_content_type) {
+    $content_type = $field->getTargetBundle();
+    localgov_directories_remove_block_from_content_type_sidebar(Constants::CHANNEL_SEARCH_BLOCK, $content_type);
   }
 }
 
@@ -231,4 +249,89 @@ function template_preprocess_localgov_directories_facets(array &$variables) {
   foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
   }
+}
+
+/**
+ * Update a block's visibility.
+ *
+ * The given block should appear in pages for the given content type.
+ */
+function localgov_directories_add_block_to_content_type_sidebar(string $block_id, string $content_type): bool {
+
+  $block_config = Block::load($block_id);
+  if (empty($block_config)) {
+    Drupal::service('logger.factory')->get('localgov_directories')->error('Block %block-id is missing.  Cannot update its visibility settings.', [
+      '%block-id' => $block_id,
+    ]);
+
+    return FALSE;
+  }
+
+  try {
+    $block_visibility_config = $block_config->getVisibility();
+    $block_visibility_config['node_type']['bundles'][$content_type] = $content_type;
+    $block_config->setVisibilityConfig('node_type', $block_visibility_config['node_type']);
+    $block_config->save();
+  }
+  catch (Exception $e) {
+    Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to add %content-type content type to %block-id block: %error-msg', [
+      '%content-type' => $content_type,
+      '%block-id' => $block_id,
+      '%error-msg' => $e->getMessage(),
+    ]);
+
+    return FALSE;
+  }
+
+  Drupal::service('logger.factory')->get('localgov_directories')->notice('Added %content-type content type to %block-id block.', [
+    '%content-type' => $content_type,
+    '%block-id' => $block_id,
+  ]);
+
+  return TRUE;
+}
+
+/**
+ * Update a block's visibility.
+ *
+ * The given block should **not** appear in pages for the given content type.
+ */
+function localgov_directories_remove_block_from_content_type_sidebar(string $block_id, string $content_type): bool {
+
+  $block_config = Block::load($block_id);
+  if (empty($block_config)) {
+    Drupal::service('logger.factory')->get('localgov_directories')->error('Block %block-id is missing.  Cannot update its visibility settings.', [
+      '%block-id' => $block_id,
+    ]);
+
+    return FALSE;
+  }
+
+  try {
+    $block_visibility_config = $block_config->getVisibility();
+
+    if (empty($block_visibility_config['node_type']['bundles'][$content_type])) {
+      return FALSE;
+    }
+
+    unset($block_visibility_config['node_type']['bundles'][$content_type]);
+    $block_config->setVisibilityConfig('node_type', $block_visibility_config['node_type']);
+    $block_config->save();
+  }
+  catch (Exception $e) {
+    Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to remove %content-type content type from %block-id block: %error-msg', [
+      '%content-type' => $content_type,
+      '%block-id' => $block_id,
+      '%error-msg' => $e->getMessage(),
+    ]);
+
+    return FALSE;
+  }
+
+  Drupal::service('logger.factory')->get('localgov_directories')->notice('Removed %content-type content type from %block-id block.', [
+    '%content-type' => $content_type,
+    '%block-id' => $block_id,
+  ]);
+
+  return TRUE;
 }
