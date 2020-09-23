@@ -1,9 +1,9 @@
 langcode: en
 status: true
 dependencies: {  }
-name: 'Directory Channel'
+name: 'Directory channel'
 type: localgov_directory
-description: ''
+description: 'Main directory landing page.'
 help: ''
 new_revision: true
 preview_mode: 1

@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-name: 'Directory Page'
+name: 'Directory page'
 type: localgov_directories_page
 description: 'A simple directory entry.'
 help: ''
