@@ -15,7 +15,7 @@ show_only_one_result: false
 field_identifier: localgov_directory_facets_filter
 facet_source_id: 'search_api:views_embed__localgov_directory_channel__node_embed'
 widget:
-  type: links
+  type: checkbox
   config:
     show_numbers: false
     soft_limit: 0
