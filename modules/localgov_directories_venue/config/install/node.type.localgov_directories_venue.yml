@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-name: 'Directory Venue'
+name: 'Directory venue'
 type: localgov_directories_venue
 description: 'A venue entry with location.'
 help: ''
