@@ -13,4 +13,8 @@ class Constants {
 
   const CHANNEL_SEARCH_BLOCK = 'localgov_directories_channel_search_block';
 
+  const FACET_INDEXING_FIELD = 'localgov_directory_facets_filter';
+
+  const FACET_SELECTION_FIELD = 'localgov_directory_facets_select';
+
 }
