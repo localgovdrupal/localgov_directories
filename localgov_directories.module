@@ -160,7 +160,7 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
 
     // Also set the default view mode for the directory view listing.
     $view = View::load('localgov_directory_channel');
-    if ($view and ($field->getName() === 'localgov_directory_facets_select')) {
+    if ($view) {
       $display = $view->get('display');
       if (isset($display['node_embed']['display_options']['row'])) {
         $display['node_embed']['display_options']['row']['options']['view_modes']['entity:node'][$entity_bundle] = 'teaser';
