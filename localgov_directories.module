@@ -6,11 +6,13 @@
  */
 
 use Drupal\block\Entity\Block;
+use Drupal\Core\Config\FileStorage as ConfigFileStorage;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Render\Element;
+use Drupal\facets\Entity\Facet;
 use Drupal\field\FieldConfigInterface;
 use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 use Drupal\node\NodeInterface;
@@ -179,11 +181,11 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
   $dir_search_index = Index::load('localgov_directories_index_default');
   $has_dir_search_index = $dir_search_index;
   if ($is_node_field and $is_facet_selection_field and $has_dir_search_index) {
-    localgov_directories_setup_indexing_on_facet_field($dir_search_index);
+    localgov_directories_add_facet_field_to_index($dir_search_index);
+    localgov_directories_create_dir_facet();
   }
 
   // Setup Directory search block.
-  $is_node_field = $field->getTargetEntityTypeId() === 'node';
   $is_channel_selection_field = $field->getName() === Directory::CHANNEL_SELECTION_FIELD;
   $is_new_directory_entry_content_type = ($is_node_field and $is_channel_selection_field);
   if ($is_new_directory_entry_content_type) {
@@ -267,7 +269,7 @@ function template_preprocess_localgov_directories_facets(array &$variables) {
  * This assumes that the localgov_directory_facets_select field is part of a
  * Directory entry content type.
  */
-function localgov_directories_setup_indexing_on_facet_field(IndexInterface $dir_search_index) {
+function localgov_directories_add_facet_field_to_index(IndexInterface $dir_search_index) {
 
   $has_facet_index_field = $dir_search_index->getField(Directory::FACET_INDEXING_FIELD);
   if ($has_facet_index_field) {
@@ -286,6 +288,60 @@ function localgov_directories_setup_indexing_on_facet_field(IndexInterface $dir_
   ]);
   $dir_search_index->addField($new_facet_index_field);
   $dir_search_index->save();
+}
+
+/**
+ * Import config entity for the directory Facet.
+ */
+function localgov_directories_create_dir_facet() {
+
+  $has_dir_facet_config = Facet::load(Directory::FACET_CONFIG_ENTITY_ID);
+  if ($has_dir_facet_config) {
+    return;
+  }
+
+  $conditional_config_path = drupal_get_path('module', 'localgov_directories') . '/config/conditional';
+  localgov_directories_import_config_entity('facets_facet', $conditional_config_path, Directory::FACET_CONFIG_FILE);
+}
+
+/**
+ * Create new config entity from given config file.
+ *
+ * @param string $entity_type
+ *   Example: facets_facet.
+ * @param string $config_path
+ *   Example: modules/foo/config/bar.
+ * @param string $config_filename
+ *   Example: views.view.bar.
+ *
+ * @see https://www.metaltoad.com/blog/programmatically-importing-drupal-8-field-configurations
+ * @see https://stackoverflow.com/a/52277490
+ */
+function localgov_directories_import_config_entity(string $entity_type, string $config_path, string $config_filename): bool {
+
+  $config_src = new ConfigFileStorage($config_path);
+  if (empty($config_src)) {
+    return FALSE;
+  }
+
+  $config_values = $config_src->read($config_filename);
+  if (empty($config_values)) {
+    return FALSE;
+  }
+
+  try {
+    Drupal::service('entity_type.manager')->getStorage($entity_type)->create($config_values)->save();
+  }
+  catch (Exception $e) {
+    Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to create new config entity: %filename.  Error: %msg', [
+      '%filename' => $config_filename,
+      '%msg' => $e->getMessage(),
+    ]);
+
+    return FALSE;
+  }
+
+  return TRUE;
 }
 
 /**
