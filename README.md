@@ -41,7 +41,8 @@ service > directory, and an entry: service > directory > entry.
 ## Extending directory entries
 
 New content types can be created to go into directories by adding the
-`localgov_directory_channels` and `localgov_directory_facets_select` fields.
+`localgov_directory_channels` and `localgov_directory_facets_select` fields in
+that order.
 
 The form widgets, and selection type, for each field ensure the correct options
 for the content creator: Selector "LocalGov: Directories channels selection"
@@ -59,4 +60,4 @@ the directory fields. You may want to create a `directory index` display mode
 as this will be used for the full text search indexing.
 
 ## Block placement
-When using a theme other than the localgov_theme, the **Directory channel search** (machine id: localgov_directories_channel_search_block) and **Directory facets** (machine id: facet_block:localgov_directories_facets) blocks should be made visible for the **Directory Channel** content type.  They can be added to a sidebar region (or equivalent) of the site theme.
+When using a theme other than the localgov_theme, the **Directory channel search** (machine id: localgov_directories_channel_search_block) and **Directory facets** (machine id: facet_block:localgov_directories_facets) blocks should be made visible for the **Directory Channel** content type.  They can be added to a sidebar region (or equivalent) of the site theme.  Note that the facet_block:localgov_directories_facets block becomes available only after you have created at least one Directory entry content type.

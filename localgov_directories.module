@@ -176,6 +176,7 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
   }
 
   // Setup indexing on Facet selection field of a Directory entry content type.
+  // @todo Ensure Content type has the localgov_directory_channels field.
   $is_node_field = $field->getTargetEntityTypeId() === 'node';
   $is_facet_selection_field = $field->getName() === Directory::FACET_SELECTION_FIELD;
   $dir_search_index = Index::load('localgov_directories_index_default');
@@ -301,7 +302,10 @@ function localgov_directories_create_dir_facet() {
   }
 
   $conditional_config_path = drupal_get_path('module', 'localgov_directories') . '/config/conditional';
-  localgov_directories_import_config_entity('facets_facet', $conditional_config_path, Directory::FACET_CONFIG_FILE);
+  $import_result = localgov_directories_import_config_entity('facets_facet', $conditional_config_path, Directory::FACET_CONFIG_FILE);
+  if ($import_result) {
+    Drupal::service('config.installer')->installOptionalConfig();
+  }
 }
 
 /**
