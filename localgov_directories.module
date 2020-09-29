@@ -176,20 +176,26 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
   }
 
   // Setup indexing on Facet selection field of a Directory entry content type.
-  // @todo Ensure Content type has the localgov_directory_channels field.
   $is_node_field = $field->getTargetEntityTypeId() === 'node';
-  $is_facet_selection_field = $field->getName() === Directory::FACET_SELECTION_FIELD;
+  $is_adding_facet_selection_field = $field->getName() === Directory::FACET_SELECTION_FIELD;
+  $is_adding_channel_selection_field = $field->getName() === Directory::CHANNEL_SELECTION_FIELD;
   $dir_search_index = Index::load('localgov_directories_index_default');
   $has_dir_search_index = $dir_search_index;
-  if ($is_node_field and $is_facet_selection_field and $has_dir_search_index) {
+
+  $entity_bundle = $field->getTargetBundle();
+  $entity_field_defs = Drupal::service('entity_field.manager')->getFieldDefinitions('node', $entity_bundle);
+  $has_channel_selection_field = array_key_exists(Directory::CHANNEL_SELECTION_FIELD, $entity_field_defs);
+  $has_facet_selection_field = array_key_exists(Directory::FACET_SELECTION_FIELD, $entity_field_defs);
+  $has_both_facet_and_channel_fields = (($is_adding_channel_selection_field and $has_facet_selection_field) or ($is_adding_facet_selection_field and $has_channel_selection_field));
+  $is_new_directory_entry_content_type = ($is_node_field and $has_both_facet_and_channel_fields);
+  if ($is_new_directory_entry_content_type and $has_dir_search_index) {
     localgov_directories_add_facet_field_to_index($dir_search_index);
     localgov_directories_create_dir_facet();
   }
 
   // Setup Directory search block.
-  $is_channel_selection_field = $field->getName() === Directory::CHANNEL_SELECTION_FIELD;
-  $is_new_directory_entry_content_type = ($is_node_field and $is_channel_selection_field);
-  if ($is_new_directory_entry_content_type) {
+  $is_creating_directory_entry_content_type = ($is_node_field and $is_adding_channel_selection_field);
+  if ($is_creating_directory_entry_content_type) {
     $content_type = $field->getTargetBundle();
     localgov_directories_add_block_to_content_type_sidebar(Directory::CHANNEL_SEARCH_BLOCK, $content_type);
   }

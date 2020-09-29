@@ -41,8 +41,7 @@ service > directory, and an entry: service > directory > entry.
 ## Extending directory entries
 
 New content types can be created to go into directories by adding the
-`localgov_directory_channels` and `localgov_directory_facets_select` fields in
-that order.
+`localgov_directory_channels` and `localgov_directory_facets_select` fields.
 
 The form widgets, and selection type, for each field ensure the correct options
 for the content creator: Selector "LocalGov: Directories channels selection"
