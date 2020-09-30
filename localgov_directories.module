@@ -34,6 +34,12 @@ function localgov_directories_theme() {
     'facets_item_list__links__localgov_directories_facets' => [
       'base hook' => 'facets_item_list',
     ],
+    // Facet Checkboxes are rendered through Javascript.  So the same markup as
+    // "link" Facets suffices.
+    'facets_item_list__checkbox__localgov_directories_facets' => [
+      'base hook' => 'facets_item_list',
+      'template'  => 'facets-item-list--links--localgov-directories-facets',
+    ],
   ];
 }
 
