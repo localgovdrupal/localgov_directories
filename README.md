@@ -59,4 +59,4 @@ the directory fields. You may want to create a `directory index` display mode
 as this will be used for the full text search indexing.
 
 ## Block placement
-When using a theme other than the localgov_theme, the **Directory channel search** (machine id: localgov_directories_channel_search_block) and **Directory facets** (machine id: facet_block:localgov_directories_facets) blocks should be made visible for the **Directory Channel** content type.  They can be added to a sidebar region (or equivalent) of the site theme.
+When using a theme other than the localgov_theme, the **Directory channel search** (machine id: localgov_directories_channel_search_block) and **Directory facets** (machine id: facet_block:localgov_directories_facets) blocks should be made visible for the **Directory Channel** content type.  They can be added to a sidebar region (or equivalent) of the site theme.  Note that the facet_block:localgov_directories_facets block becomes available only after you have created at least one Directory entry content type.
