@@ -34,7 +34,15 @@
   {%- endif -%}
 
   {%- if items -%}
-  <{{ list_type }}{{ attributes }}>
+  {#
+    The js-facets-checkbox-links class is only meant for those ul/ol elements
+    whose *direct* children are facet items and not titles or other ul/ol.
+
+    @see facets/templates/facets-item-list.html.twig
+    @see Drupal.facets.makeCheckboxes()
+  #}
+  {% set top_list_type_attr = create_attribute(attributes.toArray()).removeClass('js-facets-checkbox-links') %}
+  <{{ list_type }}{{ top_list_type_attr }}>
   {%- for group in items -%}
     <li{{ group.attributes }}>{{ group.title }}</li>
     <{{ list_type }}{{ attributes.addClass('facet-filter-checkboxes') }}>
