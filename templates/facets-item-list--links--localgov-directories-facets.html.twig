@@ -44,7 +44,7 @@
   {% set top_list_type_attr = create_attribute(attributes.toArray()).removeClass('js-facets-checkbox-links') %}
   <{{ list_type }}{{ top_list_type_attr }}>
   {%- for group in items -%}
-    <li{{ group.attributes }}>{{ group.title }}</li>
+    <li{{ group.attributes }}><h4 class="facet-group__title">{{ group.title }}</h4></li>
     <{{ list_type }}{{ attributes.addClass('facet-filter-checkboxes') }}>
     {%- for item in group.items -%}
       <li{{ item.attributes }}>{{ item.value }}</li>
