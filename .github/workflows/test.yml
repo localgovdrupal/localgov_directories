@@ -18,6 +18,7 @@ jobs:
           repository: localgovdrupal/drupal-container
           ref: master
 
+      # ubuntu-latest now carries composer v2 by default.  By we need composer v1.
       - name: Force Composer v1
         uses: shivammathur/setup-php@v2
         with:
