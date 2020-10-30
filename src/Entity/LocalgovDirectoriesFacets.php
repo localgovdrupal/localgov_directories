@@ -16,7 +16,7 @@ use Drupal\user\UserInterface;
  * @ContentEntityType(
  *   id = "localgov_directories_facets",
  *   label = @Translation("Directory Facets"),
- *   label_collection = @Translation("Directory Facetses"),
+ *   label_collection = @Translation("Directory Facets"),
  *   bundle_label = @Translation("Directory Facets type"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
