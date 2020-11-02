@@ -3,6 +3,7 @@
 namespace Drupal\localgov_directories;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
+use Drupal\Core\Config\Entity\DraggableListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
 
@@ -11,7 +12,7 @@ use Drupal\Core\Url;
  *
  * @see \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType
  */
-class LocalgovDirectoriesFacetsTypeListBuilder extends ConfigEntityListBuilder {
+class LocalgovDirectoriesFacetsTypeListBuilder extends DraggableListBuilder {
 
   /**
    * {@inheritdoc}
@@ -26,10 +27,8 @@ class LocalgovDirectoriesFacetsTypeListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    $row['title'] = [
-      'data' => $entity->label(),
-      'class' => ['menu-label'],
-    ];
+
+    $row['label'] = $entity->label();
 
     return $row + parent::buildRow($entity);
   }
@@ -46,6 +45,14 @@ class LocalgovDirectoriesFacetsTypeListBuilder extends ConfigEntityListBuilder {
     );
 
     return $build;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+
+    return 'localgov_directories_facet_type_list_form';
   }
 
 }
