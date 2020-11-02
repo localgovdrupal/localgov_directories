@@ -16,7 +16,7 @@ use Drupal\user\UserInterface;
  * @ContentEntityType(
  *   id = "localgov_directories_facets",
  *   label = @Translation("Directory Facets"),
- *   label_collection = @Translation("Directory Facetses"),
+ *   label_collection = @Translation("Directory Facets"),
  *   bundle_label = @Translation("Directory Facets type"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
@@ -133,6 +133,21 @@ class LocalgovDirectoriesFacets extends ContentEntityBase implements LocalgovDir
   /**
    * {@inheritdoc}
    */
+  public function getWeight() {
+    return $this->get('weight')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setWeight($weight) {
+    $this->set('weight', $weight);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
 
     $fields = parent::baseFieldDefinitions($entity_type);
@@ -197,6 +212,11 @@ class LocalgovDirectoriesFacets extends ContentEntityBase implements LocalgovDir
       ->setLabel(t('Changed'))
       ->setTranslatable(TRUE)
       ->setDescription(t('The time that the directory facets was last edited.'));
+
+    $fields['weight'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Weight'))
+      ->setDescription(t('The weight of this Directory facet in relation to other facets.'))
+      ->setDefaultValue(0);
 
     return $fields;
   }

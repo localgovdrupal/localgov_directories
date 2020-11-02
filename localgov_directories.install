@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the LocalGov Directories module.
  */
 
+use Drupal\Core\Field\BaseFieldDefinition;
+
 /**
  * Implements hook_install().
  */
@@ -13,4 +15,21 @@ function localgov_directories_install() {
   if ($services) {
     localgov_directories_optional_fields_settings($services);
   }
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Adds the "weight" field to Facet related entities.
+ */
+function localgov_directories_update_8001() {
+
+  // @see Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets::baseFieldDefinitions()
+  $field_storage_def_for_weight = BaseFieldDefinition::create('integer')
+    ->setLabel(t('Weight'))
+    ->setDescription(t('The weight of this Directory facet in relation to other facets.'))
+    ->setDefaultValue(0);
+
+  Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('weight', 'localgov_directories_facets', 'localgov_directories', $field_storage_def_for_weight);
 }
