@@ -18,11 +18,6 @@ jobs:
           repository: localgovdrupal/drupal-container
           ref: master
 
-      - name: Checkout ${{ github.event.repository.name }} branch to test
-        uses: actions/checkout@v2
-        with:
-          path: html/web/modules/contrib/${{ github.event.repository.name }}
-
       - name: Start Docker environment
         run: docker-compose up -d
 
@@ -30,6 +25,11 @@ jobs:
         run: |
           docker exec -u root -t drupal bash -c "mkdir -p /var/www/html && chown docker:docker /var/www/html"
           docker exec -u docker -t drupal bash -c "/usr/local/bin/composer create-project --keep-vcs --stability dev localgovdrupal/localgov-project /var/www/html"
+
+      - name: Checkout ${{ github.event.repository.name }} branch to test
+        uses: actions/checkout@v2
+        with:
+          path: html/web/modules/contrib/${{ github.event.repository.name }}
 
       - name: Run tests
         run: ./run-tests.sh
