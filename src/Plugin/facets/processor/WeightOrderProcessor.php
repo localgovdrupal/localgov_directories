@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\facets\Processor\SortProcessorPluginBase;
 use Drupal\facets\Result\ResultInterface;
+use Drupal\facets\Result\Result;
 use Drupal\localgov_directories\Constants as Directory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -31,7 +32,7 @@ class WeightOrderProcessor extends SortProcessorPluginBase implements ContainerF
    *
    * Compare *Facet items* by the value of their *weight* property.
    */
-  public function sortResults(ResultInterface $a, ResultInterface $b) {
+  public function sortResults(Result $a, Result $b) {
 
     $this->loadFacetWeightsOnce($a, $b);
 

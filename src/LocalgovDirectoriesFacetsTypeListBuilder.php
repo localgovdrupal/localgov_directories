@@ -2,7 +2,6 @@
 
 namespace Drupal\localgov_directories;
 
-use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Config\Entity\DraggableListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;

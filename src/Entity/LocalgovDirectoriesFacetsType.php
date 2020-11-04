@@ -63,7 +63,7 @@ class LocalgovDirectoriesFacetsType extends ConfigEntityBundleBase {
   /**
    * Facet type weight.
    *
-   * @var integer
+   * @var int
    */
   protected $weight = 0;
 
