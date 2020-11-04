@@ -41,7 +41,8 @@ use Drupal\user\UserInterface;
  *     "langcode" = "langcode",
  *     "bundle" = "bundle",
  *     "label" = "title",
- *     "uuid" = "uuid"
+ *     "uuid" = "uuid",
+ *     "weight" = "weight"
  *   },
  *   links = {
  *     "add-form" = "/admin/content/directories/facets/add/{localgov_directories_facets_type}",
@@ -216,7 +217,12 @@ class LocalgovDirectoriesFacets extends ContentEntityBase implements LocalgovDir
     $fields['weight'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Weight'))
       ->setDescription(t('The weight of this Directory facet in relation to other facets.'))
-      ->setDefaultValue(0);
+      ->setDefaultValue(0)
+      ->setDisplayOptions('form', [
+        'type' => 'number',
+        'weight' => 50,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
 
     return $fields;
   }

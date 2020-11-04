@@ -60,6 +60,23 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Loads entity IDs using a pager sorted by the entity weight.
+   *
+   * @return array
+   *   An array of entity IDs.
+   */
+  protected function getEntityIds() {
+    $query = $this->getStorage()->getQuery()
+      ->sort($this->entityType->getKey('weight'));
+
+    // Only add the pager if a limit is specified.
+    if ($this->limit) {
+      $query->pager($this->limit);
+    }
+    return $query->execute();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
@@ -89,7 +106,7 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var $entity \Drupal\localgov_directories\LocalgovDirectoriesFacetsInterface */
+    /** @var \Drupal\localgov_directories\LocalgovDirectoriesFacetsInterface $entity */
     $row['id'] = $entity->id();
     $row['bundle'] = $entity->bundle();
     $row['title'] = $entity->toLink(NULL, 'edit-form');
