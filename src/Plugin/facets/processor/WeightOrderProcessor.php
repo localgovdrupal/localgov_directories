@@ -16,8 +16,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @FacetsProcessor(
  *   id = "weight_property_order",
- *   label = @Translation("Sort by weight."),
- *   description = @Translation("Sorts the widget results by their weight."),
+ *   label = @Translation("Sort by weight"),
+ *   description = @Translation("Sorts the widget results by their weight.  Only applies to Facet items with a *weight* property."),
  *   default_enabled = TRUE,
  *   stages = {
  *     "sort" = 50
@@ -56,13 +56,13 @@ class WeightOrderProcessor extends SortProcessorPluginBase implements ContainerF
     if (!isset($a->facetWeight)) {
       $a_facet_id     = $a->getRawValue();
       $a_facet_entity = $this->dirFacetStorage->load($a_facet_id);
-      $a->facetWeight = $a_facet_entity->getWeight() ?? 0;
+      $a->facetWeight = $a_facet_entity->get('weight')->value ?? 0;
     }
 
     if (!isset($b->facetWeight)) {
       $b_facet_id     = $b->getRawValue();
       $b_facet_entity = $this->dirFacetStorage->load($b_facet_id);
-      $b->facetWeight = $b_facet_entity->getWeight() ?? 0;
+      $b->facetWeight = $b_facet_entity->get('weight')->value ?? 0;
     }
   }
 
