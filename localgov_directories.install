@@ -44,8 +44,8 @@ function localgov_directories_update_8001() {
   $facet_type_config_entities = $config_factory->listAll('localgov_directories.localgov_directories_facets_type.');
   array_walk($facet_type_config_entities, function ($facet_type_entity_id) use ($config_factory) {
     $facet_type_config = $config_factory->getEditable($facet_type_entity_id);
-    $has_facet = $facet_type_config->get('weight') ?? FALSE;
-    if (!$has_facet) {
+    $has_facet_weight = $facet_type_config->get('weight') ?? FALSE;
+    if (!$has_facet_weight) {
       $facet_type_config->set('weight', 0);
       $facet_type_config->save(TRUE);
     }
