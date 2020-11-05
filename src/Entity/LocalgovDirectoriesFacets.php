@@ -218,6 +218,7 @@ class LocalgovDirectoriesFacets extends ContentEntityBase implements LocalgovDir
       ->setLabel(t('Weight'))
       ->setDescription(t('The weight of this Directory facet in relation to other facets.'))
       ->setDefaultValue(0)
+      ->setInitialValue(0)
       ->setDisplayOptions('form', [
         'type' => 'number',
         'weight' => 50,
