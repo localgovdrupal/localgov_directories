@@ -276,17 +276,18 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
   /**
    * Facet bundle comparison callback for sorting.
    *
-   * Bundles are compared by their weight.
+   * Bundles are compared by their weights.  When weights are equal, labels take
+   * over.
    *
    * @param array $bundle1
-   *   Necessary key: weight.
+   *   Necessary keys: weight, title.
    * @param array $bundle2
    *   Same as $bundle1.
    */
   public static function compareFacetBundlesByWeight(array $bundle1, array $bundle2): int {
 
     if ($bundle1['weight'] === $bundle2['weight']) {
-      return 0;
+      return strnatcasecmp($bundle1['title'], $bundle2['title']);
     }
 
     return $bundle1['weight'] < $bundle2['weight'] ? -1 : 1;

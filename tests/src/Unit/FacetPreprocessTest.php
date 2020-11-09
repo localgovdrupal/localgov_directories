@@ -25,7 +25,8 @@ class FacetPreprocessTest extends UnitTestCase {
   /**
    * Tests for DirectoryExtraFieldDisplay::preprocessFacetList().
    *
-   * Ensure that the *Facet types* are sorted according to their weights.
+   * Ensures that the *Facet types* are sorted according to their weights and
+   * labels.
    *
    * ## Test data
    * Facet item | Facet type | Facet type weight
@@ -34,8 +35,9 @@ class FacetPreprocessTest extends UnitTestCase {
    * one        | bar        | 10
    * two        | baz        | 20
    * three      | qux        | 0
+   * four       | jar        | 0
    *
-   * The expected output order of the Facet types is: qux, bar, baz, foo.
+   * The expected output order of the Facet types is: jar, qux, bar, baz, foo.
    */
   public function testFacetTypeSorting() {
 
@@ -47,12 +49,13 @@ class FacetPreprocessTest extends UnitTestCase {
         ['value' => ['#attributes' => ['data-drupal-facet-item-value' => 'one']]],
         ['value' => ['#attributes' => ['data-drupal-facet-item-value' => 'two']]],
         ['value' => ['#attributes' => ['data-drupal-facet-item-value' => 'three']]],
+        ['value' => ['#attributes' => ['data-drupal-facet-item-value' => 'four']]],
       ],
     ];
     $test_obj->preprocessFacetList($facet_tpl_variables);
 
     $sorted_facet_types = array_keys($facet_tpl_variables['items']);
-    $expected_sorted_facet_types = ['qux', 'bar', 'baz', 'foo'];
+    $expected_sorted_facet_types = ['jar', 'qux', 'bar', 'baz', 'foo'];
     $this->assertArrayEquals($expected_sorted_facet_types, $sorted_facet_types);
   }
 
@@ -74,6 +77,8 @@ class FacetPreprocessTest extends UnitTestCase {
     $facet_two->expects($this->any())->method('bundle')->willReturn('baz');
     $facet_three = $this->createMock(LocalgovDirectoriesFacets::class);
     $facet_three->expects($this->any())->method('bundle')->willReturn('qux');
+    $facet_four = $this->createMock(LocalgovDirectoriesFacets::class);
+    $facet_four->expects($this->any())->method('bundle')->willReturn('jar');
 
     $mock_facet_storage = $this->createMock(EntityStorageInterface::class);
     $mock_facet_storage->expects($this->any())
@@ -83,6 +88,7 @@ class FacetPreprocessTest extends UnitTestCase {
         ['one', $facet_one],
         ['two', $facet_two],
         ['three', $facet_three],
+        ['four', $facet_four],
       ]));
 
     // Facet types.
@@ -98,6 +104,9 @@ class FacetPreprocessTest extends UnitTestCase {
     $facet_type_qux = $this->createMock(LocalgovDirectoriesFacetsType::class);
     $facet_type_qux->expects($this->any())->method('get')->willReturn(0);
     $facet_type_qux->expects($this->any())->method('label')->willReturn('qux');
+    $facet_type_jar = $this->createMock(LocalgovDirectoriesFacetsType::class);
+    $facet_type_jar->expects($this->any())->method('get')->willReturn(0);
+    $facet_type_jar->expects($this->any())->method('label')->willReturn('jar');
 
     $mock_facet_type_storage = $this->createMock(EntityStorageInterface::class);
     $mock_facet_type_storage->expects($this->any())
@@ -107,6 +116,7 @@ class FacetPreprocessTest extends UnitTestCase {
         ['bar', $facet_type_bar],
         ['baz', $facet_type_baz],
         ['qux', $facet_type_qux],
+        ['jar', $facet_type_jar],
       ]));
 
     // Finally, the dependencies.

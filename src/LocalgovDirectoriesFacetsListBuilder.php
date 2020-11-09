@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a list controller for the directory facets entity type.
+ *
+ * Directory facets are order by their Facet type, weight, and label.
  */
 class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
 
@@ -60,14 +62,19 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
   }
 
   /**
-   * Loads entity IDs using a pager sorted by the entity weight.
+   * Loads entity IDs using a pager sorted by various entity properties.
+   *
+   * While sorting, entity properties are used in this order: bundle, weight,
+   * and label.
    *
    * @return array
    *   An array of entity IDs.
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('weight'));
+      ->sort($this->entityType->getKey('bundle'))
+      ->sort($this->entityType->getKey('weight'))
+      ->sort($this->entityType->getKey('label'));
 
     // Only add the pager if a limit is specified.
     if ($this->limit) {

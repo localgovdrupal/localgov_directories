@@ -62,7 +62,7 @@ function localgov_directories_update_8001() {
   unset($facet_processor_configs['display_value_widget_order']);
   $facet_processor_configs['weight_property_order'] = [
     'processor_id' => 'weight_property_order',
-    'weights' => ['sort' => 50],
+    'weights' => ['sort' => -5],
     'settings' => ['sort' => 'ASC'],
   ];
   $dir_facet_config->set('processor_configs', $facet_processor_configs);
