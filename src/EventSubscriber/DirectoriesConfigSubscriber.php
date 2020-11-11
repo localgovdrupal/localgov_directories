@@ -80,7 +80,8 @@ class DirectoriesConfigSubscriber implements EventSubscriberInterface {
    *   The config storage transform event.
    */
   public function onExportTransform(StorageTransformEvent $event) {
-    // Export all changes if $settings['localgov_directories_stage_site'] = TRUE.
+    // Export all changes if
+    // $settings['localgov_directories_stage_site'] = TRUE.
     if (Settings::get('localgov_directories_stage_site')) {
       return;
     }
@@ -92,9 +93,9 @@ class DirectoriesConfigSubscriber implements EventSubscriberInterface {
       $transformation_collection = $transformation_storage->createCollection($collection_name);
       $destination_collection = $destination_storage->createCollection($collection_name);
       foreach ($this->ignoreConfigNames($transformation_collection) as $config_name) {
-        // If a configuration exists in the destination (configuration directory)
-        // already leave it as it is, even if there are changes in the
-        // transformation_storage (from the database).
+        // If a configuration exists in the destination (configuration
+        // directory) already leave it as it is, even if there are changes in
+        // the transformation_storage (from the database).
         if ($destination_collection->exists($config_name)) {
           $transformation_collection->write($config_name, $destination_collection->read($config_name));
         }
