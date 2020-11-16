@@ -8,5 +8,8 @@ localgov_directories.localgov_directories_facets_type.*:
     label:
       type: label
       label: 'Label'
+    weight:
+      type: integer
+      label: 'Weight'
     uuid:
       type: string

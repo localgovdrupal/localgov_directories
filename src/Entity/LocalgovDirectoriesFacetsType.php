@@ -27,7 +27,8 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
- *     "uuid" = "uuid"
+ *     "uuid" = "uuid",
+ *     "weight" = "weight",
  *   },
  *   links = {
  *     "add-form" = "/admin/structure/localgov_directories_facets_types/add",
@@ -39,6 +40,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *     "id",
  *     "label",
  *     "uuid",
+ *     "weight",
  *   }
  * )
  */
@@ -57,5 +59,12 @@ class LocalgovDirectoriesFacetsType extends ConfigEntityBundleBase {
    * @var string
    */
   protected $label;
+
+  /**
+   * Facet type weight.
+   *
+   * @var int
+   */
+  protected $weight = 0;
 
 }
