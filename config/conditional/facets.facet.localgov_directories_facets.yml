@@ -50,6 +50,12 @@ processor_configs:
       pre_query: 50
       build: 15
     settings: {  }
+  weight_property_order:
+    processor_id: weight_property_order
+    weights:
+      sort: -5
+    settings:
+      sort: ASC
 empty_behavior:
   behavior: none
 show_title: false

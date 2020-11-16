@@ -12,6 +12,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides a list controller for the directory facets entity type.
+ *
+ * Directory facets are order by their Facet type, weight, and label.
  */
 class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
 
@@ -60,6 +62,28 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Loads entity IDs using a pager sorted by various entity properties.
+   *
+   * While sorting, entity properties are used in this order: bundle, weight,
+   * and label.
+   *
+   * @return array
+   *   An array of entity IDs.
+   */
+  protected function getEntityIds() {
+    $query = $this->getStorage()->getQuery()
+      ->sort($this->entityType->getKey('bundle'))
+      ->sort($this->entityType->getKey('weight'))
+      ->sort($this->entityType->getKey('label'));
+
+    // Only add the pager if a limit is specified.
+    if ($this->limit) {
+      $query->pager($this->limit);
+    }
+    return $query->execute();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
@@ -89,7 +113,7 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var $entity \Drupal\localgov_directories\LocalgovDirectoriesFacetsInterface */
+    /** @var \Drupal\localgov_directories\LocalgovDirectoriesFacetsInterface $entity */
     $row['id'] = $entity->id();
     $row['bundle'] = $entity->bundle();
     $row['title'] = $entity->toLink(NULL, 'edit-form');
