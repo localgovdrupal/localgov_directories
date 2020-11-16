@@ -48,6 +48,15 @@ class LocalgovDirectoriesFacetsTypeForm extends BundleEntityFormBase {
       '#description' => $this->t('A unique machine-readable name for this directory facets type. It must only contain lowercase letters, numbers, and underscores.'),
     ];
 
+    $form['weight'] = [
+      '#type'          => 'weight',
+      '#title'         => $this->t('Weight'),
+      '#description'   => $this->t('Facet types are displayed in ascending order by weight.'),
+      '#default_value' => $entity_type->get('weight'),
+      '#delta'         => 50,
+      '#weight'        => 100,
+    ];
+
     return $this->protectBundleIdElement($form);
   }
 
@@ -69,6 +78,7 @@ class LocalgovDirectoriesFacetsTypeForm extends BundleEntityFormBase {
 
     $entity_type->set('id', trim($entity_type->id()));
     $entity_type->set('label', trim($entity_type->label()));
+    $entity_type->set('weight', $entity_type->get('weight'));
 
     $status = $entity_type->save();
 

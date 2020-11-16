@@ -226,7 +226,10 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
         $form['#attributes']['class'][] = $delta ? 'localgov-search-channel-secondary' : 'localgov-search-channel-primary';
         $channel_label = $this->entityRepository->getTranslationFromContext($node)->label();
         $form['#id'] .= '--' . $node->id();
-        $form["#info"]["filter-search_api_fulltext"]["label"] = $this->t('Search <span class="localgov-search-channel" id="@id--channel">@channel</span>', ['@id' => $form['#id'], '@channel' => $channel_label]);
+        $form["#info"]["filter-search_api_fulltext"]["label"] = $this->t('Search <span class="localgov-search-channel" id="@id--channel">@channel</span>', [
+          '@id' => $form['#id'],
+          '@channel' => $channel_label,
+        ]);
         // Can we do this with the form builder?
         // Do we need to deal with date-drupal-selector?
         // Questions for search_api_autocomplete?
@@ -242,6 +245,8 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
 
   /**
    * Prepares variables for our bundle grouped facets item list template.
+   *
+   * Facet bundles are sorted based on their weight.
    *
    * @see templates/facets-item-list--links--localgov-directories-facets.tpl.php
    * @see localgov_directories_preprocess_facets_item_list()
@@ -262,8 +267,30 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
       $entity = $type_storage->load($bundle);
       assert($entity instanceof LocalgovDirectoriesFacetsType);
       $group_items[$bundle]['title'] = Html::escape($this->entityRepository->getTranslationFromContext($entity)->label());
+      $group_items[$bundle]['weight'] = $entity->get('weight');
     }
+    uasort($group_items, 'static::compareFacetBundlesByWeight');
     $variables['items'] = $group_items;
+  }
+
+  /**
+   * Facet bundle comparison callback for sorting.
+   *
+   * Bundles are compared by their weights.  When weights are equal, labels take
+   * over.
+   *
+   * @param array $bundle1
+   *   Necessary keys: weight, title.
+   * @param array $bundle2
+   *   Same as $bundle1.
+   */
+  public static function compareFacetBundlesByWeight(array $bundle1, array $bundle2): int {
+
+    if ($bundle1['weight'] === $bundle2['weight']) {
+      return strnatcasecmp($bundle1['title'], $bundle2['title']);
+    }
+
+    return $bundle1['weight'] < $bundle2['weight'] ? -1 : 1;
   }
 
 }
