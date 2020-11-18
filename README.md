@@ -58,5 +58,15 @@ The content type should be automatically added to the search index when you add
 the directory fields. You may want to create a `directory index` display mode
 as this will be used for the full text search indexing.
 
+### Staging 'Directory facet types'
+
+By default facet types are not exported to configuration and are treated as
+content an administrator user can create on production. If you want to have
+types in configuration as vocabularies would be on the site to create and
+export the facet types set:
+`$settings['localgov_directories_stage_site'] = TRUE;`
+and it will be exported with other configuration. Any types that exist in
+configuration will be imported.
+
 ## Block placement
 When using a theme other than the localgov_theme, the **Directory channel search** (machine id: localgov_directories_channel_search_block) and **Directory facets** (machine id: facet_block:localgov_directories_facets) blocks should be made visible for the **Directory Channel** content type.  They can be added to a sidebar region (or equivalent) of the site theme.  Note that the facet_block:localgov_directories_facets block becomes available only after you have created at least one Directory entry content type.
