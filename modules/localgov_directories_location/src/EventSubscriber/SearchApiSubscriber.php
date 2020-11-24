@@ -51,8 +51,8 @@ class SearchApiSubscriber implements EventSubscriberInterface {
     // desirable in the future.
     if ($query->getIndex()->getServerInstance()->supportsFeature('search_api_facets')) {
       $search_id = $query->getSearchId();
-      // This is the map attachment.
-      if ($search_id == 'views_attachment:localgov_directory_channel__node_embed_map_attachment') {
+      // This is the map to work with the list.
+      if ($search_id == 'views_embed:localgov_directory_channel__embed_map') {
         // Add the active filters from the search api view display for the list.
         $this->facetManager->alterQuery($query, 'search_api:views_embed__localgov_directory_channel__node_embed');
       }
