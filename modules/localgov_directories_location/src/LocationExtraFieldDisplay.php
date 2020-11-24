@@ -24,7 +24,7 @@ class LocationExtraFieldDisplay {
     $fields['node']['localgov_directory']['display']['localgov_directory_map'] = [
       'label' => $this->t('Directory map'),
       'description' => $this->t("Output from the embedded map view for this channel."),
-      'weight' => -20,
+      'weight' => 0,
       'visible' => TRUE,
     ];
 

@@ -17,7 +17,7 @@ function localgov_directories_location_install() {
   $view = View::load('localgov_directory_channel');
   if ($view) {
     $display = $view->get('display');
-    $display['embed_map'] = $view_with_map_embed['display']['emded_map'];
+    $display['embed_map'] = $view_with_map_embed['display']['embed_map'];
     $view->set('display', $display);
     $view->save();
   }

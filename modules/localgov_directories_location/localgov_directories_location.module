@@ -6,6 +6,8 @@
  */
 
 use Drupal\localgov_directories_location\LocationExtraFieldDisplay;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_entity_extra_field_info().
