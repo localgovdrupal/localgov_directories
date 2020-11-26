@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the LocalGov Directories module.
  */
 
+use Drupal\Core\Field\BaseFieldDefinition;
+
 /**
  * Implements hook_install().
  */
@@ -13,4 +15,56 @@ function localgov_directories_install() {
   if ($services) {
     localgov_directories_optional_fields_settings($services);
   }
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Adds the "weight" field to Facet related entities.
+ */
+function localgov_directories_update_8001() {
+
+  // First, localgov_directories_facets content entity.
+  // @see Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets::baseFieldDefinitions()
+  $field_storage_def_for_weight = BaseFieldDefinition::create('integer')
+    ->setLabel(t('Weight'))
+    ->setDescription(t('The weight of this Directory facet in relation to other facets.'))
+    ->setDefaultValue(0)
+    ->setInitialValue(0)
+    ->setDisplayOptions('form', [
+      'type' => 'number',
+      'weight' => 50,
+    ])
+    ->setDisplayConfigurable('form', TRUE);
+
+  Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('weight', 'localgov_directories_facets', 'localgov_directories', $field_storage_def_for_weight);
+
+  // Next, localgov_directories_facets_type config entities.
+  $config_factory = Drupal::service('config.factory');
+  $facet_type_config_entities = $config_factory->listAll('localgov_directories.localgov_directories_facets_type.');
+  array_walk($facet_type_config_entities, function ($facet_type_entity_id) use ($config_factory) {
+    $facet_type_config = $config_factory->getEditable($facet_type_entity_id);
+    $has_facet_weight = $facet_type_config->get('weight') ?? FALSE;
+    if (!$has_facet_weight) {
+      $facet_type_config->set('weight', 0);
+      $facet_type_config->save(TRUE);
+    }
+  });
+
+  // Finally, the Facet configuration itself.
+  $dir_facet_config = $config_factory->getEditable('facets.facet.localgov_directories_facets');
+  $has_dir_facet_config = $dir_facet_config->get('id') ?? FALSE;
+  if (!$has_dir_facet_config) {
+    return;
+  }
+  $facet_processor_configs = $dir_facet_config->get('processor_configs');
+  unset($facet_processor_configs['display_value_widget_order']);
+  $facet_processor_configs['weight_property_order'] = [
+    'processor_id' => 'weight_property_order',
+    'weights' => ['sort' => -5],
+    'settings' => ['sort' => 'ASC'],
+  ];
+  $dir_facet_config->set('processor_configs', $facet_processor_configs);
+  $dir_facet_config->save(TRUE);
 }
