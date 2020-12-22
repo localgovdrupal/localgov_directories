@@ -251,7 +251,7 @@ function localgov_directories_field_config_delete(FieldConfigInterface $field) {
  * @see facets_preprocess_facets_item_list()
  */
 function localgov_directories_preprocess_facets_item_list(array &$variables) {
-  if ($variables['facet']->id() == 'localgov_directories_facets') {
+  if (!empty($variables['facet']) && ($variables['facet']->id() == 'localgov_directories_facets')) {
     \Drupal::service('class_resolver')
       ->getInstanceFromDefinition(DirectoryExtraFieldDisplay::class)
       ->preprocessFacetList($variables);
