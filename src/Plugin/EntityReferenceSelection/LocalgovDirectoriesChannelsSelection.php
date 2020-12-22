@@ -2,8 +2,14 @@
 
 namespace Drupal\localgov_directories\Plugin\EntityReferenceSelection;
 
+use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Plugin\EntityReferenceSelection\DefaultSelection;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Plugin description.
@@ -21,13 +27,27 @@ class LocalgovDirectoriesChannelsSelection extends DefaultSelection {
   /**
    * {@inheritdoc}
    */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, ModuleHandlerInterface $module_handler, AccountInterface $current_user, EntityFieldManagerInterface $entity_field_manager = NULL, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, EntityRepositoryInterface $entity_repository = NULL) {
+    $configuration['target_bundles'] = NULL;
+    $configuration['auto_create'] = NULL;
+    $configuration['auto_create_bundle'] = NULL;
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $module_handler, $current_user, $entity_field_manager, $entity_type_bundle_info, $entity_repository);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function defaultConfiguration() {
-    return [
+    $config = [
       'sort' => [
         'field' => '_none',
         'direction' => 'ASC',
       ],
     ] + parent::defaultConfiguration();
+    unset($config['target_bundles']);
+    unset($config['auto_create']);
+    unset($config['auto_create_bundle']);
+    return $config;
   }
 
   /**
@@ -39,6 +59,18 @@ class LocalgovDirectoriesChannelsSelection extends DefaultSelection {
     unset($form['auto_create']);
     unset($form['auto_create_bundle']);
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::validateConfigurationForm($form, $form_state);
+
+    // If the js didn't update the form.
+    $form_state->unsetValue(['settings', 'handler_settings', 'target_bundles']);
+    $form_state->unsetValue(['settings', 'handler_settings', 'auto_create']);
+    $form_state->unsetValue(['settings', 'handler_settings', 'auto_create_bundle']);
   }
 
   /**
