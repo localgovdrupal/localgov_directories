@@ -70,7 +70,11 @@ class LocalgovDirectoriesChannelsSelection extends DefaultSelection {
     // If the js didn't update the form.
     $form_state->unsetValue(['settings', 'handler_settings', 'target_bundles']);
     $form_state->unsetValue(['settings', 'handler_settings', 'auto_create']);
-    $form_state->unsetValue(['settings', 'handler_settings', 'auto_create_bundle']);
+    $form_state->unsetValue([
+      'settings',
+      'handler_settings',
+      'auto_create_bundle',
+    ]);
   }
 
   /**
