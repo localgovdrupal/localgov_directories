@@ -81,9 +81,16 @@ class ChannelFieldWidget extends OptionsWidgetBase {
    */
   public static function validateElement(array $element, FormStateInterface $form_state) {
     // Flatten the array again.
-    $values = $form_state->getValue($element['#field_name']);
+    if ($form_state->get('default_value_widget')) {
+      $values = $form_state->getValue('default_value_input')[$element['#field_name']];
+    }
+    else {
+      $values = $form_state->getValue($element['#field_name']);
+    }
     if ($values) {
-      $element['#value'] = [$values['primary'] => $values['primary']] + $values['secondary'];
+      $element['#value'] = array_filter(
+        [$values['primary'] => $values['primary']] + $values['secondary']
+      );
     }
 
     parent::validateElement($element, $form_state);

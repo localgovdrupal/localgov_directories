@@ -52,7 +52,6 @@ class FacetFieldWidget extends OptionsWidgetBase {
         $bundle_label => $options,
       ];
     }
-    $selected = $this->getSelectedOptions($items);
 
     $enabled = [];
     if ($user_input = $form_state->getValue('localgov_directory_channels')) {
@@ -78,12 +77,18 @@ class FacetFieldWidget extends OptionsWidgetBase {
         }
       }
     }
+
     // And only allow bundles associated with the channels.
     $options = array_intersect_key($options, $enabled);
 
+    // Set selected from any existing values.
+    $selected = $this->getSelectedOptions($items);
+    // If there is only one option and it's required default it.
     if ($this->required && count($options) == 1) {
-      reset($options);
-      $selected = [key($options)];
+      $single_bundle_options = reset($options);
+      if (count($single_bundle_options) == 1) {
+        $selected = [key($single_bundle_options)];
+      }
     }
 
     $element += [
@@ -122,9 +127,15 @@ class FacetFieldWidget extends OptionsWidgetBase {
       $element['#value'] = [];
       foreach ($values as $options) {
         foreach ($options as $key => $value) {
-          $element['#value'][$key] = $value;
+          if ($value) {
+            $element['#value'][$key] = $value;
+          }
         }
       }
+    }
+    // None option.
+    if (empty($element['#value'])) {
+      $element['#value'] = '_none';
     }
 
     parent::validateElement($element, $form_state);
