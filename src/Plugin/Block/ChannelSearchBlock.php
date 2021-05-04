@@ -132,6 +132,7 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
       ->disableRedirect();
 
     $views_exposed_filter_form = $this->formBuilder->buildForm(ViewsExposedForm::class, $form_state);
+    $views_exposed_filter_form['#id'] .= '-in-a-search-block';
     return $views_exposed_filter_form;
   }
 
