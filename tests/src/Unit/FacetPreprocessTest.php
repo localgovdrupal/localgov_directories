@@ -56,7 +56,7 @@ class FacetPreprocessTest extends UnitTestCase {
 
     $sorted_facet_types = array_keys($facet_tpl_variables['items']);
     $expected_sorted_facet_types = ['jar', 'qux', 'bar', 'baz', 'foo'];
-    $this->assertArrayEquals($expected_sorted_facet_types, $sorted_facet_types);
+    $this->assertSame($expected_sorted_facet_types, $sorted_facet_types);
   }
 
   /**

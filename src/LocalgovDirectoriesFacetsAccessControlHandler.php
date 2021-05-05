@@ -22,10 +22,18 @@ class LocalgovDirectoriesFacetsAccessControlHandler extends EntityAccessControlH
         return AccessResult::allowedIfHasPermission($account, 'view directory facets');
 
       case 'update':
-        return AccessResult::allowedIfHasPermissions($account, ['edit directory facets', 'administer directory facets'], 'OR');
+        return AccessResult::allowedIfHasPermissions(
+          $account,
+          ['edit directory facets', 'administer directory facets'],
+          'OR'
+        );
 
       case 'delete':
-        return AccessResult::allowedIfHasPermissions($account, ['delete directory facets', 'administer directory facets'], 'OR');
+        return AccessResult::allowedIfHasPermissions(
+          $account,
+          ['delete directory facets', 'administer directory facets'],
+          'OR'
+        );
 
       default:
         // No opinion.
@@ -38,7 +46,11 @@ class LocalgovDirectoriesFacetsAccessControlHandler extends EntityAccessControlH
    * {@inheritdoc}
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
-    return AccessResult::allowedIfHasPermissions($account, ['create directory facets', 'administer directory facets'], 'OR');
+    return AccessResult::allowedIfHasPermissions(
+      $account,
+      ['create directory facets', 'administer directory facets'],
+      'OR'
+    );
   }
 
 }
