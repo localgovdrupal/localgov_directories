@@ -90,7 +90,7 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-      label: Directory
+      label: Channels and facets
 id: node.localgov_directories_page.default
 targetEntityType: node
 bundle: localgov_directories_page
