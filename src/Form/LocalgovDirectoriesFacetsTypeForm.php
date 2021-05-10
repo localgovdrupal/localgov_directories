@@ -42,7 +42,10 @@ class LocalgovDirectoriesFacetsTypeForm extends BundleEntityFormBase {
       '#default_value' => $entity_type->id(),
       '#maxlength' => EntityTypeInterface::BUNDLE_MAX_LENGTH,
       '#machine_name' => [
-        'exists' => ['Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType', 'load'],
+        'exists' => [
+          'Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType',
+          'load',
+        ],
         'source' => ['label'],
       ],
       '#description' => $this->t('A unique machine-readable name for this directory facets type. It must only contain lowercase letters, numbers, and underscores.'),

@@ -42,7 +42,7 @@ class DirectoryVenueTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'localgov_directories_venue',
     'field_ui',
   ];
@@ -50,7 +50,7 @@ class DirectoryVenueTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->adminUser = $this->drupalCreateUser([

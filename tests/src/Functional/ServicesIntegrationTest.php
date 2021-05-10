@@ -45,7 +45,7 @@ class ServicesIntegrationTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'localgov_core',
     'localgov_services_landing',
     'localgov_services_sublanding',
@@ -56,17 +56,26 @@ class ServicesIntegrationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser(['bypass node access', 'administer nodes']);
+    $this->adminUser = $this->drupalCreateUser([
+      'bypass node access',
+      'administer nodes',
+    ]);
     $this->nodeStorage = $this->container->get('entity_type.manager')->getStorage('node');
 
     // To submit a directory we need a facet.
     $type_id = $this->randomMachineName();
-    $type = LocalgovDirectoriesFacetsType::create(['id' => $type_id, 'label' => $type_id]);
+    $type = LocalgovDirectoriesFacetsType::create([
+      'id' => $type_id,
+      'label' => $type_id,
+    ]);
     $type->save();
-    $facet = LocalgovDirectoriesFacets::create(['bundle' => $type_id, 'title' => $this->randomMachineName()]);
+    $facet = LocalgovDirectoriesFacets::create([
+      'bundle' => $type_id,
+      'title' => $this->randomMachineName(),
+    ]);
     $facet->save();
   }
 
