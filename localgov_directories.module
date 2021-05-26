@@ -444,12 +444,3 @@ function localgov_directories_remove_block_from_content_type_sidebar(string $blo
 
   return TRUE;
 }
-
-/**
- * Implements hook_form_alter().
- */
-function localgov_directories_form_alter(&$form, &$form_state, $form_id) {
-  if ($form_id === 'node_localgov_directories_venue_form') {
-    $form['#attached']['library'][] = 'localgov_directories/localgov_directories_map';
-  }
-}

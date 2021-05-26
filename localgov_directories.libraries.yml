@@ -8,13 +8,6 @@ localgov_directories_search:
   dependencies:
     - core/drupalSettings
 
-localgov_directories_map:
-  version: 1.x
-  js:
-    js/localgov_directories_map.js: {}
-  dependencies:
-    - core/drupalSettings
-
 search_block:
   css:
     state:

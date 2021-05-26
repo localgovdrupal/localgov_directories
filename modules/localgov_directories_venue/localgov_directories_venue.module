@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file Functions for the Directory Venue module.
+ */
+
+// use Drupal\block\Entity\Block;
+// use Drupal\Core\Config\FileStorage as ConfigFileStorage;
+// use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+// use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+// use Drupal\Core\Messenger\MessengerInterface;
+// use Drupal\Core\Render\Element;
+// use Drupal\facets\Entity\Facet;
+// use Drupal\field\FieldConfigInterface;
+// use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
+// use Drupal\node\NodeInterface;
+// use Drupal\pathauto\Entity\PathautoPattern;
+// use Drupal\search_api\Entity\Index;
+// use Drupal\search_api\IndexInterface;
+// use Drupal\search_api\Item\Field as SearchIndexField;
+// use Drupal\localgov_directories\Constants as Directory;
+// use Drupal\views\Entity\View;
+
+/**
+ * Implements hook_form_alter().
+ */
+function localgov_directories_venue_form_alter(&$form, &$form_state, $form_id) {
+  dpm($form_id);
+  if ($form_id === 'node_localgov_directories_venue_form') {
+    $form['#attached']['library'][] = 'localgov_directories_venue/localgov_directories_venue_map';
+  }
+}
