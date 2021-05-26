@@ -10,7 +10,6 @@ use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
  * Implements hook_form_alter().
  */
 function localgov_directories_venue_form_alter(&$form, &$form_state, $form_id) {
-  dpm($form_id);
   if ($form_id === 'node_localgov_directories_venue_form') {
     $form['#attached']['library'][] = 'localgov_directories_venue/localgov_directories_venue_map';
   }
