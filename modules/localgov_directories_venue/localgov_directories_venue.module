@@ -4,8 +4,6 @@
  * @file Functions for the Directory Venue module.
  */
 
-use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
-
 /**
  * Implements hook_form_alter().
  */
