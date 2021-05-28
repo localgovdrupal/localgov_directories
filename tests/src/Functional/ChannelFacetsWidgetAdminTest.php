@@ -33,7 +33,7 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'localgov_directories',
     'field_ui',
     'block',
@@ -48,7 +48,7 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('system_breadcrumb_block');
@@ -123,8 +123,10 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
       ]
     );
     // Set the widget.
-    $this->drupalPostForm('/admin/structure/types/manage/entry_1/form-display', ['fields[field_channels][type]' => 'localgov_directories_channel_selector'], 'edit-submit');
-    $this->drupalPostForm('/admin/structure/types/manage/entry_2/form-display', ['fields[field_channels][type]' => 'localgov_directories_channel_selector'], 'edit-submit');
+    $this->drupalGet('/admin/structure/types/manage/entry_1/form-display');
+    $this->submitForm(['fields[field_channels][type]' => 'localgov_directories_channel_selector'], 'edit-submit');
+    $this->drupalGet('/admin/structure/types/manage/entry_2/form-display');
+    $this->submitForm(['fields[field_channels][type]' => 'localgov_directories_channel_selector'], 'edit-submit');
 
     // Check the correct channels are on the different entry forms.
     $this->drupalGet('/node/add/entry_1');
@@ -136,19 +138,14 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
     $assert_session->pageTextContains('Directory 2');
 
     // Set a default.
-    $this->drupalPostForm(
-      '/admin/structure/types/manage/entry_1/fields/node.entry_1.field_channels',
-      [
-        'default_value_input[field_channels][primary]' => $this->directories[2]->id(),
-      ],
+    $this->drupalGet('/admin/structure/types/manage/entry_1/fields/node.entry_1.field_channels');
+    $this->submitForm(
+      ['default_value_input[field_channels][primary]' => $this->directories[2]->id()],
       'edit-submit'
     );
-    $this->drupalGet('/admin/structure/types/manage/entry_1/fields/node.entry_1.field_channels');
-    $this->drupalPostForm(
-      '/admin/structure/types/manage/entry_2/fields/node.entry_2.field_channels',
-      [
-        'default_value_input[field_channels][primary]' => $this->directories[2]->id(),
-      ],
+    $this->drupalGet('/admin/structure/types/manage/entry_2/fields/node.entry_2.field_channels');
+    $this->submitForm(
+      ['default_value_input[field_channels][primary]' => $this->directories[2]->id()],
       'edit-submit'
     );
 
@@ -157,10 +154,10 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
     $page = $this->getSession()->getPage();
     $assert_session = $this->assertSession();
     $radio = $page->findField('field_channels[primary]');
-    $this->assertEqual($radio->getValue(), $this->directories[2]->id());
+    $this->assertEquals($radio->getValue(), $this->directories[2]->id());
     $this->drupalGet('/node/add/entry_2');
     $radio = $page->findField('field_channels[primary]');
-    $this->assertEqual($radio->getValue(), $this->directories[2]->id());
+    $this->assertEquals($radio->getValue(), $this->directories[2]->id());
     $assert_session->fieldNotExists('edit-field-channels-secondary-1');
   }
 

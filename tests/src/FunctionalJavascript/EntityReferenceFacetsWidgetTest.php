@@ -35,7 +35,7 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'localgov_directories',
     'field_ui',
   ];
@@ -49,26 +49,38 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // Three bundles of five facets.
     for ($i = 0; $i < 3; $i++) {
       $type_id = $this->randomMachineName();
-      $type = LocalgovDirectoriesFacetsType::create(['id' => $type_id, 'label' => $type_id]);
+      $type = LocalgovDirectoriesFacetsType::create([
+        'id' => $type_id,
+        'label' => $type_id,
+      ]);
       $type->save();
       $this->facet_types[$type_id] = $type;
       for ($j = 0; $j < 5; $j++) {
-        $facet = LocalgovDirectoriesFacets::create(['bundle' => $type_id, 'title' => $this->randomMachineName()]);
+        $facet = LocalgovDirectoriesFacets::create([
+          'bundle' => $type_id,
+          'title' => $this->randomMachineName(),
+        ]);
         $facet->save();
         $this->facets[$type_id][$facet->id()] = $facet;
       }
     }
     // Another bundle with just one facet.
-    $type = LocalgovDirectoriesFacetsType::create(['id' => 'facetbundleonefacet', 'label' => 'facetbundleonefacet']);
+    $type = LocalgovDirectoriesFacetsType::create([
+      'id' => 'facetbundleonefacet',
+      'label' => 'facetbundleonefacet',
+    ]);
     $type->save();
     $this->facet_types['facetbundleonefacet'] = $type;
-    $facet = LocalgovDirectoriesFacets::create(['bundle' => 'facetbundleonefacet', 'title' => $this->randomMachineName()]);
+    $facet = LocalgovDirectoriesFacets::create([
+      'bundle' => 'facetbundleonefacet',
+      'title' => $this->randomMachineName(),
+    ]);
     $facet->save();
     $this->facets['facetbundleonefacet'][$facet->id()] = $facet;
 
