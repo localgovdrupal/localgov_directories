@@ -43,7 +43,7 @@ class PathIntegrationTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = [
+  protected static $modules = [
     'localgov_directories',
     'localgov_directories_page',
   ];
@@ -51,10 +51,13 @@ class PathIntegrationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser(['bypass node access', 'administer nodes']);
+    $this->adminUser = $this->drupalCreateUser([
+      'bypass node access',
+      'administer nodes',
+    ]);
     $this->nodeStorage = $this->container->get('entity_type.manager')->getStorage('node');
   }
 
@@ -79,7 +82,7 @@ class PathIntegrationTest extends BrowserTestBase {
     $form->checkField('edit-status-value');
     $form->pressButton('edit-submit');
 
-    $this->assertText('Page 1');
+    $this->assertSession()->pageTextContains('Page 1');
     $trail = ['' => 'Home'];
     $trail += ['directory-1' => 'Directory 1'];
     $this->assertBreadcrumb(NULL, $trail);
