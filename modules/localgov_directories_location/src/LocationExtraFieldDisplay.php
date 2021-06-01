@@ -19,7 +19,7 @@ class LocationExtraFieldDisplay implements TrustedCallbackInterface {
   /**
    * {@inheritdoc}
    */
-  static public function trustedCallbacks() {
+  public static function trustedCallbacks() {
     return [
       'removeExposedFilter',
     ];
