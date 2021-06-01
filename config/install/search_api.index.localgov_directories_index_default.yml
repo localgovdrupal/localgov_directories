@@ -7,8 +7,9 @@ dependencies:
     - search_api.server.localgov_directories_default
     - core.entity_view_mode.node.directory_index
   module:
-    - search_api
     - node
+    - search_api
+    - localgov_directories
 id: localgov_directories_index_default
 name: Directories
 description: ''
@@ -33,6 +34,14 @@ field_settings:
         'entity:node':
           localgov_directories_page: directory_index
           node: directory_index
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: string
+    dependencies:
+      module:
+        - node
 datasource_settings:
   'entity:node':
     bundles:
@@ -50,10 +59,36 @@ processor_settings:
     all_fields: true
     fields:
       - rendered_item
+      - title
     weights:
       preprocess_index: -20
       preprocess_query: -20
   language_with_fallback: {  }
+  localgov_string_stopwords:
+    all_fields: false
+    fields:
+      - title
+    stopwords:
+      - a
+      - an
+      - and
+      - for
+      - if
+      - in
+      - into
+      - of
+      - 'on'
+      - or
+      - s
+      - t
+      - that
+      - the
+      - this
+      - to
+      - was
+    weights:
+      preprocess_index: -5
+      preprocess_query: -2
   rendered_item: {  }
   stemmer:
     all_fields: true
@@ -112,6 +147,7 @@ processor_settings:
     all_fields: true
     fields:
       - rendered_item
+    ignored: ._-
     spaces: ''
     overlap_cjk: 1
     minimum_word_size: '3'
@@ -122,6 +158,7 @@ processor_settings:
     all_fields: true
     fields:
       - rendered_item
+      - title
     weights:
       preprocess_index: -20
       preprocess_query: -20

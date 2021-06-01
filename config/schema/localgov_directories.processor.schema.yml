@@ -1,0 +1,13 @@
+# search_api processors
+
+plugin.plugin_configuration.search_api_processor.localgov_string_stopwords:
+  type: search_api.fields_processor_configuration
+  label: 'Stopwords in Strings processor configuration'
+  mapping:
+    stopwords:
+      type: sequence
+      label: 'Entered stopwords'
+      orderby: value
+      sequence:
+        type: string
+        label: Stopword
