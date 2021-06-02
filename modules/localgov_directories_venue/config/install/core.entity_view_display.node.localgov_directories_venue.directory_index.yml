@@ -1,3 +1,4 @@
+uuid: 4d6ed028-e23c-4552-b9fc-f9103df429fa
 langcode: en
 status: true
 dependencies:
@@ -18,9 +19,10 @@ dependencies:
     - node.type.localgov_directories_venue
   module:
     - link
-    - telephone
     - text
     - user
+_core:
+  default_config_hash: yuSNmUeMHlWYAbP3Wezm7Ijgp8IkvQa9TREh5dYZ-qI
 id: node.localgov_directories_venue.directory_index
 targetEntityType: node
 bundle: localgov_directories_venue
@@ -40,7 +42,7 @@ content:
     third_party_settings: {  }
   localgov_directory_channels:
     weight: 3
-    label: above
+    label: hidden
     settings:
       link: false
     third_party_settings: {  }
@@ -50,12 +52,12 @@ content:
     type: basic_string
     weight: 4
     region: content
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
   localgov_directory_facets_select:
     weight: 2
-    label: above
+    label: hidden
     settings:
       link: false
     third_party_settings: {  }
@@ -65,7 +67,7 @@ content:
     type: entity_reference_label
     weight: 6
     region: content
-    label: above
+    label: hidden
     settings:
       link: true
     third_party_settings: {  }
@@ -73,7 +75,7 @@ content:
     type: string
     weight: 5
     region: content
-    label: above
+    label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -81,7 +83,7 @@ content:
     type: string
     weight: 7
     region: content
-    label: above
+    label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
@@ -89,29 +91,29 @@ content:
     type: text_default
     weight: 8
     region: content
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
   localgov_directory_opening_times:
     type: text_default
     weight: 9
     region: content
-    label: above
+    label: hidden
     settings: {  }
     third_party_settings: {  }
   localgov_directory_phone:
-    type: telephone_link
+    type: string
     weight: 11
     region: content
-    label: above
+    label: hidden
     settings:
-      title: ''
+      link_to_entity: false
     third_party_settings: {  }
   localgov_directory_website:
     type: link_separate
     weight: 10
     region: content
-    label: above
+    label: hidden
     settings:
       trim_length: 80
       url_only: false
@@ -121,7 +123,7 @@ content:
     third_party_settings: {  }
   localgov_location:
     weight: 12
-    label: above
+    label: hidden
     settings:
       link: true
       view_mode: default
