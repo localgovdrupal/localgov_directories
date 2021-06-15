@@ -8,4 +8,5 @@ dependencies:
   - inline_entity_form:inline_entity_form
   - localgov_directories:localgov_directories
   - localgov_geo:localgov_geo
+  - localgov_geo:localgov_geo_address
   - leaflet:leaflet_views
