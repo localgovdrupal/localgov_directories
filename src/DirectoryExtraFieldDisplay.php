@@ -126,7 +126,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
       'weight' => -20,
       'visible' => FALSE,
     ];
-     $fields['node']['localgov_directory']['display']['localgov_directory_facets'] = [
+    $fields['node']['localgov_directory']['display']['localgov_directory_facets'] = [
       'label' => $this->t('Directory facets'),
       'description' => $this->t("Output facets block, field alternative to enabling the block."),
       'weight' => -20,
@@ -177,7 +177,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     if ($display->getComponent('localgov_directory_view_with_search')) {
       $build['localgov_directory_view'] = $this->getViewEmbed($node, TRUE);
     }
-     if ($display->getComponent('localgov_directory_facets')) {
+    if ($display->getComponent('localgov_directory_facets')) {
       $build['localgov_directory_facets'] = $this->getFacetsBlock($node);
     }
     if ($display->getComponent('localgov_directory_search')) {
