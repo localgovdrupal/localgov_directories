@@ -1,0 +1,8 @@
+name: LocalGov Directories Open Referral
+type: module
+description: Open Referral UK standard for interchange of data on human services support.
+package: LocalGov Drupal
+core_version_requirement: ^8.9 || ^9
+dependencies:
+  - localgov_directories:localgov_directories
+  - jsonapi:jsonapi

@@ -1,0 +1,11 @@
+services:
+  paramconverter.localgov_directories_or.entity_uuid:
+    parent: paramconverter.entity
+    class: Drupal\localgov_directories_or\ParamConverter\EntityUuidConverter
+    calls:
+      - [setLanguageManager, ['@language_manager']]
+    tags:
+      # Priority 10, to ensure it runs before @paramconverter.entity.
+      - { name: paramconverter, priority: 10 }
+
+

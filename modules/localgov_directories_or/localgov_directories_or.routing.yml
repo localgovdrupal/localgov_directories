@@ -1,0 +1,35 @@
+localgov_directories_or.all_services:
+  path: '/openreferral/v1/{directory}/services'
+  defaults:
+    _title: 'Directory services'
+    _controller: '\Drupal\localgov_directories_or\Controller\LocalgovDirectoriesOrController::servicesList'
+  requirements:
+    _permission: 'access content'
+    _entity_bundles: 'directory:localgov_directory'
+  options:
+    parameters:
+      directory:
+        type: entity:node
+
+localgov_directories_or.service:
+  path: '/openreferral/v1/{directory}/services/{service}'
+  defaults:
+    _title: 'A single service'
+    _controller: '\Drupal\localgov_directories_or\Controller\LocalgovDirectoriesOrController::service'
+  requirements:
+    _permission: 'access content'
+    _entity_bundles: 'directory:localgov_directory'
+  options:
+    parameters:
+      directory:
+        type: entity:node
+      service:
+        type: entity:node
+
+localgov_directories_or.settings_form:
+  path: '/admin/config/services/localgov-directories-or'
+  defaults:
+    _title: 'LocalGov Directories Open Referral settings'
+    _form: 'Drupal\localgov_directories_or\Form\SettingsForm'
+  requirements:
+    _permission: 'administer localgov_directories_or configuration'

@@ -1,0 +1,4 @@
+administer localgov_directories_or configuration:
+  title: 'Administer LocalGov Directories Open Referral configuration'
+  description: 'Configure Open Referral API for Directories.'
+  restrict access: true

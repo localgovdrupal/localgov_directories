@@ -1,0 +1,6 @@
+localgov_directories_or.settings_form:
+  title: LocalGov Directories Open Referral
+  description: Configure LocalGov Directories Open Referral.
+  parent: system.admin_config_system
+  route_name: localgov_directories_or.settings_form
+  weight: 10
