@@ -206,6 +206,7 @@ display:
         style: false
         row: false
         empty: false
+        pager: false
       fields:
         title:
           id: title
@@ -478,6 +479,10 @@ display:
               localgov_directories_venue: teaser
       empty: {  }
       display_description: ''
+      pager:
+        type: none
+        options:
+          offset: 0
     cache_metadata:
       max-age: -1
       contexts:

@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_view_mode.node.teaser
+    - core.entity_view_mode.node.search_result
     - field.field.node.localgov_directory.body
     - field.field.node.localgov_directory.localgov_directory_channel_types
     - field.field.node.localgov_directory.localgov_directory_facets_enable
@@ -10,10 +10,10 @@ dependencies:
   module:
     - text
     - user
-id: node.localgov_directory.teaser
+id: node.localgov_directory.search_result
 targetEntityType: node
 bundle: localgov_directory
-mode: teaser
+mode: search_result
 content:
   body:
     label: hidden
@@ -30,4 +30,5 @@ hidden:
   localgov_directory_facets_enable: true
   localgov_directory_map: true
   localgov_directory_view: true
+  localgov_services_parent: true
   search_api_excerpt: true
