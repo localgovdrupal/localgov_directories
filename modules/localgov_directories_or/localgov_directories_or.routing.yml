@@ -1,16 +1,3 @@
-localgov_directories_or.all_services:
-  path: '/openreferral/v1/{directory}/services'
-  defaults:
-    _title: 'Directory services'
-    _controller: '\Drupal\localgov_directories_or\Controller\LocalgovDirectoriesOrController::servicesList'
-  requirements:
-    _permission: 'access content'
-    _entity_bundles: 'directory:localgov_directory'
-  options:
-    parameters:
-      directory:
-        type: entity:node
-
 localgov_directories_or.service:
   path: '/openreferral/v1/{directory}/services/{service}'
   defaults:
@@ -19,11 +6,40 @@ localgov_directories_or.service:
   requirements:
     _permission: 'access content'
     _entity_bundles: 'directory:localgov_directory'
+    _format: 'openreferral_json'
   options:
     parameters:
       directory:
         type: entity:node
       service:
+        type: entity:node
+
+localgov_directories_or.vocabulary:
+  path: '/openreferral/v1/{directory}/vocabulary'
+  defaults:
+    _title: 'Directory vocabularies list'
+    _controller: '\Drupal\localgov_directories_or\Controller\LocalgovDirectoriesOrController::vocabulary'
+  requirements:
+    _permission: 'access content'
+    _entity_bundles: 'directory:localgov_directory'
+    _format: 'openreferral_json'
+  options:
+    parameters:
+      directory:
+        type: entity:node
+
+localgov_directories_or.taxonomy:
+  path: '/openreferral/v1/{directory}/taxonomies'
+  defaults:
+    _title: 'Directory vocabulary taxonomies list'
+    _controller: '\Drupal\localgov_directories_or\Controller\LocalgovDirectoriesOrController::taxonomies'
+  requirements:
+    _permission: 'access content'
+    _entity_bundles: 'directory:localgov_directory'
+    _format: 'openreferral_json'
+  options:
+    parameters:
+      directory:
         type: entity:node
 
 localgov_directories_or.settings_form:

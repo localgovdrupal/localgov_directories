@@ -5,4 +5,3 @@ package: LocalGov Drupal
 core_version_requirement: ^8.9 || ^9
 dependencies:
   - localgov_directories:localgov_directories
-  - jsonapi:jsonapi

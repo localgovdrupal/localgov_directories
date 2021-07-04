@@ -8,4 +8,7 @@ services:
       # Priority 10, to ensure it runs before @paramconverter.entity.
       - { name: paramconverter, priority: 10 }
 
-
+  localgov_directories_or.requesttypes:
+    class: Drupal\localgov_directories_or\EventSubscriber\RequestTypes
+    tags:
+      - { name: event_subscriber }
