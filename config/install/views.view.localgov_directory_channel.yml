@@ -189,7 +189,19 @@ display:
           min_length: null
           fields: {  }
           plugin_id: search_api_fulltext
-      sorts: {  }
+      sorts:
+        title:
+          id: title
+          table: search_api_index_localgov_directories_index_default
+          field: title
+          relationship: none
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: false
+          expose:
+            label: ''
+          plugin_id: search_api
       header: {  }
       footer: {  }
       empty: {  }
