@@ -15,6 +15,7 @@ use Drupal\Core\Render\Element;
 use Drupal\facets\Entity\Facet;
 use Drupal\field\FieldConfigInterface;
 use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
+use Drupal\localgov_roles\RolesHelper;
 use Drupal\node\NodeInterface;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\search_api\Entity\Index;
@@ -39,6 +40,28 @@ function localgov_directories_theme() {
     'facets_item_list__checkbox__localgov_directories_facets' => [
       'base hook' => 'facets_item_list',
       'template'  => 'facets-item-list--links--localgov-directories-facets',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_localgov_role_default().
+ */
+function localgov_directories_localgov_roles_default() {
+  return [
+    RolesHelper::EDITOR_ROLE => [
+      'access directory facets overview',
+      'delete directory facets',
+      'create directory facets',
+      'view directory facets',
+      'edit directory facets',
+      'create localgov_directory content',
+      'delete any localgov_directory content',
+      'delete own localgov_directory content',
+      'edit any localgov_directory content',
+      'edit own localgov_directory content',
+      'revert localgov_directory revisions',
+      'view localgov_directory revisions',
     ],
   ];
 }
@@ -443,27 +466,4 @@ function localgov_directories_remove_block_from_content_type_sidebar(string $blo
   ]);
 
   return TRUE;
-}
-
-/**
- * Implements hook_localgov_role_default().
- */
-function localgov_directories_localgov_roles_default() {
-  return [
-    // @codingStandardsIgnoreLine
-    \Drupal\localgov_roles\RolesHelper::EDITOR_ROLE => [
-      'access directory facets overview',
-      'delete directory facets',
-      'create directory facets',
-      'view directory facets',
-      'edit directory facets',
-      'create localgov_directory content',
-      'delete any localgov_directory content',
-      'delete own localgov_directory content',
-      'edit any localgov_directory content',
-      'edit own localgov_directory content',
-      'revert localgov_directory revisions',
-      'view localgov_directory revisions',
-    ],
-  ];
 }

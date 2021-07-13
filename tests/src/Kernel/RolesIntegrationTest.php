@@ -40,6 +40,7 @@ class RolesIntegrationTest extends KernelTestBase {
 
     $editor = Role::load(RolesHelper::EDITOR_ROLE);
     $author = Role::load(RolesHelper::AUTHOR_ROLE);
+    $contributor = Role::load(RolesHelper::CONTRIBUTOR_ROLE);
     $permissions = [
       'access directory facets overview',
       'delete directory facets',
@@ -57,6 +58,7 @@ class RolesIntegrationTest extends KernelTestBase {
 
     foreach ($permissions as $permission) {
       $this->assertFalse($author->hasPermission($permission));
+      $this->assertFalse($contributor->hasPermission($permission));
       $this->assertTrue($editor->hasPermission($permission));
     }
   }
