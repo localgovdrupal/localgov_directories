@@ -53,9 +53,9 @@ class RolesIntegrationTest extends KernelTestBase {
       'edit own localgov_directories_page content' =>
         ['editor' => TRUE, 'author' => TRUE, 'contributor' => TRUE],
       'revert localgov_directories_page revisions' =>
-        ['editor' => TRUE, 'author' => FALSE, 'contributor' => FALSE],
+        ['editor' => TRUE, 'author' => TRUE, 'contributor' => FALSE],
       'view localgov_directories_page revisions' =>
-        ['editor' => TRUE, 'author' => FALSE, 'contributor' => FALSE],
+        ['editor' => TRUE, 'author' => TRUE, 'contributor' => TRUE],
     ];
 
     foreach ($permissions as $permission => $grant) {

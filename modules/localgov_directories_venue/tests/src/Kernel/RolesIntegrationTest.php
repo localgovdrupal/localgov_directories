@@ -42,20 +42,20 @@ class RolesIntegrationTest extends KernelTestBase {
     $author = Role::load(RolesHelper::AUTHOR_ROLE);
     $contributor = Role::load(RolesHelper::CONTRIBUTOR_ROLE);
     $permissions = [
-      'create localgov_directories_page content' =>
+      'create localgov_directories_venue content' =>
         ['editor' => TRUE, 'author' => TRUE, 'contributor' => TRUE],
-      'delete any localgov_directories_page content' =>
+      'delete any localgov_directories_venue content' =>
         ['editor' => TRUE, 'author' => FALSE, 'contributor' => FALSE],
-      'delete own localgov_directories_page content' =>
+      'delete own localgov_directories_venue content' =>
         ['editor' => TRUE, 'author' => TRUE, 'contributor' => TRUE],
-      'edit any localgov_directories_page content' =>
+      'edit any localgov_directories_venue content' =>
         ['editor' => TRUE, 'author' => FALSE, 'contributor' => FALSE],
-      'edit own localgov_directories_page content' =>
+      'edit own localgov_directories_venue content' =>
         ['editor' => TRUE, 'author' => TRUE, 'contributor' => TRUE],
-      'revert localgov_directories_page revisions' =>
-        ['editor' => TRUE, 'author' => FALSE, 'contributor' => FALSE],
-      'view localgov_directories_page revisions' =>
-        ['editor' => TRUE, 'author' => FALSE, 'contributor' => FALSE],
+      'revert localgov_directories_venue revisions' =>
+        ['editor' => TRUE, 'author' => TRUE, 'contributor' => FALSE],
+      'view localgov_directories_venue revisions' =>
+        ['editor' => TRUE, 'author' => TRUE, 'contributor' => TRUE],
     ];
 
     foreach ($permissions as $permission => $grant) {
