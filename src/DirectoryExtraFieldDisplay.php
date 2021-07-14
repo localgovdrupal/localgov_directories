@@ -12,6 +12,8 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
@@ -22,7 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Adds views display for the directory channel.
  */
-class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
+class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, TrustedCallbackInterface {
 
   use StringTranslationTrait;
 
@@ -97,6 +99,15 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public static function trustedCallbacks() {
+    return [
+      'removeExposedFilter',
+    ];
+  }
+
+  /**
    * Gets the "extra fields" for a bundle.
    *
    * @see hook_entity_extra_field_info()
@@ -108,6 +119,12 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
       'description' => $this->t("Output from the embedded view for this channel."),
       'weight' => -20,
       'visible' => TRUE,
+    ];
+    $fields['node']['localgov_directory']['display']['localgov_directory_view_with_search'] = [
+      'label' => $this->t('Directory listing (with search box)'),
+      'description' => $this->t("Output from the embedded view for this channel. With search exposed filter. Use if not including the search block."),
+      'weight' => -20,
+      'visible' => FALSE,
     ];
     $fields['node']['localgov_directory']['display']['localgov_directory_facets'] = [
       'label' => $this->t('Directory facets'),
@@ -154,9 +171,11 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
    * @see localgov_directories_node_view()
    */
   public function nodeView(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
-    // Add view if enabled.
     if ($display->getComponent('localgov_directory_view')) {
       $build['localgov_directory_view'] = $this->getViewEmbed($node);
+    }
+    if ($display->getComponent('localgov_directory_view_with_search')) {
+      $build['localgov_directory_view'] = $this->getViewEmbed($node, TRUE);
     }
     if ($display->getComponent('localgov_directory_facets')) {
       $build['localgov_directory_facets'] = $this->getFacetsBlock($node);
@@ -169,17 +188,23 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
   /**
    * Retrieves view, and sets render array.
    */
-  protected function getViewEmbed(NodeInterface $node) {
+  protected function getViewEmbed(NodeInterface $node, $search_filter = FALSE) {
     $view = Views::getView('localgov_directory_channel');
     if (!$view || !$view->access('node_embed')) {
       return;
     }
-    return [
+    $render = [
       '#type' => 'view',
       '#name' => 'localgov_directory_channel',
       '#display_id' => 'node_embed',
       '#arguments' => [$node->id()],
     ];
+    if (!$search_filter) {
+      $render['#post_render'] = [
+        [static::class, 'removeExposedFilter'],
+      ];
+    }
+    return $render;
   }
 
   /**
@@ -291,6 +316,17 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface {
     }
 
     return $bundle1['weight'] < $bundle2['weight'] ? -1 : 1;
+  }
+
+  /**
+   * Post render callback.
+   *
+   * @see ::getViewEmbed()
+   */
+  public static function removeExposedFilter(Markup $markup, array $render) {
+    // Sure there must be a better way in the pre_render to stop it adding the
+    // form, while accepting the parameters. But this does the same later.
+    return $markup::create(preg_replace('|<form.*?class="[^"]*views-exposed-form.*?>.*?</form>|s', '', $markup, 1));
   }
 
 }
