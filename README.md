@@ -29,7 +29,7 @@ You can enable or disable these at /admin/structure/types/manage/localgov_direct
 ### Manage display of directory channel - maps
 
 The localgov_directories_location module provides an extra psuedo-field to help
-with the display of entires on a map by embedding the 'embed_map' display of the
+with the display of entries on a map by embedding the 'embed_map' display of the
 'localgov_directory_channel' view.
 
 - "Directory map": display a map of directory entries which have locations.
