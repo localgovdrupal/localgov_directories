@@ -34,9 +34,3 @@ property_mappings:
     -
       field_name: localgov_directory_organisation
       public_name: organization
-    -
-      field_name: localgov_vocab_lga_needs
-      public_name: service_taxonomys
-    -
-      field_name: localgov_vocab_oa_activity
-      public_name: service_taxonomys
