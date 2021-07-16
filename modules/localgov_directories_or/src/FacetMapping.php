@@ -76,10 +76,10 @@ class FacetMapping implements ContainerInjectionInterface {
       ->execute();
     foreach ($facet_query as $facet_type) {
       if (in_array($facet_type, $openreferral_facets) &&
-        !$mapping_storage->load('localgov_directories_facets_type.' . $facet_type)
+        !$mapping_storage->load('localgov_directories_facets.' . $facet_type)
       ) {
         $facet_mapping = $mapping_storage->create([
-          'entity_type' => 'localgov_directories_facets_type',
+          'entity_type' => 'localgov_directories_facets',
           'bundle' => $facet_type,
           'public_type' => 'taxonomy',
           'property_mappings' => [
@@ -92,7 +92,7 @@ class FacetMapping implements ContainerInjectionInterface {
         $facet_mapping->save();
       }
       if (!in_array($facet_type, $openreferral_facets) &&
-        ($facet_mapping = $mapping_storage->load('localgov_directories_facets_type.' . $facet_type))
+        ($facet_mapping = $mapping_storage->load('localgov_directories_facets.' . $facet_type))
       ) {
         $facet_mapping->delete();
       }

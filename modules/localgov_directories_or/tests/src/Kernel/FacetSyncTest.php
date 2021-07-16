@@ -102,7 +102,7 @@ class FacetSyncTest extends KernelTestBase {
     // related to a directory with a open referral type.
     $mapping_count += 2;
     $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->execute(), 'New mappings added.');
-    $facet_mapping = $mapping_storage->load('localgov_directories_facets_type.facet_type_1');
+    $facet_mapping = $mapping_storage->load('localgov_directories_facets.facet_type_1');
     $this->assertEquals('taxonomy', $facet_mapping->getPublicType());
 
     $facet_type = $facet_storage->create([
@@ -115,8 +115,8 @@ class FacetSyncTest extends KernelTestBase {
     ]);
     $directory->save();
     $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->execute(), 'New mappings added, old removed.');
-    $this->assertNull($mapping_storage->load('localgov_directories_facets_type.facet_type_1'));
-    $facet_mapping = $mapping_storage->load('localgov_directories_facets_type.facet_type_2');
+    $this->assertNull($mapping_storage->load('localgov_directories_facets.facet_type_1'));
+    $facet_mapping = $mapping_storage->load('localgov_directories_facets.facet_type_2');
     $this->assertEquals('taxonomy', $facet_mapping->getPublicType());
 
     $directory->set('localgov_directory_facets_enable', []);
