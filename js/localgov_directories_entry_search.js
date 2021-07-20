@@ -35,7 +35,7 @@
 
       // Add a bact to search results page if the referrer is the same path minus the last /page.
       if (document.URL.substr(0, document.URL.lastIndexOf('/')) == document.referrer.split('?')[0]) {
-        var searchForm = document.getElementById('block-localgov-directories-channel-search-block');
+        var searchForm = document.querySelector('#block-localgov-directories-channel-search-block');
         var returnLink = document.createElement('a');
         returnLink.href = document.referrer;
         returnLink.innerText = Drupal.t('Back to search results');
