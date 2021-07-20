@@ -72,7 +72,7 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-      label: Directory
+      label: Channels and facets
     group_enquiries:
       children:
         - localgov_directory_name
@@ -119,7 +119,7 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
-      show_summary: false
+      show_summary: true
     third_party_settings: {  }
     region: content
   created:
