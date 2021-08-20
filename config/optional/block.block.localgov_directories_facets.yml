@@ -7,9 +7,9 @@ dependencies:
     - facets
     - node
   theme:
-    - localgov_theme
+    - localgov_base
 id: localgov_directories_facets
-theme: localgov_theme
+theme: localgov_base
 region: sidebar_first
 weight: 5
 provider: null
