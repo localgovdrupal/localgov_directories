@@ -72,7 +72,7 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-      label: Directory
+      label: Channels and facets
     group_enquiries:
       children:
         - localgov_directory_name
