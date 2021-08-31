@@ -58,7 +58,7 @@ class FacetSyncTest extends KernelTestBase {
   }
 
   /**
-   * Test syncroniseFacetMappings.
+   * Test synchroniseFacetMappings.
    */
   public function testSyncroniseFacetMappings() {
     $entity_type_manager = $this->container->get('entity_type.manager');

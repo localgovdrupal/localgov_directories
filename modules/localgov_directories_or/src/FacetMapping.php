@@ -40,7 +40,7 @@ class FacetMapping implements ContainerInjectionInterface {
   /**
    * Add, remove, Open Referral Mappings for Facets.
    */
-  public function syncroniseFacetMappings() {
+  public function synchroniseFacetMappings() {
     $node_storage = $this->entityTypeManager->getStorage('node');
     $facet_storage = $this->entityTypeManager->getStorage('localgov_directories_facets_type');
     $mapping_storage = \Drupal::entityTypeManager()->getStorage('localgov_openreferral_mapping');

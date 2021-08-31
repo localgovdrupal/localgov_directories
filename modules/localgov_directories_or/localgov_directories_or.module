@@ -16,7 +16,7 @@ function localgov_directories_or_node_insert(NodeInterface $node) {
   if ($node->bundle() == 'localgov_directory') {
     \Drupal::service('class_resolver')
       ->getInstanceFromDefinition(FacetMapping::class)
-      ->syncroniseFacetMappings();
+      ->synchroniseFacetMappings();
   }
 }
 
@@ -28,7 +28,7 @@ function localgov_directories_or_node_update(NodeInterface $node) {
     \Drupal::entityTypeManager()->getStorage('node')->resetCache([$node->id()]);
     \Drupal::service('class_resolver')
       ->getInstanceFromDefinition(FacetMapping::class)
-      ->syncroniseFacetMappings();
+      ->synchroniseFacetMappings();
   }
 }
 
@@ -39,7 +39,7 @@ function localgov_directories_or_node_delete(NodeInterface $node) {
   if ($node->bundle() == 'localgov_directory') {
     \Drupal::service('class_resolver')
       ->getInstanceFromDefinition(FacetMapping::class)
-      ->syncroniseFacetMappings();
+      ->synchroniseFacetMappings();
   }
 }
 
@@ -50,7 +50,7 @@ function localgov_directories_or_localgov_openreferral_mapping_insert(PropertyMa
   if ($map->mappedEntityType() == 'node') {
     \Drupal::service('class_resolver')
       ->getInstanceFromDefinition(FacetMapping::class)
-      ->syncroniseFacetMappings();
+      ->synchroniseFacetMappings();
   }
 }
 
@@ -61,6 +61,6 @@ function localgov_directories_or_localgov_openreferral_mapping_delete(PropertyMa
   if ($map->mappedEntityType() == 'node') {
     \Drupal::service('class_resolver')
       ->getInstanceFromDefinition(FacetMapping::class)
-      ->syncroniseFacetMappings();
+      ->synchroniseFacetMappings();
   }
 }
