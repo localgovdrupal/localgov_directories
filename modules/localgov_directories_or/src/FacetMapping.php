@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Adds views display for the directory channel.
+ * Enable using Directories 'content facets' for Open Referral taxonomy.
  */
 class FacetMapping implements ContainerInjectionInterface {
 
@@ -43,7 +43,7 @@ class FacetMapping implements ContainerInjectionInterface {
   public function synchroniseFacetMappings() {
     $node_storage = $this->entityTypeManager->getStorage('node');
     $facet_storage = $this->entityTypeManager->getStorage('localgov_directories_facets_type');
-    $mapping_storage = \Drupal::entityTypeManager()->getStorage('localgov_openreferral_mapping');
+    $mapping_storage = $this->entityTypeManager->getStorage('localgov_openreferral_mapping');
 
     // Iterate over all directories.
     // Check if they have Open Referral enabled Entries.
