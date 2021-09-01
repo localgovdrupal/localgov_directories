@@ -89,4 +89,15 @@ and it will be exported with other configuration. Any types that exist in
 configuration will be imported.
 
 ## Block placement
-When using a theme other than the localgov_theme, the **Directory channel search** (machine id: localgov_directories_channel_search_block) and **Directory facets** (machine id: facet_block:localgov_directories_facets) blocks should be made visible for the **Directory Channel** content type.  They can be added to a sidebar region (or equivalent) of the site theme.  Note that the facet_block:localgov_directories_facets block becomes available only after you have created at least one Directory entry content type.
+
+When using a theme other than the default LocalGov theme, the
+**Directory channel search** (machine id: localgov_directories_channel_search_block)
+and **Directory facets** (machine id: facet_block:localgov_directories_facets)
+blocks should be made visible for the **Directory Channel** content type.
+They can be added to a sidebar region (or equivalent) of the site theme.  Note
+that the facet_block:localgov_directories_facets block becomes available only
+after you have created at least one Directory entry content type.
+
+On the Directory entry content types the blocks are also available as 'fields'
+in the Fields display configuration if you prefer to place them within the
+content that way.
