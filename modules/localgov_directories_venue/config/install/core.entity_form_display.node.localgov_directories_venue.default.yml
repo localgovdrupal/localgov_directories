@@ -72,7 +72,7 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-      label: Channels and facets
+      label: 'Channels and facets'
     group_enquiries:
       children:
         - localgov_directory_name
@@ -208,14 +208,13 @@ content:
     region: content
     settings:
       entity_browser: localgov_geo_library
-      field_widget_display: rendered_entity
-      field_widget_display_settings:
-        view_mode: default
+      field_widget_display: label
       field_widget_edit: true
       field_widget_remove: true
       field_widget_replace: true
       open: true
       selection_mode: selection_append
+      field_widget_display_settings: {  }
     third_party_settings: {  }
   path:
     type: path
