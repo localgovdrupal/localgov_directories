@@ -1,4 +1,3 @@
-uuid: 4d6ed028-e23c-4552-b9fc-f9103df429fa
 langcode: en
 status: true
 dependencies:
@@ -21,8 +20,6 @@ dependencies:
     - link
     - text
     - user
-_core:
-  default_config_hash: yuSNmUeMHlWYAbP3Wezm7Ijgp8IkvQa9TREh5dYZ-qI
 id: node.localgov_directories_venue.directory_index
 targetEntityType: node
 bundle: localgov_directories_venue
