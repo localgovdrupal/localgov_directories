@@ -3,6 +3,8 @@
 namespace Drupal\localgov_directories_location;
 
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Render\Markup;
+use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\node\NodeInterface;
 use Drupal\views\Views;
@@ -10,9 +12,18 @@ use Drupal\views\Views;
 /**
  * Adds views display for the directory channel.
  */
-class LocationExtraFieldDisplay {
+class LocationExtraFieldDisplay implements TrustedCallbackInterface {
 
   use StringTranslationTrait;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function trustedCallbacks() {
+    return [
+      'removeExposedFilter',
+    ];
+  }
 
   /**
    * Gets the "extra fields" for a bundle.
@@ -56,7 +67,21 @@ class LocationExtraFieldDisplay {
       '#name' => 'localgov_directory_channel',
       '#display_id' => 'embed_map',
       '#arguments' => [$node->id()],
+      '#post_render' => [
+        [static::class, 'removeExposedFilter'],
+      ],
     ];
+  }
+
+  /**
+   * Post render callback.
+   *
+   * @see ::getViewEmbed()
+   */
+  public static function removeExposedFilter(Markup $markup, array $render) {
+    // Sure there must be a better way in the pre_render to stop it adding the
+    // form, while accepting the parameters. But this does the same later.
+    return $markup::create(preg_replace('|<form.*?class="[^"]*views-exposed-form.*?>.*?</form>|s', '', $markup, 1));
   }
 
 }
