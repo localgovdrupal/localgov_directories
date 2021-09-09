@@ -58,7 +58,7 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->installEntitySchema('node');
@@ -82,7 +82,10 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
     // Two content types implementing the magically named
     // 'localgov_directory_channels' field.
     $page_type = strtolower($this->randomMachineName());
-    $entry_types[$page_type] = NodeType::create(['type' => $page_type, 'name' => $this->randomMachineName()]);
+    $entry_types[$page_type] = NodeType::create([
+      'type' => $page_type,
+      'name' => $this->randomMachineName(),
+    ]);
     $entry_types[$page_type]->save();
     $handler_settings = [
       'sort' => [
@@ -93,7 +96,10 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
     $this->createEntityReferenceField('node', $page_type, 'localgov_directory_channels', $this->randomString(), 'node', 'localgov_directories_channels_selection', $handler_settings);
 
     $other_type = strtolower($this->randomMachineName());
-    $entry_types[$other_type] = NodeType::create(['type' => $other_type, 'name' => $this->randomMachineName()]);
+    $entry_types[$other_type] = NodeType::create([
+      'type' => $other_type,
+      'name' => $this->randomMachineName(),
+    ]);
     $entry_types[$other_type]->save();
     $handler_settings = [
       'sort' => [
@@ -112,19 +118,25 @@ class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
     }
 
     // Check a non-directory entry is not returned.
-    $non_directory = NodeType::create(['type' => $this->randomMachineName(), 'name' => $this->randomMachineName()]);
+    $non_directory = NodeType::create([
+      'type' => $this->randomMachineName(),
+      'name' => $this->randomMachineName(),
+    ]);
     $non_directory->save();
     foreach ($selection['node_type'] as $machine_name => $label) {
       $this->assertSame($label, $entry_types[$machine_name]->label());
     }
 
     // Check count.
-    $this->assert($this->selectionHandler->countReferenceableEntities(), 2);
+    $this->assertEquals(1, $this->selectionHandler->countReferenceableEntities());
 
     // Check validate.
     $this->assertGreaterThan(0, count($this->selectionHandler->validateReferenceableEntities([$other_type])));
-    $this->assertGreaterThan(0, count($this->selectionHandler->validateReferenceableEntities([$page_type, $other_type])));
-    $this->assertEqual(0, count($this->selectionHandler->validateReferenceableEntities([$non_directory->id()])));
+    $this->assertGreaterThan(0, count($this->selectionHandler->validateReferenceableEntities([
+      $page_type,
+      $other_type,
+    ])));
+    $this->assertEquals(0, count($this->selectionHandler->validateReferenceableEntities([$non_directory->id()])));
   }
 
 }
