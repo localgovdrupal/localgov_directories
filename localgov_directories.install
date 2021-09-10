@@ -68,3 +68,19 @@ function localgov_directories_update_8001() {
   $dir_facet_config->set('processor_configs', $facet_processor_configs);
   $dir_facet_config->save(TRUE);
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Renames the Directory label to Channels and facets.
+ */
+function localgov_directories_update_8002() {
+  $config_factory = \Drupal::configFactory();
+  $config = $config_factory->getEditable('core.entity_form_display.node.localgov_directories_page.default');
+  $config->set('third_party_settings.field_group.group_directory.label', 'Channels and facets');
+  $config->save(TRUE);
+
+  $config = $config_factory->getEditable('core.entity_form_display.node.localgov_directories_venue.default');
+  $config->set('third_party_settings.field_group.group_directory.label', 'Channels and facets');
+  $config->save(TRUE);
+}
