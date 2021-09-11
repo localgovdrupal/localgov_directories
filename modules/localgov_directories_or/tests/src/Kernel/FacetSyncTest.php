@@ -8,6 +8,7 @@ use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 /**
  * Tests MappingInformation.
  *
+ * @requires module localgov_openreferral
  * @group localgov_directories
  */
 class FacetSyncTest extends KernelTestBase {
