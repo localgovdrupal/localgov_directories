@@ -2,7 +2,7 @@
 
 /**
  * @file
- *  Maintains Open Referral mappings for directory facets entity.
+ * Maintains Open Referral mappings for directory facets entity.
  */
 
 use Drupal\localgov_directories_or\FacetMapping;
