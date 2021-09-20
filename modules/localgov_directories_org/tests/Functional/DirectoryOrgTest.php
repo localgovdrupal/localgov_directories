@@ -7,7 +7,7 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\system\Functional\Menu\AssertBreadcrumbTrait;
 
 /**
- * Tests localgov directories organisation content type. 
+ * Tests localgov directories organisation content type.
  *
  * @group localgov_directories
  */

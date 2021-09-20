@@ -2,7 +2,7 @@
 
 /**
  * @file
- *   Maintains Open Referral mappings for directory facets entity.
+ *  Maintains Open Referral mappings for directory facets entity.
  */
 
 use Drupal\localgov_directories_or\FacetMapping;
@@ -10,7 +10,7 @@ use Drupal\localgov_openreferral\Entity\PropertyMappingInterface;
 use Drupal\node\NodeInterface;
 
 /**
- * Implements hook_entity_insert.
+ * Implements hook_entity_insert().
  */
 function localgov_directories_or_node_insert(NodeInterface $node) {
   if ($node->bundle() == 'localgov_directory') {
@@ -21,7 +21,7 @@ function localgov_directories_or_node_insert(NodeInterface $node) {
 }
 
 /**
- * Implements hook_entity_update.
+ * Implements hook_entity_update().
  */
 function localgov_directories_or_node_update(NodeInterface $node) {
   if ($node->bundle() == 'localgov_directory') {
@@ -33,7 +33,7 @@ function localgov_directories_or_node_update(NodeInterface $node) {
 }
 
 /**
- * Implements hook_entity_delete()..
+ * Implements hook_entity_delete().
  */
 function localgov_directories_or_node_delete(NodeInterface $node) {
   if ($node->bundle() == 'localgov_directory') {
@@ -44,7 +44,7 @@ function localgov_directories_or_node_delete(NodeInterface $node) {
 }
 
 /**
- * Implements hook_entity_insert()..
+ * Implements hook_entity_insert().
  */
 function localgov_directories_or_localgov_openreferral_mapping_insert(PropertyMappingInterface $map) {
   if ($map->mappedEntityType() == 'node') {
@@ -55,7 +55,7 @@ function localgov_directories_or_localgov_openreferral_mapping_insert(PropertyMa
 }
 
 /**
- * Implements hook_entity_delete()..
+ * Implements hook_entity_delete().
  */
 function localgov_directories_or_localgov_openreferral_mapping_delete(PropertyMappingInterface $map) {
   if ($map->mappedEntityType() == 'node') {

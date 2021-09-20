@@ -5,9 +5,6 @@
  * LocalGovDrupal directories venue Open Referral install file.
  */
 
-use Drupal\Component\Serialization\Yaml;
-use Drupal\views\Entity\View;
-
 /**
  * Implements hook_install().
  */
