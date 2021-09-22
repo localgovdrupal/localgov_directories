@@ -18,8 +18,6 @@ function localgov_directories_install() {
 }
 
 /**
- * Implements hook_update_N().
- *
  * Adds the "weight" field to Facet related entities.
  */
 function localgov_directories_update_8001() {
@@ -70,8 +68,6 @@ function localgov_directories_update_8001() {
 }
 
 /**
- * Implements hook_update_N().
- *
  * Renames the Directory label to Channels and facets.
  */
 function localgov_directories_update_8002() {
