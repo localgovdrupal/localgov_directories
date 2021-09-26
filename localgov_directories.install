@@ -188,6 +188,7 @@ function localgov_directories_update_8005() {
     $index->addField($sort_title_field);
     $index->save();
     $index->reindex();
+    return t('The directories index has been updated, and a reindex requested. You will need to run an index manually, or wait for it to run on cron, for it to update.');
   }
   else {
     return t('Unable to update search index: localgov_directories_index_default not found.');
