@@ -479,7 +479,7 @@ function localgov_directories_search_api_index_items_alter(IndexInterface $index
       $sort_value = $field->getValues();
       if (empty($sort_value) || empty($sort_value[0])) {
         // If the field is empty use the item title.
-        $sort_value = [$item->getOriginalObject()->getEntity()->label()];
+        $sort_value = [trim($item->getOriginalObject()->getEntity()->label())];
         $field->setValues($sort_value);
       }
     }
