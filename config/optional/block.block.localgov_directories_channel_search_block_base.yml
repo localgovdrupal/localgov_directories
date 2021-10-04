@@ -6,7 +6,7 @@ dependencies:
     - node
   theme:
     - localgov_base
-id: localgov_directories_channel_search_block
+id: localgov_directories_channel_search_block_base
 theme: localgov_base
 region: sidebar_first
 weight: 0
