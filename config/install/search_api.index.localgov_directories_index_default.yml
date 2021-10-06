@@ -4,6 +4,7 @@ dependencies:
   config:
     - field.storage.node.localgov_directory_channels
     - field.storage.node.localgov_directory_facets_select
+    - field.storage.node.localgov_directory_title_sort
     - search_api.server.localgov_directories_default
     - core.entity_view_mode.node.directory_index
   module:
@@ -22,6 +23,14 @@ field_settings:
     dependencies:
       config:
         - field.storage.node.localgov_directory_channels
+  localgov_directory_title_sort:
+    label: 'Title (sort)'
+    datasource_id: 'entity:node'
+    property_path: localgov_directory_title_sort
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.localgov_directory_title_sort
   rendered_item:
     label: 'Rendered HTML output'
     property_path: rendered_item
@@ -49,6 +58,7 @@ processor_settings:
   ignorecase:
     all_fields: true
     fields:
+      - localgov_directory_title_sort
       - rendered_item
     weights:
       preprocess_index: -20
@@ -121,6 +131,7 @@ processor_settings:
   transliteration:
     all_fields: true
     fields:
+      - localgov_directory_title_sort
       - rendered_item
     weights:
       preprocess_index: -20
