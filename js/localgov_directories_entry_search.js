@@ -42,10 +42,10 @@
         var returnLink = document.createElement('a');
         returnLink.href = document.referrer;
         returnLink.innerText = Drupal.t('Back to search results');
-        searchForm.insertBefore(returnLink, searchForm.firstChild);
+        once('directory-return-link', searchForm).forEach(function(form) { form.insertBefore(returnLink, form.firstChild) });
       }
     }
   }
 
-})(drupalSettings);
+})(drupalSettings, once);
 

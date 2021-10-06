@@ -467,3 +467,21 @@ function localgov_directories_remove_block_from_content_type_sidebar(string $blo
 
   return TRUE;
 }
+
+/**
+ * Implements hook_search_api_index_items_alter().
+ *
+ * Populate localgov_directory_title_sort if empty.
+ */
+function localgov_directories_search_api_index_items_alter(IndexInterface $index, array &$items) {
+  foreach ($items as $item) {
+    if ($field = $item->getField('localgov_directory_title_sort')) {
+      $sort_value = $field->getValues();
+      if (empty($sort_value) || empty($sort_value[0])) {
+        // If the field is empty use the item title.
+        $sort_value = [trim($item->getOriginalObject()->getEntity()->label())];
+        $field->setValues($sort_value);
+      }
+    }
+  }
+}

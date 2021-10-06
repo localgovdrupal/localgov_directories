@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - core.entity_form_mode.localgov_geo.inline
+    - entity_browser.browser.localgov_geo_library
     - field.field.node.localgov_directories_venue.body
     - field.field.node.localgov_directories_venue.localgov_directory_channels
     - field.field.node.localgov_directories_venue.localgov_directory_email
@@ -13,12 +13,13 @@ dependencies:
     - field.field.node.localgov_directories_venue.localgov_directory_notes
     - field.field.node.localgov_directories_venue.localgov_directory_opening_times
     - field.field.node.localgov_directories_venue.localgov_directory_phone
+    - field.field.node.localgov_directories_venue.localgov_directory_title_sort
     - field.field.node.localgov_directories_venue.localgov_directory_website
     - field.field.node.localgov_directories_venue.localgov_location
     - node.type.localgov_directories_venue
   module:
+    - entity_browser
     - field_group
-    - inline_entity_form
     - link
     - localgov_directories
     - media_library
@@ -45,6 +46,7 @@ third_party_settings:
     group_description:
       children:
         - title
+        - localgov_directory_title_sort
         - body
         - localgov_directory_files
       parent_name: group_tabs
@@ -72,7 +74,7 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-      label: Channels and facets
+      label: 'Channels and facets'
     group_enquiries:
       children:
         - localgov_directory_name
@@ -114,7 +116,7 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 25
+    weight: 26
     settings:
       rows: 9
       summary_rows: 3
@@ -149,7 +151,7 @@ content:
     type: localgov_directories_facet_checkbox
     region: content
   localgov_directory_files:
-    weight: 26
+    weight: 27
     settings:
       media_types: {  }
     third_party_settings: {  }
@@ -194,6 +196,14 @@ content:
     third_party_settings: {  }
     type: telephone_default
     region: content
+  localgov_directory_title_sort:
+    weight: 25
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   localgov_directory_website:
     weight: 16
     settings:
@@ -203,17 +213,18 @@ content:
     type: link_default
     region: content
   localgov_location:
-    type: inline_entity_form_simple
+    type: entity_browser_entity_reference
     weight: 7
     region: content
     settings:
-      form_mode: inline
-      label_singular: ''
-      label_plural: ''
-      revision: false
-      override_labels: false
-      collapsible: false
-      collapsed: false
+      entity_browser: localgov_geo_library
+      field_widget_display: label
+      field_widget_edit: true
+      field_widget_remove: true
+      field_widget_replace: true
+      open: true
+      selection_mode: selection_append
+      field_widget_display_settings: {  }
     third_party_settings: {  }
   path:
     type: path

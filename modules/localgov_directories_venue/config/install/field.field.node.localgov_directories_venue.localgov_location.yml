@@ -7,7 +7,7 @@ dependencies:
     - node.type.localgov_directories_venue
   enforced:
     module:
-      - localgov_geo
+      - localgov_geo_address
 id: node.localgov_directories_venue.localgov_location
 field_name: localgov_location
 entity_type: node

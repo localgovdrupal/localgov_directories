@@ -11,6 +11,7 @@ dependencies:
     - field.field.node.localgov_directories_page.localgov_directory_job_title
     - field.field.node.localgov_directories_page.localgov_directory_name
     - field.field.node.localgov_directories_page.localgov_directory_phone
+    - field.field.node.localgov_directories_page.localgov_directory_title_sort
     - field.field.node.localgov_directories_page.localgov_directory_website
     - node.type.localgov_directories_page
   enforced:
@@ -44,6 +45,7 @@ third_party_settings:
     group_description:
       children:
         - title
+        - localgov_directory_title_sort
         - body
         - localgov_directory_files
       parent_name: group_tabs
@@ -90,7 +92,7 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-      label: Channels and facets
+      label: 'Channels and facets'
 id: node.localgov_directories_page.default
 targetEntityType: node
 bundle: localgov_directories_page
@@ -98,7 +100,7 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: 1
+    weight: 2
     settings:
       rows: 9
       summary_rows: 3
@@ -167,6 +169,14 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: telephone_default
+    region: content
+  localgov_directory_title_sort:
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
     region: content
   localgov_directory_website:
     weight: 17
