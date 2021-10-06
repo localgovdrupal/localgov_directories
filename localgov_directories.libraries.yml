@@ -7,3 +7,4 @@ localgov_directories_search:
     js/localgov_directories_entry_search.js: {}
   dependencies:
     - core/drupalSettings
+    - core/once

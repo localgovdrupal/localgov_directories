@@ -12,6 +12,7 @@ dependencies:
     - field.field.node.localgov_directories_page.localgov_directory_job_title
     - field.field.node.localgov_directories_page.localgov_directory_name
     - field.field.node.localgov_directories_page.localgov_directory_phone
+    - field.field.node.localgov_directories_page.localgov_directory_title_sort
     - field.field.node.localgov_directories_page.localgov_directory_website
     - node.type.localgov_directories_page
   enforced:
@@ -64,5 +65,6 @@ hidden:
   localgov_directory_name: true
   localgov_directory_phone: true
   localgov_directory_search: true
+  localgov_directory_title_sort: true
   localgov_directory_website: true
   search_api_excerpt: true
