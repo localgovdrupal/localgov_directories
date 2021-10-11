@@ -1,6 +1,6 @@
 name: 'LocalGov Directories Venue Open Referral'
 type: module
-description: 'Makes venue directory entries Open Referral services.'
+description: 'EXPERIMENTAL - Make venue directory entries Open Referral services, give existing Venues an Organization.'
 package: LocalGov Drupal
 core: 8.x
 core_version_requirement: ^8 || ^9
