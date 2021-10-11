@@ -15,7 +15,7 @@
     },
     "require-dev": {
         "localgovdrupal/localgov_services": "^2.0",
-	"localgovdrupal/localgov_openreferral": "*"
+        "localgovdrupal/localgov_openreferral": "^1.0"
     },
     "suggest": {
         "localgovdrupal/localgov_openreferral": "Enables Open Referral output of Directories"
