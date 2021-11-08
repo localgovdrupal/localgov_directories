@@ -43,7 +43,7 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'stable';
 
   /**
    * {@inheritdoc}
