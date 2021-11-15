@@ -24,7 +24,7 @@ class DirectoryOrgTest extends BrowserTestBase {
   protected $profile = 'standard';
 
   /**
-   * {@inheritdoc }
+   * {@inheritdoc}
    */
   protected $defaultTheme = 'stable';
 
