@@ -24,13 +24,9 @@ class DirectoryOrgTest extends BrowserTestBase {
   protected $profile = 'standard';
 
   /**
-   * Use stark as tests are not dependent on core markup.
-   *
-   * @var string
-   *
-   * @see https://www.drupal.org/node/3083055
+   * {@inheritdoc }
    */
-  protected $defaultTheme = 'stark';
+  protected $defaultTheme = 'stable';
 
   /**
    * A user with permission to bypass content access checks.
