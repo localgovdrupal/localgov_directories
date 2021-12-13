@@ -21,8 +21,7 @@ class LocalgovDirectoriesFacetsForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container)
-  {
+  public static function create(ContainerInterface $container) {
     $form = parent::create($container);
 
     $form->renderer = $container->get('renderer');
