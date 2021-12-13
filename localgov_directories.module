@@ -336,7 +336,7 @@ function localgov_directories_create_dir_facet() {
     return;
   }
 
-  $conditional_config_path = drupal_get_path('module', 'localgov_directories') . '/config/conditional';
+  $conditional_config_path = \Drupal::service('extension.list.module')->getPath('localgov_directories') . '/config/conditional';
   $import_result = localgov_directories_import_config_entity('facets_facet', $conditional_config_path, Directory::FACET_CONFIG_FILE);
   if ($import_result) {
     Drupal::service('config.installer')->installOptionalConfig();

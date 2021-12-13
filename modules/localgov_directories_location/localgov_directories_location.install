@@ -13,7 +13,8 @@ use Drupal\views\Entity\View;
  */
 function localgov_directories_location_install() {
   // Retrieve view display mode config and add it to the existing configuration.
-  $view_with_map_embed = Yaml::decode(file_get_contents(drupal_get_path('module', 'localgov_directories_location') . '/config/override/views.view.localgov_directory_channel.yml'));
+  $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
+  $view_with_map_embed = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
   $view = View::load('localgov_directory_channel');
   if ($view) {
     $display = $view->get('display');
@@ -31,7 +32,8 @@ function localgov_directories_location_install() {
  */
 function localgov_directories_location_update_8001() {
   // Retrieve view display mode config and add it to the existing configuration.
-  $view_with_map_embed = Yaml::decode(file_get_contents(drupal_get_path('module', 'localgov_directories_location') . '/config/override/views.view.localgov_directory_channel.yml'));
+  $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
+  $view_with_map_embed = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
   $view = View::load('localgov_directory_channel');
   if ($view) {
     $display = $view->get('display');
