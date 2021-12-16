@@ -6,7 +6,7 @@
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "require": {
-        "drupal/facets": "^1.5",
+        "drupal/facets": "^2.0",
         "drupal/pathauto": "^1.6",
         "drupal/search_api": "^1.17",
         "drupal/search_api_autocomplete": "^1.3",
