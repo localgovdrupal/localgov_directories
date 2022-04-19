@@ -67,7 +67,7 @@ class FacetSyncTest extends KernelTestBase {
     $facet_storage = $entity_type_manager->getStorage('localgov_directories_facets_type');
     $mapping_storage = $entity_type_manager->getStorage('localgov_openreferral_mapping');
 
-    $mapping_count = $mapping_storage->getQuery()->count()->execute();
+    $mapping_count = $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute();
     $facet_type = $facet_storage->create([
       'id' => 'facet_type_1',
       'label' => 'Facet Type 1',
