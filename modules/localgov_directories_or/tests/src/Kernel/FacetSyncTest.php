@@ -30,6 +30,7 @@ class FacetSyncTest extends KernelTestBase {
     'media',
     'search_api',
     'search_api_db',
+    'serialization',
     'system',
     'telephone',
     'text',
