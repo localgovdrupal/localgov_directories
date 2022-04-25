@@ -92,6 +92,7 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
     $total = $this->getStorage()
       ->getQuery()
       ->count()
+      ->accessCheck(TRUE)
       ->execute();
 
     $build['summary']['#markup'] = $this->t('Total directory facets: @total', ['@total' => $total]);

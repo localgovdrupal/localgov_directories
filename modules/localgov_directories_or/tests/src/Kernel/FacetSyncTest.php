@@ -30,6 +30,7 @@ class FacetSyncTest extends KernelTestBase {
     'media',
     'search_api',
     'search_api_db',
+    'serialization',
     'system',
     'telephone',
     'text',
@@ -67,7 +68,7 @@ class FacetSyncTest extends KernelTestBase {
     $facet_storage = $entity_type_manager->getStorage('localgov_directories_facets_type');
     $mapping_storage = $entity_type_manager->getStorage('localgov_openreferral_mapping');
 
-    $mapping_count = $mapping_storage->getQuery()->count()->execute();
+    $mapping_count = $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute();
     $facet_type = $facet_storage->create([
       'id' => 'facet_type_1',
       'label' => 'Facet Type 1',
@@ -79,19 +80,19 @@ class FacetSyncTest extends KernelTestBase {
     ]);
     $directory->save();
 
-    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->execute(), 'No new mapping added');
+    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute(), 'No new mapping added');
 
     $directory->set('localgov_directory_facets_enable', [
       ['target_id' => 'facet_type_1'],
     ]);
     $directory->save();
-    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->execute(), 'No new mapping added as directory not related to an OR entry type.');
+    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute(), 'No new mapping added as directory not related to an OR entry type.');
 
     $directory->set('localgov_directory_channel_types', [
       ['target_id' => 'localgov_directories_venue'],
     ]);
     $directory->save();
-    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->execute(), 'No new mapping added as directory not related to an OR entry type.');
+    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute(), 'No new mapping added as directory not related to an OR entry type.');
 
     $mapping = $mapping_storage->create([
       'entity_type' => 'node',
@@ -102,7 +103,7 @@ class FacetSyncTest extends KernelTestBase {
     // Should add mapping itself, and one for the directory facet that is now
     // related to a directory with a open referral type.
     $mapping_count += 2;
-    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->execute(), 'New mappings added.');
+    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute(), 'New mappings added.');
     $facet_mapping = $mapping_storage->load('localgov_directories_facets.facet_type_1');
     $this->assertEquals('taxonomy', $facet_mapping->getPublicType());
 
@@ -115,14 +116,14 @@ class FacetSyncTest extends KernelTestBase {
       ['target_id' => 'facet_type_2'],
     ]);
     $directory->save();
-    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->execute(), 'New mappings added, old removed.');
+    $this->assertEquals($mapping_count, $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute(), 'New mappings added, old removed.');
     $this->assertNull($mapping_storage->load('localgov_directories_facets.facet_type_1'));
     $facet_mapping = $mapping_storage->load('localgov_directories_facets.facet_type_2');
     $this->assertEquals('taxonomy', $facet_mapping->getPublicType());
 
     $directory->set('localgov_directory_facets_enable', []);
     $directory->save();
-    $this->assertEquals(--$mapping_count, $mapping_storage->getQuery()->count()->execute(), 'Mappings removed.');
+    $this->assertEquals(--$mapping_count, $mapping_storage->getQuery()->count()->accessCheck(FALSE)->execute(), 'Mappings removed.');
 
   }
 
