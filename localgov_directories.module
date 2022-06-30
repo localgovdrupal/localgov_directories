@@ -160,6 +160,21 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
     $entity_type_id = 'node';
     $entity_bundle = $field->getTargetBundle();
 
+    // Adding new content types to the datasource through the index can trigger
+    // a content re-index which breaks site installs through Drush, so add the
+    // additional content type directly to index configuration.
+    $config_factory = \Drupal::configFactory();
+    $index_config = $config_factory->getEditable('search_api.index.localgov_directories_index_default');
+    $configuration = $index_config->get('datasource_settings');
+    if (isset($configuration['entity:node']['bundles'])) {
+      $configuration['entity:node']['bundles']['default'] = FALSE;
+      if (!in_array($entity_bundle, $configuration['entity:node']['bundles']['selected'])) {
+        $configuration['entity:node']['bundles']['selected'][] = $entity_bundle;
+        $index_config->set('datasource_settings', $configuration);
+        $index_config->save();
+      }
+    }
+
     $index = Index::load('localgov_directories_index_default');
     $datasource = $index->getDatasource('entity:' . $entity_type_id);
     if (!$datasource) {
@@ -173,6 +188,10 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
       return;
     }
 
+    // Re-save datasource as we may have made direct config changes to it.
+    $configuration = $datasource->getConfiguration();
+    $datasource->setConfiguration($configuration);
+
     $index_field = $index->getField('rendered_item');
     if ($index_field) {
       $configuration = $index_field->getConfiguration();
@@ -181,21 +200,6 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
     }
 
     $index->save();
-
-    // Adding new content types to the datasource through the index can trigger
-    // a content re-index which breaks site installs through Drush, so add the
-    // additional content type directly to index configuration.
-    $config_factory = \Drupal::configFactory();
-    $index_config = $config_factory->getEditable('search_api.index.localgov_directories_index_default');
-    $configuration = $index_config->get('datasource_settings');
-    if (isset($configuration['entity:node']['bundles'])) {
-      $configuration['entity:node']['bundles']['default'] = FALSE;
-      if (!in_array($entity_bundle, $configuration['entity:node']['bundles']['selected'])) {
-        $configuration['entity:node']['bundles']['selected'][] = $entity_bundle;
-      }
-      $index_config->set('datasource_settings', $configuration);
-      $index_config->save();
-    }
 
     // Also set the default view mode for the directory view listing.
     $view = View::load('localgov_directory_channel');
