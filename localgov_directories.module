@@ -392,10 +392,6 @@ function localgov_directories_add_block_to_content_type_sidebar(string $block_id
 
   $block_config = Block::load($block_id);
   if (empty($block_config)) {
-    Drupal::service('logger.factory')->get('localgov_directories')->error('Block %block-id is missing.  Cannot update its visibility settings.', [
-      '%block-id' => $block_id,
-    ]);
-
     return FALSE;
   }
 
