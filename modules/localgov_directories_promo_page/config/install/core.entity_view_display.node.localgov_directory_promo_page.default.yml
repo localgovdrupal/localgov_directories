@@ -19,9 +19,9 @@ dependencies:
     - node.type.localgov_directory_promo_page
   module:
     - address
-    - entity_reference_revisions
     - field_formatter_class
     - field_group
+    - layout_paragraphs
     - link
     - telephone
     - text
@@ -67,6 +67,24 @@ third_party_settings:
         attributes: ''
         effect: none
         speed: fast
+    group_enquiries:
+      children:
+        - localgov_directory_name
+        - localgov_directory_job_title
+        - localgov_directory_phone
+        - localgov_directory_email
+        - localgov_directory_website
+        - localgov_directory_address
+      label: Enquiries
+      parent_name: ''
+      region: content
+      weight: 6
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
 id: node.localgov_directory_promo_page.default
 targetEntityType: node
 bundle: localgov_directory_promo_page
@@ -89,7 +107,7 @@ content:
     label: above
     settings: {  }
     third_party_settings: {  }
-    weight: 11
+    weight: 12
     region: content
   localgov_directory_banner:
     type: entity_reference_entity_view
@@ -107,7 +125,7 @@ content:
     label: inline
     settings: {  }
     third_party_settings: {  }
-    weight: 9
+    weight: 10
     region: content
   localgov_directory_facets_select:
     type: entity_reference_label
@@ -133,7 +151,7 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 7
+    weight: 8
     region: content
   localgov_directory_name:
     type: string
@@ -141,14 +159,14 @@ content:
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    weight: 6
+    weight: 7
     region: content
   localgov_directory_paragraph:
-    type: entity_reference_revisions_entity_view
+    type: layout_paragraphs
     label: hidden
     settings:
       view_mode: default
-      link: ''
+      link: false
     third_party_settings: {  }
     weight: 3
     region: content
@@ -158,7 +176,7 @@ content:
     settings:
       title: ''
     third_party_settings: {  }
-    weight: 8
+    weight: 9
     region: content
   localgov_directory_standfirst:
     type: basic_string
@@ -177,7 +195,7 @@ content:
       rel: ''
       target: ''
     third_party_settings: {  }
-    weight: 10
+    weight: 11
     region: content
 hidden:
   localgov_directory_channels: true
