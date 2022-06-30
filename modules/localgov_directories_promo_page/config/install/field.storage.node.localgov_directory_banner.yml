@@ -2,15 +2,16 @@ langcode: en
 status: true
 dependencies:
   module:
-    - media
+    - entity_reference_revisions
     - node
+    - paragraphs
 id: node.localgov_directory_banner
 field_name: localgov_directory_banner
 entity_type: node
-type: entity_reference
+type: entity_reference_revisions
 settings:
-  target_type: media
-module: core
+  target_type: paragraph
+module: entity_reference_revisions
 locked: false
 cardinality: 1
 translatable: true

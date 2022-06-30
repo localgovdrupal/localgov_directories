@@ -24,6 +24,7 @@ dependencies:
     - link
     - localgov_directories
     - media_library
+    - paragraphs
     - path
     - telephone
     - text
@@ -130,11 +131,16 @@ content:
     settings: {  }
     third_party_settings: {  }
   localgov_directory_banner:
-    type: media_library_widget
+    type: entity_reference_paragraphs
     weight: -3
     region: content
     settings:
-      media_types: {  }
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: closed
+      add_mode: button
+      form_display_mode: default
+      default_paragraph_type: localgov_banner_secondary
     third_party_settings: {  }
   localgov_directory_channels:
     type: localgov_directories_channel_selector
