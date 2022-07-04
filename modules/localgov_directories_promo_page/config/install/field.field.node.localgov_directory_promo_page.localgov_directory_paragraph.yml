@@ -153,4 +153,3 @@ settings:
         weight: 72
         enabled: false
 field_type: entity_reference_revisions
-
