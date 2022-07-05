@@ -10,7 +10,7 @@ use Drupal\Tests\system\Functional\Menu\AssertBreadcrumbTrait;
 /**
  * Tests pages working together with pathauto, services and topics.
  *
- * @group localgov_guides
+ * @group localgov_directories
  */
 class PathIntegrationTest extends BrowserTestBase {
 
@@ -22,7 +22,7 @@ class PathIntegrationTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected $profile = 'standard';
+  protected $profile = 'testing';
 
   /**
    * Use stark as tests are not dependent on core markup.
@@ -62,6 +62,8 @@ class PathIntegrationTest extends BrowserTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
+
+    $this->drupalPlaceBlock('system_breadcrumb_block');
 
     $this->adminUser = $this->drupalCreateUser([
       'bypass node access',
