@@ -49,7 +49,7 @@ class DirectoryPromoPageTest extends BrowserTestBase {
    */
   protected static $modules = [
     'field_ui',
-    'localgov_directories_promo_page'
+    'localgov_directories_promo_page',
   ];
 
   /**

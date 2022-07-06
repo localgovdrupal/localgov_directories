@@ -21,7 +21,7 @@ class RolesIntegrationTest extends KernelTestBase {
   protected static $modules = [
     'system',
     'user',
-    'localgov_roles'
+    'localgov_roles',
   ];
 
   /**
