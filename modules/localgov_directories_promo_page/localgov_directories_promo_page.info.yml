@@ -9,3 +9,8 @@ dependencies:
   - field_group:field_group
   - localgov_directories:localgov_directories
   - localgov_paragraphs:localgov_paragraphs
+  - localgov_paragraphs:localgov_paragraphs_layout
+  - localgov_subsites:localgov_subsites
+  - localgov_subsites:localgov_subsites_paragraphs
+  - localgov_page:localgov_page
+  - field_formatter_class:field_formatter_class
