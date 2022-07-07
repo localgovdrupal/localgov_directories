@@ -17,6 +17,7 @@
         "localgovdrupal/localgov_services": "^2.0",
         "localgovdrupal/localgov_openreferral": "^1.0",
         "localgovdrupal/localgov_paragraphs": "^2.0",
+        "localgovdrupal/localgov_page": "^1.0",
         "localgovdrupal/localgov_subsites": "^2.0"
     },
     "suggest": {
