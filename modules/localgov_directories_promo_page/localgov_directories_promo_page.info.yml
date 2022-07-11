@@ -10,7 +10,6 @@ dependencies:
   - localgov_directories:localgov_directories
   - localgov_paragraphs:localgov_paragraphs
   - localgov_paragraphs:localgov_paragraphs_layout
-  - localgov_subsites:localgov_subsites
-  - localgov_subsites:localgov_subsites_paragraphs
-  - localgov_page:localgov_page
+  - localgov_paragraphs:localgov_subsites_paragraphs
   - field_formatter_class:field_formatter_class
+  - menu_ui:menu_ui
