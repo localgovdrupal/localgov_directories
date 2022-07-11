@@ -11,7 +11,7 @@ dependencies:
     - field.field.node.localgov_directory_promo_page.localgov_directory_files
     - field.field.node.localgov_directory_promo_page.localgov_directory_job_title
     - field.field.node.localgov_directory_promo_page.localgov_directory_name
-    - field.field.node.localgov_directory_promo_page.localgov_directory_paragraph
+    - field.field.node.localgov_directory_promo_page.localgov_paragraph_content
     - field.field.node.localgov_directory_promo_page.localgov_directory_phone
     - field.field.node.localgov_directory_promo_page.localgov_directory_standfirst
     - field.field.node.localgov_directory_promo_page.localgov_directory_title_sort
@@ -161,7 +161,7 @@ content:
     third_party_settings: {  }
     weight: 7
     region: content
-  localgov_directory_paragraph:
+  localgov_paragraph_content:
     type: layout_paragraphs
     label: hidden
     settings:

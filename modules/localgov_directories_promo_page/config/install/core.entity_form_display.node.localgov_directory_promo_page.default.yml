@@ -11,7 +11,7 @@ dependencies:
     - field.field.node.localgov_directory_promo_page.localgov_directory_files
     - field.field.node.localgov_directory_promo_page.localgov_directory_job_title
     - field.field.node.localgov_directory_promo_page.localgov_directory_name
-    - field.field.node.localgov_directory_promo_page.localgov_directory_paragraph
+    - field.field.node.localgov_directory_promo_page.localgov_paragraph_content
     - field.field.node.localgov_directory_promo_page.localgov_directory_phone
     - field.field.node.localgov_directory_promo_page.localgov_directory_standfirst
     - field.field.node.localgov_directory_promo_page.localgov_directory_title_sort
@@ -53,7 +53,7 @@ third_party_settings:
         - localgov_directory_banner
         - localgov_directory_standfirst
         - body
-        - localgov_directory_paragraph
+        - localgov_paragraph_content
         - localgov_directory_files
       label: Description
       region: content
@@ -185,7 +185,7 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  localgov_directory_paragraph:
+  localgov_paragraph_content:
     type: layout_paragraphs
     weight: 0
     region: content

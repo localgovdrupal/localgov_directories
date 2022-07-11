@@ -82,7 +82,7 @@ class DirectoryPromoPageTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('localgov_directory_website');
     $this->assertSession()->pageTextContains('localgov_directory_facets_select');
     $this->assertSession()->pageTextContains('localgov_directory_files');
-    $this->assertSession()->pageTextContains('localgov_directory_paragraph');
+    $this->assertSession()->pageTextContains('localgov_paragraph_content');
     $this->assertSession()->pageTextContains('localgov_directory_standfirst');
     $this->assertSession()->pageTextContains('localgov_directory_banner');
   }
