@@ -5,9 +5,7 @@
  * Install, update and uninstall functions for the LocalGov Directories module.
  */
 
-use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -240,51 +238,4 @@ function localgov_directories_update_8006() {
   else {
     return t('Unable to update directories view as sort order has already been changed. You may want to manually add sorting by localgov_directory_title_sort');
   }
-}
-
-/**
- * Adds proximity search config field.
- */
-function localgov_directories_update_8007() {
-  $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories');
-
-  $result = [];
-  if (!FieldStorageConfig::loadByName('node', 'localgov_proximity_search_cfg')) {
-    $proximity_search_cfg_field_storage = Yaml::decode(file_get_contents($module_path . '/config/install/field.storage.node.localgov_proximity_search_cfg.yml'));
-    FieldStorageConfig::create($proximity_search_cfg_field_storage)->save();
-  }
-  else {
-    $result[] = t('Proximity search configuration field already exists.');
-  }
-
-  if (!FieldConfig::loadByName('node', 'localgov_directory', 'localgov_proximity_search_cfg')) {
-    $proximity_search_cfg_field = Yaml::decode(file_get_contents($module_path . '/config/install/field.field.node.localgov_directory.localgov_proximity_search_cfg.yml'));
-    FieldConfig::create($proximity_search_cfg_field)->save();
-
-    // Add Proximity search config field to directory channel form.
-    $dir_channel_form_display = EntityFormDisplay::load('node.localgov_directory.default');
-    if (!$dir_channel_form_display->getComponent('localgov_proximity_search_cfg')) {
-      $localgov_directory_form_display = Yaml::decode(file_get_contents($module_path . '/config/install/core.entity_form_display.node.localgov_directory.default.yml'));
-
-      if (isset($localgov_directory_form_display['content']['localgov_proximity_search_cfg'])) {
-        $dir_channel_form_display->setComponent('localgov_proximity_search_cfg', $localgov_directory_form_display['content']['localgov_proximity_search_cfg'])->save();
-      }
-    }
-
-    // Hide Proximity search config field.
-    $dir_channel_view_display = EntityViewDisplay::load('node.localgov_directory.default');
-    if (!$dir_channel_view_display->getComponent('localgov_proximity_search_cfg')) {
-      $dir_channel_view_display->removeComponent('localgov_proximity_search_cfg')->save();
-    }
-
-    // Hide Proximity search config field in teaser view.
-    $dir_channel_view_teaser_display = EntityViewDisplay::load('node.localgov_directory.teaser');
-    if (!$dir_channel_view_teaser_display->getComponent('localgov_proximity_search_cfg')) {
-      $dir_channel_view_teaser_display->removeComponent('localgov_proximity_search_cfg')->save();
-    }
-  } else {
-    $result[] = t('Proximity search configuration field already exists in the directory channel content type.');
-  }
-
-  return implode(', ', $result);
 }
