@@ -111,10 +111,12 @@ function _localgov_directories_location_add_proximity_search_view_display(): voi
 
   $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
   $view_with_proximity_search = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
+
   $view = View::load('localgov_directory_channel');
   if ($view) {
     $display = $view->get('display');
     $display['node_embed_for_proximity_search'] = $view_with_proximity_search['display']['node_embed_for_proximity_search'];
+    $display['embed_map'] = $view_with_proximity_search['display']['embed_map'];
     $view->set('display', $display);
     $view->save();
   }

@@ -478,6 +478,118 @@ display:
         options:
           offset: 0
       empty: {  }
+      filters:
+        search_api_fulltext:
+          id: search_api_fulltext
+          table: search_api_index_localgov_directories_index_default
+          field: search_api_fulltext
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_fulltext
+          operator: or
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: search_api_fulltext_op
+            label: Search
+            description: ''
+            use_operator: false
+            operator: search_api_fulltext_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: search_api_fulltext
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          parse_mode: terms
+          min_length: null
+          fields: {  }
+        localgov_location:
+          id: localgov_location
+          table: search_api_index_localgov_directories_index_default
+          field: localgov_location
+          relationship: none
+          group_type: group
+          admin_label: Proximity
+          plugin_id: search_api_location
+          operator: '<'
+          value:
+            distance:
+              from: '-'
+              to: '-'
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: localgov_location_op
+            label: Location
+            description: ''
+            use_operator: false
+            operator: localgov_location_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: localgov_location
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin: geocode
+          plugin-raw:
+            radius_type: select
+            radius_options: "- -\r\n5 5 km\r\n10 10 km\r\n16.09 10 mi"
+            radius_units: km
+          plugin-geocode_map:
+            radius_border_color: ''
+            radius_border_weight: ''
+            radius_background_color: ''
+            radius_background_transparency: ''
+            marker_image: ''
+          plugin-geocode:
+            plugins:
+              localgov_default_osm:
+                checked: '1'
+                weight: '0'
+            radius_type: select
+            radius_options: "- -\r\n0.403 1/4 mile\r\n0.805 1/2 mile\r\n1.609 1 mile\r\n3.218 2 miles\r\n4.828 3 miles\r\n8.047 5 miles\r\n16.09 10 miles"
+            radius_units: km
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
       style:
         type: leaflet_map
         options:
@@ -575,6 +687,8 @@ display:
         row: false
         relationships: false
         fields: false
+        filters: false
+        filter_groups: false
       relationships:
         localgov_location:
           id: localgov_location
@@ -664,7 +778,7 @@ display:
             trim: false
             preserve_tags: ''
             html: false
-          element_type: ''
+          element_type: h2
           element_class: ''
           element_label_type: ''
           element_label_class: ''

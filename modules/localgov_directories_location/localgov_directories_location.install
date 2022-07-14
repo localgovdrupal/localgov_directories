@@ -8,6 +8,8 @@
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\search_api\Entity\Index as SearchIndex;
 use Drupal\search_api\Item\Field as SearchIndexField;
 use Drupal\views\Entity\View;
@@ -130,6 +132,8 @@ function _localgov_directories_location_set_proximity_search_cfg_display(): void
  * Adds new location field to search index.
  */
 function localgov_directories_location_update_8005() {
+  Drupal::service('module_installer')->install(['search_api_location_views', 'search_api_location_geocoder']);
+
   $index = SearchIndex::load('localgov_directories_index_default');
   if (!$index->getField('localgov_location')) {
     $location_field = new SearchIndexField($index, 'localgov_location');
