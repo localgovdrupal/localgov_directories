@@ -8,24 +8,27 @@
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\search_api\Entity\Index as SearchIndex;
+use Drupal\search_api\Item\Field as SearchIndexField;
 use Drupal\views\Entity\View;
 
 /**
  * Implements hook_install().
  *
+ * - Adds location field to search index.
  * - Adds extra displays to the Directory channel view.
  * - Adds the Proximity search configuration field to the Directory channel
  *   form.  Also hides it from entity view.
  */
 function localgov_directories_location_install() {
-  // Retrieve view display mode config and add it to the existing configuration.
+  // Retrieves view display mode config and adds location-related sectins to the
+  // existing configuration.
   $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
   $view_with_map_embed = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
   $view = View::load('localgov_directory_channel');
   if ($view) {
     $display = $view->get('display');
     $display['embed_map'] = $view_with_map_embed['display']['embed_map'];
-    $display['node_embed_for_proximity_search'] = $view_with_map_embed['display']['node_embed_for_proximity_search'];
     $view->set('display', $display);
     $view->save();
   }
@@ -127,9 +130,9 @@ function _localgov_directories_location_set_proximity_search_cfg_display(): void
  * Adds new location field to search index.
  */
 function localgov_directories_location_update_8005() {
-  $index = Index::load('localgov_directories_index_default');
-  if (!$index->getField('location')) {
-    $location_field = new Field($index, 'location');
+  $index = SearchIndex::load('localgov_directories_index_default');
+  if (!$index->getField('localgov_location')) {
+    $location_field = new SearchIndexField($index, 'localgov_location');
     $location_field->setLabel('Location » Geo » location');
     $location_field->setDatasourceId('entity:node');
     $location_field->setType('location');
@@ -148,14 +151,13 @@ function localgov_directories_location_update_8005() {
  * Adds Views proximity search display.
  */
 function localgov_directories_location_update_8007() {
-  // Retrieve view display mode config and add it to the existing configuration.
-  $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
-  $view_with_proximity_search = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
-  $view = View::load('localgov_directory_channel');
-  if ($view) {
-    $display = $view->get('display');
-    $display['node_embed_for_proximity_search'] = $view_with_proximity_search['display']['node_embed_for_proximity_search'];
-    $view->set('display', $display);
-    $view->save();
+
+  $index = SearchIndex::load('localgov_directories_index_default');
+  if (!$index->getField('localgov_location')) {
+    return t('The location field has no search index.  We cannot use it in the Directory channel view');
   }
+
+  _localgov_directories_location_add_proximity_search_view_display();
+
+  return t('Added the location field to the Directory channel view.');
 }

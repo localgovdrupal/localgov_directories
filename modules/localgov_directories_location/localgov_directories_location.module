@@ -5,9 +5,15 @@
  * Provides a location extension to directories.
  */
 
-use Drupal\localgov_directories_location\LocationExtraFieldDisplay;
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\field\FieldConfigInterface;
+use Drupal\localgov_directories_location\LocationExtraFieldDisplay;
 use Drupal\node\NodeInterface;
+use Drupal\search_api\Entity\Index as SearchIndex;
+use Drupal\search_api\IndexInterface as SearchIndexInterface;
+use Drupal\search_api\Item\Field as SearchIndexField;
+use Drupal\views\Entity\View;
 
 /**
  * Implements hook_entity_extra_field_info().
@@ -25,4 +31,122 @@ function localgov_directories_location_node_view(array &$build, NodeInterface $n
   return \Drupal::service('class_resolver')
     ->getInstanceFromDefinition(LocationExtraFieldDisplay::class)
     ->nodeView($build, $node, $display, $view_mode);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ *
+ * Once the localgov_location field is available, we need to add it the
+ * Directories search index and also enable the Proximity search display of the
+ * Directory channel View.
+ *
+ * In a fresh installation of localgov_directories, saving the search index
+ * drops the localgov_directory_channels and localgov_directory_title_sort
+ * fields from the index as they are no attached to any content type yet.  So we
+ * add them again as we are now certain that they are attached to a content
+ * type.
+ */
+function localgov_directories_location_field_config_insert(FieldConfigInterface $field) {
+
+  $index = SearchIndex::load('localgov_directories_index_default');
+  $new_field_name = $field->getName();
+  $is_node_entity_type = $field->getTargetEntityTypeId() === 'node';
+
+  if ($new_field_name === 'localgov_location' && $is_node_entity_type && $index && !$index->getField('localgov_location')) {
+    if (_localgov_directories_location_add_location_field_to_search_index($field, $index)) {
+      // Now that the location field is part of the Directories search index, we
+      // can add it to the Directory channel view.
+      _localgov_directories_location_add_proximity_search_view_display();
+
+      // The channel selection and title sort fields may have gone missing.
+      _localgov_directories_restore_channel_selection_n_title_sort_fields_to_search_index($index);
+    }
+  }
+  elseif (in_array($new_field_name, [
+    'localgov_directory_channels',
+    'localgov_directory_title_sort',
+  ]) && $is_node_entity_type && $index) {
+    // The channel selection and title sort fields may have gone missing from
+    // the search index when we added localgov_location.
+    _localgov_directories_restore_channel_selection_n_title_sort_fields_to_search_index($index);
+  }
+}
+
+/**
+ * Sets up indexing for location.
+ *
+ * Adds the localgov_location field to the Directories search index.
+ */
+function _localgov_directories_location_add_location_field_to_search_index(FieldConfigInterface $field, SearchIndexInterface $index): bool {
+
+  $index_datasrc = $index->getDatasource('entity:node');
+  if (empty($index_datasrc)) {
+    return FALSE;
+  }
+
+  $entity_bundle = $field->getTargetBundle();
+  $datasrc_cfg = $index_datasrc->getConfiguration();
+  $is_bundle_indexed = in_array($entity_bundle, $datasrc_cfg['bundles']['selected']);
+  if (!$is_bundle_indexed) {
+    $datasrc_cfg['bundles']['selected'][] = $entity_bundle;
+    $index_datasrc->setConfiguration($datasrc_cfg);
+  }
+
+  $location_field = new SearchIndexField($index, 'localgov_location');
+  $location_field->setLabel('Location » Geo » location');
+  $location_field->setDatasourceId('entity:node');
+  $location_field->setType('location');
+  $location_field->setPropertyPath('localgov_location:entity:location');
+  $index->addField($location_field);
+  $index->save();
+  $index->reindex();
+
+  return TRUE;
+}
+
+/**
+ * Adds the Proximity search display to the Directory channel view.
+ */
+function _localgov_directories_location_add_proximity_search_view_display(): void {
+
+  $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
+  $view_with_proximity_search = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
+  $view = View::load('localgov_directory_channel');
+  if ($view) {
+    $display = $view->get('display');
+    $display['node_embed_for_proximity_search'] = $view_with_proximity_search['display']['node_embed_for_proximity_search'];
+    $view->set('display', $display);
+    $view->save();
+  }
+}
+
+/**
+ * Restores missing search index fields.
+ *
+ * If needed, adds the channel selection and the title sort fields to the search
+ * index.
+ */
+function _localgov_directories_restore_channel_selection_n_title_sort_fields_to_search_index(SearchIndexInterface $index): void {
+
+  if (!$index->getField('localgov_directory_channels')) {
+    $channel_field = new SearchIndexField($index, 'localgov_directory_channels');
+    $channel_field->setLabel('Directory channels');
+    $channel_field->setDatasourceId('entity:node');
+    $channel_field->setType('integer');
+    $channel_field->setPropertyPath('localgov_directory_channels');
+    $index->addField($channel_field);
+    $index->save();
+    $index->reindex();
+  }
+
+  if (!$index->getField('localgov_directory_title_sort')) {
+    $sort_title_field = new SearchIndexField($index, 'localgov_directory_title_sort');
+    $sort_title_field->setLabel('Title (sort)');
+    $sort_title_field->setDatasourceId('entity:node');
+    $sort_title_field->setType('string');
+    $sort_title_field->setPropertyPath('localgov_directory_title_sort');
+    $index->addField($sort_title_field);
+    $index->save();
+    $index->reindex();
+  }
 }
