@@ -24,8 +24,6 @@ dependencies:
     - media
     - text
     - user
-_core:
-  default_config_hash: mBwSKue0Yy0sO4wwvJ-Hav5ETJS5UHID7No6ZXTFLj4
 id: node.localgov_directory_promo_page.teaser
 targetEntityType: node
 bundle: localgov_directory_promo_page
