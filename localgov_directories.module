@@ -160,22 +160,14 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
     $entity_type_id = 'node';
     $entity_bundle = $field->getTargetBundle();
 
-    // Adding new content types to the datasource through the index can trigger
-    // a content re-index which breaks site installs through Drush, so add the
-    // additional content type directly to index configuration.
-    $config_factory = \Drupal::configFactory();
-    $index_config = $config_factory->getEditable('search_api.index.localgov_directories_index_default');
-    $configuration = $index_config->get('datasource_settings');
-    if (isset($configuration['entity:node']['bundles'])) {
-      $configuration['entity:node']['bundles']['default'] = FALSE;
-      if (!in_array($entity_bundle, $configuration['entity:node']['bundles']['selected'])) {
-        $configuration['entity:node']['bundles']['selected'][] = $entity_bundle;
-        $index_config->set('datasource_settings', $configuration);
-        $index_config->save();
-      }
+    // Disable index while reconfiguring it to prevent content re-indexing.
+    $enable_index = FALSE;
+    if ($index->status()) {
+      $index->setStatus(FALSE);
+      $index->save();
+      $enable_index = TRUE;
     }
 
-    $index = Index::load('localgov_directories_index_default');
     $datasource = $index->getDatasource('entity:' . $entity_type_id);
     if (!$datasource) {
       // If the content:node datasource has been lost so have the fields most
@@ -188,8 +180,11 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
       return;
     }
 
-    // Re-save datasource as we may have made direct config changes to it.
     $configuration = $datasource->getConfiguration();
+    $configuration['bundles']['default'] = FALSE;
+    if (!in_array($entity_bundle, $configuration['bundles']['selected'])) {
+      $configuration['bundles']['selected'][] = $entity_bundle;
+    }
     $datasource->setConfiguration($configuration);
 
     $index_field = $index->getField('rendered_item');
@@ -197,6 +192,10 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
       $configuration = $index_field->getConfiguration();
       $configuration['view_mode']['entity:node'][$entity_bundle] = 'directory_index';
       $index_field->setConfiguration($configuration);
+    }
+
+    if ($enable_index) {
+      $index->setStatus(TRUE);
     }
 
     $index->save();
