@@ -88,15 +88,28 @@ export the facet types set:
 and it will be exported with other configuration. Any types that exist in
 configuration will be imported.
 
+### Proximity search
+
+Proximity search is available when at least one of the available Directory entry
+content types (e.g. localgov_directories_venue) is using location through the
+localgov_location field.  At this point a new "Proximity search settings" choice
+field becomes available in Directory channel forms.  Activating this will
+present a location filter as part of the channel search form.
+
 ## Block placement
 
-When using a theme other than the default LocalGov theme, the
-**Directory channel search** (machine id: localgov_directories_channel_search_block)
-and **Directory facets** (machine id: facet_block:localgov_directories_facets)
+When using a theme other than the default LocalGov Base or LocalGov Scarfolk, the
+**Directory channel search** (machine id: localgov_directories_channel_search_block),
+**Directory facets** (machine id: facet_block:localgov_directories_facets) and
+**Directory facets for proximity search** (machine id: facet_block:localgov_directories_facets_proximity_search)
 blocks should be made visible for the **Directory Channel** content type.
-They can be added to a sidebar region (or equivalent) of the site theme.  Note
-that the facet_block:localgov_directories_facets block becomes available only
-after you have created at least one Directory entry content type.
+They can be added to a sidebar region (or equivalent) of the site theme.
+
+Note that the facet_block:localgov_directories_facets block becomes available only
+after you have created at least one Directory entry content type.  On the other
+hand the facet_block:localgov_directories_facets_proximity_search block becomes
+available when a Directory entry content type with a localgov_location field is
+created (e.g. localgov_directories_venue).
 
 On the Directory entry content types the blocks are also available as 'fields'
 in the Fields display configuration if you prefer to place them within the

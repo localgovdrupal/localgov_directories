@@ -221,7 +221,8 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     $view->execute($views_display);
 
     if (!empty($view->result)) {
-      $block = $this->pluginBlockManager->createInstance('facet_block' . PluginBase::DERIVATIVE_SEPARATOR . 'localgov_directories_facets');
+      $facet_id = self::determineFacetForChannel($node);
+      $block = $this->pluginBlockManager->createInstance('facet_block' . PluginBase::DERIVATIVE_SEPARATOR . $facet_id);
       return $block->build();
     }
     else {
@@ -333,6 +334,21 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
     $views_display = $has_proximity_search ? Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY : Directory::CHANNEL_VIEW_DISPLAY;
     return $views_display;
+  }
+
+  /**
+   * Finds the relevant Facet for a directory channel.
+   *
+   * Channels use different Views displays depending on whether proximity search
+   * is in use or not.  The directory related Facets are attached to these Views
+   * displays.  This means the choice of Facet differs depending on the use of
+   * proximity search.
+   */
+  public static function determineFacetForChannel(NodeInterface $channel_node): string {
+
+    $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
+    $facet_id = $has_proximity_search ? Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH : Directory::FACET_CONFIG_ENTITY_ID;
+    return $facet_id;
   }
 
   /**

@@ -219,7 +219,7 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
   $is_new_directory_entry_content_type = ($is_node_field and $has_both_facet_and_channel_fields);
   if ($is_new_directory_entry_content_type and $has_dir_search_index) {
     localgov_directories_add_facet_field_to_index($dir_search_index);
-    localgov_directories_create_dir_facet();
+    localgov_directories_create_dir_facet(Directory::FACET_CONFIG_ENTITY_ID, Directory::FACET_CONFIG_FILE);
   }
 
   // Setup Directory search block.
@@ -328,16 +328,21 @@ function localgov_directories_add_facet_field_to_index(IndexInterface $dir_searc
 
 /**
  * Import config entity for the directory Facet.
+ *
+ * @param string $facet_id
+ *   Facet entity id.
+ * @param string $facet_cfg_file
+ *   Config filename without the Yaml extension.
  */
-function localgov_directories_create_dir_facet() {
+function localgov_directories_create_dir_facet(string $facet_id, string $facet_cfg_file): void {
 
-  $has_dir_facet_config = Facet::load(Directory::FACET_CONFIG_ENTITY_ID);
+  $has_dir_facet_config = Facet::load($facet_id);
   if ($has_dir_facet_config) {
     return;
   }
 
   $conditional_config_path = \Drupal::service('extension.list.module')->getPath('localgov_directories') . '/config/conditional';
-  $import_result = localgov_directories_import_config_entity('facets_facet', $conditional_config_path, Directory::FACET_CONFIG_FILE);
+  $import_result = localgov_directories_import_config_entity('facets_facet', $conditional_config_path, $facet_cfg_file);
   if ($import_result) {
     Drupal::service('config.installer')->installOptionalConfig();
   }
