@@ -570,7 +570,7 @@ display:
           plugin: geocode
           plugin-raw:
             radius_type: select
-            radius_options: "- -\r\n5 5 km\r\n10 10 km\r\n16.09 10 mi"
+            radius_options: "- -\r\n0.403 1/4 mile\r\n0.805 1/2 mile\r\n1.609 1 mile\r\n3.218 2 miles\r\n4.828 3 miles\r\n8.047 5 miles\r\n16.09 10 miles"
             radius_units: km
           plugin-geocode_map:
             radius_border_color: ''
@@ -1078,7 +1078,7 @@ display:
           plugin: geocode
           plugin-raw:
             radius_type: select
-            radius_options: "- -\r\n5 5 km\r\n10 10 km\r\n16.09 10 mi"
+            radius_options: "- -\r\n0.403 1/4 mile\r\n0.805 1/2 mile\r\n1.609 1 mile\r\n3.218 2 miles\r\n4.828 3 miles\r\n8.047 5 miles\r\n16.09 10 miles"
             radius_units: km
           plugin-geocode_map:
             radius_border_color: ''
