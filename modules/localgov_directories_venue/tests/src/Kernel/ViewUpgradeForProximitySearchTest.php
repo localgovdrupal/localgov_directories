@@ -55,6 +55,7 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
 
     $this->installConfig([
       'node',
+      'search_api',
       'localgov_directories',
       'localgov_directories_location',
       'localgov_directories_venue',
