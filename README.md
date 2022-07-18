@@ -52,6 +52,20 @@ enabled channels. It also has contact information.
 A directory entry with a location to be shown on a map. Requires the
 localgov geo module.
 
+### Organisation
+
+This simple entry is primarily used if you enable Directories Open Referral.
+The standard requires all Services, by default mapped to Venues, have an
+Organisation. Other directory entry types (see Extending directory entries)
+can be mapped to Open Referral as appropriate.
+
+### Promotional pages
+
+A directory entry with additional fields with paragraphs for richer
+presentation. Better for brouchure type entries than services information.
+This type of entry would be more difficult to map for Open Referral or any
+other standard or format, but good for adding images and styling on the site.
+
 ## LocalGov Drupal Services Integration
 
 If you have the LocalGov Services module installed, directories (channels) can
