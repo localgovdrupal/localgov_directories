@@ -20,8 +20,8 @@ function localgov_directories_db_install($is_syncing) {
   ) {
     $server = Server::load('localgov_directories_default');
     $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_db');
-    $index_solr_config = Yaml::decode(file_get_contents($module_path . '/config/conditional/search_api.index.localgov_directories_index_default.yml'));
-    $new_config_index = Index::create($index_solr_config);
+    $index_config = Yaml::decode(file_get_contents($module_path . '/config/conditional/search_api.index.localgov_directories_index_default.yml'));
+    $new_config_index = Index::create($index_config);
     $index->setProcessors($new_config_index->getProcessors());
     $index->setServer($server);
     $index->setStatus(TRUE);
