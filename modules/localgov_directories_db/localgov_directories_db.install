@@ -36,7 +36,7 @@ function localgov_directories_db_uninstall($is_syncing) {
   if (
     !$is_syncing &&
     ($index = Index::load('localgov_directories_index_default')) &&
-    ($index->getServerId() == 'localgov_directories_index_default')
+    ($index->getServerId() == 'localgov_directories_default')
   ) {
     $index->setServer(NULL);
     $index->setStatus(FALSE);

@@ -20,6 +20,13 @@ class InstallTest extends KernelTestBase {
   protected static $modules = [
     'system',
     'node',
+    'field',
+    'link',
+    'media',
+    'address',
+    'telephone',
+    'text',
+    'image',
     'search_api',
     'search_api_db',
     'localgov_directories',
@@ -33,15 +40,18 @@ class InstallTest extends KernelTestBase {
   public function setUp(): void {
     parent::setup();
 
+    $this->installEntitySchema('node');
     $this->installEntitySchema('search_api_index');
     $this->installEntitySchema('search_api_server');
     $this->installEntitySchema('search_api_task');
-    $this->installEntitySchema('node');
+    $this->installEntitySchema('user');
     $this->installSchema('user', ['users_data']);
     $this->installConfig([
+      'node',
       'localgov_directories',
       'search_api_db',
       'search_api',
+      'user',
     ]);
   }
 
