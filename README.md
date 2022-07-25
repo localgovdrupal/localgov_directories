@@ -3,6 +3,17 @@
 Provides directories (channels) which have entries (pages, venues, etc.) which
 can be filtered and searched.
 
+## Enabling the module
+
+The 'LocalGov Directories' module enables the core functionality. You will need
+a search backend: 'LocalGov Directories Database' will provide this. You can use
+other search backends, for example solr, if doing so it is advisable to disable
+the Database module first.
+
+For the directories you will also need at least one content Entry type, these
+can be created or supplied by the Directories submodules, see the Directory
+Entries section below.
+
 ## Facets
 
 Facets types, and their facet values. Create types (eg. "Size"), and values (eg.
