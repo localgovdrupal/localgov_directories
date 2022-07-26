@@ -252,3 +252,14 @@ function localgov_directories_update_8007() {
   $config->set('module', $modules);
   $config->save();
 }
+
+/**
+ * Add schema version for Directories Search API DB module.
+ */
+function localgov_directories_update_8008() {
+  if (\Drupal::moduleHandler()->moduleExists('localgov_directories_db') &&
+    !\Drupal::keyValue('system.schema')->has('localgov_directories_db')
+  ) {
+    \Drupal::keyValue('system.schema')->set('localgov_directories_db', 8000);
+  }
+}
