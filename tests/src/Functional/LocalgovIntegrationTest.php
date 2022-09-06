@@ -130,7 +130,7 @@ class LocalgovIntegrationTest extends BrowserTestBase {
       'summary' => 'One of the greatest joys known to man is to take a flight into ignorance in search of knowledge.',
     ];
     // Directory.
-    $directory = $this->createNode([
+    $this->createNode([
       'title' => 'Directory 1',
       'type' => 'localgov_directory',
       'status' => NodeInterface::PUBLISHED,

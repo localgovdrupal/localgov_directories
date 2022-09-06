@@ -15,7 +15,6 @@ class DirectoryPromoPageTest extends BrowserTestBase {
 
   use NodeCreationTrait;
   use AssertBreadcrumbTrait;
-  protected $strictConfigSchema = FALSE;
 
   /**
    * Test breadcrumbs in the Standard profile.
