@@ -6,6 +6,7 @@ dependencies:
     - node.type.localgov_directory_promo_page
     - paragraphs.paragraphs_type.localgov_accordion
     - paragraphs.paragraphs_type.localgov_call_out_box
+    - paragraphs.paragraphs_type.localgov_embed_views
     - paragraphs.paragraphs_type.localgov_featured_teasers
     - paragraphs.paragraphs_type.localgov_image
     - paragraphs.paragraphs_type.localgov_link
@@ -32,6 +33,7 @@ settings:
     target_bundles:
       localgov_accordion: localgov_accordion
       localgov_call_out_box: localgov_call_out_box
+      localgov_embed_views: localgov_embed_views
       localgov_featured_teasers: localgov_featured_teasers
       localgov_image: localgov_image
       localgov_link: localgov_link
@@ -75,6 +77,9 @@ settings:
       localgov_documents:
         weight: 47
         enabled: false
+      localgov_embed_views:
+        weight: 48
+        enabled: true
       localgov_fact_box:
         weight: 48
         enabled: false
@@ -147,7 +152,4 @@ settings:
       localgov_video:
         weight: 71
         enabled: true
-      page_section:
-        weight: 72
-        enabled: false
 field_type: entity_reference_revisions
