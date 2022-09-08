@@ -51,7 +51,7 @@ third_party_settings:
         - title
         - localgov_directory_title_sort
         - body
-        - group_rich_content
+        - group_banner_standfirst
         - localgov_paragraph_content
         - localgov_directory_files
       label: Description
@@ -102,7 +102,7 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
-    group_rich_content:
+    group_banner_standfirst:
       children:
         - localgov_directory_banner
         - localgov_directory_standfirst
