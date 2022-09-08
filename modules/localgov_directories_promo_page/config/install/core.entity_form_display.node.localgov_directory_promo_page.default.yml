@@ -11,11 +11,11 @@ dependencies:
     - field.field.node.localgov_directory_promo_page.localgov_directory_files
     - field.field.node.localgov_directory_promo_page.localgov_directory_job_title
     - field.field.node.localgov_directory_promo_page.localgov_directory_name
-    - field.field.node.localgov_directory_promo_page.localgov_paragraph_content
     - field.field.node.localgov_directory_promo_page.localgov_directory_phone
     - field.field.node.localgov_directory_promo_page.localgov_directory_standfirst
     - field.field.node.localgov_directory_promo_page.localgov_directory_title_sort
     - field.field.node.localgov_directory_promo_page.localgov_directory_website
+    - field.field.node.localgov_directory_promo_page.localgov_paragraph_content
     - node.type.localgov_directory_promo_page
   module:
     - address
@@ -50,9 +50,8 @@ third_party_settings:
       children:
         - title
         - localgov_directory_title_sort
-        - localgov_directory_banner
-        - localgov_directory_standfirst
         - body
+        - group_rich_content
         - localgov_paragraph_content
         - localgov_directory_files
       label: Description
@@ -103,6 +102,22 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
+    group_rich_content:
+      children:
+        - localgov_directory_banner
+        - localgov_directory_standfirst
+      label: 'Optional banner and standfirst'
+      region: content
+      parent_name: group_description
+      weight: -2
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
+        open: false
 id: node.localgov_directory_promo_page.default
 targetEntityType: node
 bundle: localgov_directory_promo_page
@@ -110,13 +125,13 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: -1
+    weight: -3
     region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
-      show_summary: false
+      show_summary: true
     third_party_settings: {  }
   created:
     type: datetime_timestamp
@@ -131,16 +146,22 @@ content:
     settings: {  }
     third_party_settings: {  }
   localgov_directory_banner:
-    type: entity_reference_paragraphs
-    weight: -3
+    type: paragraphs
+    weight: -1
     region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
       edit_mode: closed
+      closed_mode: summary
+      autocollapse: none
+      closed_mode_threshold: 0
       add_mode: button
       form_display_mode: default
-      default_paragraph_type: localgov_banner_secondary
+      default_paragraph_type: _none
+      features:
+        collapse_edit_all: collapse_edit_all
+        duplicate: duplicate
     third_party_settings: {  }
   localgov_directory_channels:
     type: localgov_directories_channel_selector
@@ -164,7 +185,7 @@ content:
     third_party_settings: {  }
   localgov_directory_files:
     type: media_library_widget
-    weight: 1
+    weight: 0
     region: content
     settings:
       media_types: {  }
@@ -185,15 +206,6 @@ content:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-  localgov_paragraph_content:
-    type: layout_paragraphs
-    weight: 0
-    region: content
-    settings:
-      preview_view_mode: default
-      nesting_depth: 0
-      require_layouts: 1
-    third_party_settings: {  }
   localgov_directory_phone:
     type: telephone_default
     weight: 4
@@ -203,7 +215,7 @@ content:
     third_party_settings: {  }
   localgov_directory_standfirst:
     type: string_textarea
-    weight: -2
+    weight: 0
     region: content
     settings:
       rows: 5
@@ -224,6 +236,15 @@ content:
     settings:
       placeholder_url: ''
       placeholder_title: ''
+    third_party_settings: {  }
+  localgov_paragraph_content:
+    type: layout_paragraphs
+    weight: -1
+    region: content
+    settings:
+      preview_view_mode: default
+      nesting_depth: 0
+      require_layouts: 1
     third_party_settings: {  }
   path:
     type: path
@@ -262,7 +283,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 4
     region: content
     settings:
       match_operator: CONTAINS
