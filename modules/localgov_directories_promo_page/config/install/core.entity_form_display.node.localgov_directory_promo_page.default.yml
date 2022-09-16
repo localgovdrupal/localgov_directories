@@ -160,6 +160,7 @@ content:
       form_display_mode: default
       default_paragraph_type: _none
       features:
+        add_above: '0'
         collapse_edit_all: collapse_edit_all
         duplicate: duplicate
     third_party_settings: {  }
@@ -239,7 +240,7 @@ content:
     third_party_settings: {  }
   localgov_paragraph_content:
     type: layout_paragraphs
-    weight: -1
+    weight: 0
     region: content
     settings:
       preview_view_mode: default
