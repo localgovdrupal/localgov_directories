@@ -24,26 +24,22 @@
  * @ingroup themeable
  */
 #}
-<div class="facets-widget- {{- facet.widget.type -}}">
-  {% if facet.widget.type %}
-    {%- set attributes = attributes.addClass('item-list__' ~ facet.widget.type) %}
-  {% endif %}
-  {% if items or empty %}
-    {%- if title is not empty -%}
-      <h3>{{ title }}</h3>
-    {%- endif -%}
+{%- set attributes = attributes.addClass('item-list__' ~ facet.widget.type) %}
+<div class="facets-widgets- {{- facet.widget.type -}}">
+  {%- if title is not empty -%}
+    <h3>{{ title }}</h3>
+  {%- endif -%}
 
-    {%- if items -%}
-      {%- for group in items -%}
-        <label>{{ group.title }}</label>
-        <ul{{ attributes }}>
-        {%- for item in group.items -%}
-          <li{{ item.attributes }}>{{ item.value }}</li>
-        {%- endfor -%}
+  {%- if items -%}
+    {%- for id, group in items -%}
+      <label id="facet_{{ id }}_label">{{ group.title }}</label>
+      <div class="facets-widget-{{ facet.widget.type }}">
+        <ul{{ attributes.setAttribute('id', attributes['data-drupal-facet-id'] ~ '_' ~ id) }}>
+          {%- for item in group.items -%}
+            <li{{ item.attributes }}>{{ item.value }}</li>
+          {%- endfor -%}
         </ul>
-      {%- endfor -%}
-    {%- else -%}
-      {{- empty -}}
-    {%- endif -%}
-  {%- endif %}
+      </div>
+    {%- endfor -%}
+  {%- endif -%}
 </div>
