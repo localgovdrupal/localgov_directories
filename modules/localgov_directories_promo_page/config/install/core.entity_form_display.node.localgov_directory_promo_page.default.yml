@@ -50,9 +50,8 @@ third_party_settings:
       children:
         - title
         - localgov_directory_title_sort
-        - localgov_directory_banner
-        - localgov_directory_standfirst
         - body
+        - group_banner_standfirst
         - localgov_paragraph_content
         - localgov_directory_files
       label: Description
@@ -103,6 +102,21 @@ third_party_settings:
         formatter: closed
         description: ''
         required_fields: true
+    group_banner_standfirst:
+      children:
+        - localgov_directory_banner
+        - localgov_directory_standfirst
+      label: 'Optional banner and standfirst'
+      region: content
+      parent_name: group_description
+      weight: -2
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        description: ''
+        required_fields: true
 id: node.localgov_directory_promo_page.default
 targetEntityType: node
 bundle: localgov_directory_promo_page
@@ -110,13 +124,13 @@ mode: default
 content:
   body:
     type: text_textarea_with_summary
-    weight: -1
+    weight: -3
     region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
-      show_summary: false
+      show_summary: true
     third_party_settings: {  }
   created:
     type: datetime_timestamp
@@ -132,7 +146,7 @@ content:
     third_party_settings: {  }
   localgov_directory_banner:
     type: paragraphs
-    weight: -3
+    weight: -1
     region: content
     settings:
       title: Paragraph
@@ -171,7 +185,7 @@ content:
     third_party_settings: {  }
   localgov_directory_files:
     type: media_library_widget
-    weight: 1
+    weight: 0
     region: content
     settings:
       media_types: {  }
@@ -201,7 +215,7 @@ content:
     third_party_settings: {  }
   localgov_directory_standfirst:
     type: string_textarea
-    weight: -2
+    weight: 0
     region: content
     settings:
       rows: 5
@@ -269,7 +283,7 @@ content:
     third_party_settings: {  }
   uid:
     type: entity_reference_autocomplete
-    weight: 5
+    weight: 4
     region: content
     settings:
       match_operator: CONTAINS
