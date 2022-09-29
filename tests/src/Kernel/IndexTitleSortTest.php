@@ -104,7 +104,6 @@ class IndexTitleSortTest extends KernelTestBase {
     // Add content type to search index.
     $this->createEntityReferenceField('node', $item_type_name, 'localgov_directory_channels', $this->randomString(), 'node');
 
-
     $this->index = Index::load('localgov_directories_index_default');
     // We're not testing rendered item, and it requires pulling in a whole load
     // of dependencies.

@@ -5,13 +5,19 @@ declare(strict_types = 1);
 namespace Drupal\localgov_directories;
 
 use Drupal\block\BlockInterface;
+use Drupal\Core\Config\ConfigInstallerInterface;
 use Drupal\Core\Config\FileStorage as ConfigFileStorage;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleExtensionList;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\field\FieldConfigInterface;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Field as SearchIndexField;
+use Drupal\search_api\Utility\PluginHelperInterface;
 use Drupal\views\ViewEntityInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -41,13 +47,61 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * The entity field manager.
+   *
+   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   */
+  protected EntityFieldManagerInterface $entityFieldManager;
+
+  /**
+   * The Localgov Directories logger.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected LoggerInterface $logger;
+
+  /**
+   * The module extension list service.
+   *
+   * @var \Drupal\Core\Extension\ModuleExtensionList
+   */
+  protected ModuleExtensionList $moduleExtensionList;
+
+  /**
+   * The configuration installer.
+   *
+   * @var \Drupal\Core\Config\ConfigInstallerInterface
+   */
+  protected ConfigInstallerInterface $configInstaller;
+
+  /**
+   * Search API Plugin Helper utility.
+   *
+   * @var \Drupal\search_api\Utility\PluginHelperInterface
+   */
+  protected PluginHelperInterface $searchApiPluginHelper;
+
+  /**
    * DirectoryExtraFieldDisplay constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   Entity type manager.
+   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
+   *   Entity field manager.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
+   *   Logger channel factory.
+   * @param \Drupal\Core\Extension\ModuleExtensionList $module_extension_list
+   *   Module extension list.
+   * @param \Drupal\Core\Config\ConfigInstallerInterface $config_installer
+   *   Config installer.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager, LoggerChannelFactoryInterface $logger_factory, ModuleExtensionList $module_extension_list, ConfigInstallerInterface $config_installer, PluginHelperInterface $search_api_plugin_helper) {
     $this->entityTypeManager = $entity_type_manager;
+    $this->entityFieldManager = $entity_field_manager;
+    $this->logger = $logger_factory->get('localgov_directories');
+    $this->moduleExtensionList = $module_extension_list;
+    $this->configInstaller = $config_installer;
+    $this->searchApiPluginHelper = $search_api_plugin_helper;
   }
 
   /**
@@ -56,6 +110,11 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
+      $container->get('entity_field.manager'),
+      $container->get('logger.factory'),
+      $container->get('extension.list.module'),
+      $container->get('config.installer'),
+      $container->get('search_api.plugin_helper'),
     );
   }
 
@@ -77,7 +136,6 @@ class ConfigurationHelper implements ContainerInjectionInterface {
    * Act on a Directory channel field being added.
    */
   public function insertedDirectoryChannelField(FieldConfigInterface $field) {
-    // Only working for nodes at the moment.
     $entity_type_id = $field->getTargetEntityTypeId();
     $entity_bundle = $field->getTargetBundle();
     // Index changes.
@@ -85,13 +143,37 @@ class ConfigurationHelper implements ContainerInjectionInterface {
       $this->indexAddBundle($index, $entity_type_id, $entity_bundle);
       $this->renderedItemAddBundle($index, $entity_type_id, $entity_bundle);
       $this->indexAddChannelsField($index);
+      // The Channel is also the trigger for adding/removing from the index.
+      // So also handle fields already existing on the entity that should be
+      // included in the index.
+      $entity_fields = $this->entityFieldManager->getFieldDefinitions($entity_type_id, $entity_bundle);
+      if (array_key_exists(Constants::FACET_SELECTION_FIELD, $entity_fields)) {
+        $this->indexAddFacetField($index);
+      }
+      if (array_key_exists(Constants::TITLE_SORT_FIELD, $entity_fields)) {
+        $this->indexAddTitleSortField($index);
+      }
       $index->save();
     }
     if ($view = $this->getView()) {
       $this->viewSetViewMode($view, $entity_type_id, $entity_bundle);
       $view->save();
     }
-    $this->addBlockToContentType(Constants::CHANNEL_SEARCH_BLOCK, $entity_bundle);
+    $this->blockAddContentType(Constants::CHANNEL_SEARCH_BLOCK, $entity_bundle);
+  }
+
+  /**
+   * Act on Directory channel field being removed.
+   */
+  public function deletedDirectoryChannelField(FieldConfigInterface $field) {
+    // Only working for nodes at the moment.
+    $entity_type_id = $field->getTargetEntityTypeId();
+    $entity_bundle = $field->getTargetBundle();
+    // Index changes.
+    if ($index = $this->getIndex()) {
+      $this->indexRemoveBundle($index, $entity_type_id, $entity_bundle);
+    }
+    $this->blockRemoveContentType(Constants::CHANNEL_SEARCH_BLOCK, $entity_bundle);
   }
 
   /**
@@ -139,8 +221,8 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     try {
       $this->entityTypeManager->getStorage($entity_type)->create($config_values)->save();
     }
-    catch (Exception $e) {
-      Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to create new config entity: %filename.  Error: %msg', [
+    catch (\Exception $e) {
+      $this->logger->error('Failed to create new config entity: %filename.  Error: %msg', [
         '%filename' => $config_filename,
         '%msg' => $e->getMessage(),
       ]);
@@ -225,23 +307,21 @@ class ConfigurationHelper implements ContainerInjectionInterface {
       return;
     }
 
-    $conditional_config_path = \Drupal::service('extension.list.module')->getPath('localgov_directories') . '/config/conditional';
+    $conditional_config_path = $this->moduleExtensionList->getPath('localgov_directories') . '/config/conditional';
     if ($this->importConfigEntity('facets_facet', $conditional_config_path, Constants::FACET_CONFIG_FILE)) {
-      \Drupal::service('config.installer')->installOptionalConfig();
+      $this->configInstaller->installOptionalConfig();
     }
   }
 
   /**
-   * Update a block's visibility.
-   *
-   * @todo logger
+   * Update a block's visibility to add to content type.
    *
    * The given block should appear sidebar pages for the given content type.
    */
-  public function addBlockToContentType(string $block_id, string $content_type): bool {
+  public function blockAddContentType(string $block_id, string $content_type): bool {
     $block_config = $this->entityTypeManager->getStorage('block')->load($block_id);
     if (!$block_config instanceof BlockInterface) {
-      \Drupal::service('logger.factory')->get('localgov_directories')->error('Block %block-id is missing.  Cannot update its visibility settings.', [
+      $this->logger->error('Block %block-id is missing.  Cannot update its visibility settings.', [
         '%block-id' => $block_id,
       ]);
 
@@ -254,8 +334,8 @@ class ConfigurationHelper implements ContainerInjectionInterface {
       $block_config->setVisibilityConfig('node_type', $visibility['node_type']);
       $block_config->save();
     }
-    catch (Exception $e) {
-      \Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to add %content-type content type to %block-id block: %error-msg', [
+    catch (\Exception $e) {
+      $this->logger->error('Failed to add %content-type content type to %block-id block: %error-msg', [
         '%content-type' => $content_type,
         '%block-id' => $block_id,
         '%error-msg' => $e->getMessage(),
@@ -264,7 +344,49 @@ class ConfigurationHelper implements ContainerInjectionInterface {
       return FALSE;
     }
 
-    \Drupal::service('logger.factory')->get('localgov_directories')->notice('Added %content-type content type to %block-id block.', [
+    $this->logger->notice('Added %content-type content type to %block-id block.', [
+      '%content-type' => $content_type,
+      '%block-id' => $block_id,
+    ]);
+
+    return TRUE;
+  }
+
+  /**
+   * Update a block's visibility to remove from content type.
+   *
+   * The given block should no longer appear sidebar pages for the given content type.
+   */
+  public function blockRemoveContentType(string $block_id, string $content_type): bool {
+    $block_config = $this->entityTypeManager->getStorage('block')->load($block_id);
+    if (!$block_config instanceof BlockInterface) {
+      $this->logger->error('Block %block-id is missing.  Cannot update its visibility settings.', [
+        '%block-id' => $block_id,
+      ]);
+
+      return FALSE;
+    }
+
+    try {
+      $visibility = $block_config->getVisibility();
+      if (empty($visibility['node_type']['bundles'][$content_type])) {
+        return FALSE;
+      }
+      unset($visibility['node_type']['bundles'][$content_type]);
+      $block_config->setVisibilityConfig('node_type', $visibility['node_type']);
+      $block_config->save();
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Failed to remove %content-type content type to %block-id block: %error-msg', [
+        '%content-type' => $content_type,
+        '%block-id' => $block_id,
+        '%error-msg' => $e->getMessage(),
+      ]);
+
+      return FALSE;
+    }
+
+    $this->logger->notice('Removed %content-type content type to %block-id block.', [
       '%content-type' => $content_type,
       '%block-id' => $block_id,
     ]);
@@ -275,7 +397,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   protected function indexAddBundle(IndexInterface $index, $entity_type_id, $entity_bundle) {
     $datasource = $this->indexGetDatasource($index, $entity_type_id);
     if (!$datasource) {
-      \Drupal::messenger()->addMessage(t('Failed to update the directories search index with new bundle'), MessengerInterface::TYPE_ERROR);
+      $this->logger->error('Failed to update the directories search index with new bundle');
       return;
     }
 
@@ -283,6 +405,21 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     $configuration['bundles']['default'] = FALSE;
     if (!in_array($entity_bundle, $configuration['bundles']['selected'])) {
       $configuration['bundles']['selected'][] = $entity_bundle;
+    }
+    $datasource->setConfiguration($configuration);
+  }
+
+  protected function indexRemoveBundle(IndexInterface $index, $entity_type_id, $entity_bundle) {
+    $datasource = $this->indexGetDatasource($index, $entity_type_id);
+    if (!$datasource) {
+      $this->logger->error('Failed to update the directories search index with new bundle');
+      return;
+    }
+
+    $configuration = $datasource->getConfiguration();
+    $configuration['bundles']['default'] = FALSE;
+    if (($key = array_search($entity_bundle, $configuration['bundles']['selected'])) !== FALSE) {
+      unset($configuration['bundles']['selected'][$key]);
     }
     $datasource->setConfiguration($configuration);
   }
@@ -313,16 +450,11 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     if (!$datasource) {
       // If the content:node datasource has been lost so have the fields most
       // probably and it's more of a mess. But leaving this here anyway.
-      $pluginHelper = \Drupal::service('search_api.plugin_helper');
-      $datasource = $pluginHelper->createDatasourcePlugins($index, 'entity:' . $entity_type_id);
+      $datasource = $this->searchApiPluginHelper->createDatasourcePlugin($index, 'entity:' . $entity_type_id);
     }
 
     return $datasource;
   }
-
-  /**
-   * Act on Directory channel field being removed.
-   */
 
   /**
    * Act on Directory facet field being removed.
