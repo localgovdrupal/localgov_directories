@@ -29,8 +29,7 @@ datasource_settings:
   'entity:node':
     bundles:
       default: false
-      selected:
-        - localgov_directories_page
+      selected: {  }
     languages:
       default: true
       selected: {  }
