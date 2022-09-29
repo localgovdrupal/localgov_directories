@@ -14,22 +14,6 @@ name: Directories
 description: ''
 read_only: false
 field_settings:
-  localgov_directory_channels:
-    label: 'Directory channels'
-    datasource_id: 'entity:node'
-    property_path: localgov_directory_channels
-    type: integer
-    dependencies:
-      config:
-        - field.storage.node.localgov_directory_channels
-  localgov_directory_title_sort:
-    label: 'Title (sort)'
-    datasource_id: 'entity:node'
-    property_path: localgov_directory_title_sort
-    type: string
-    dependencies:
-      config:
-        - field.storage.node.localgov_directory_title_sort
   rendered_item:
     label: 'Rendered HTML output'
     property_path: rendered_item

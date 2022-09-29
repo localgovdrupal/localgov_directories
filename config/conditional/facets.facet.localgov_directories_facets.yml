@@ -36,7 +36,7 @@ processor_configs:
   display_value_widget_order:
     processor_id: display_value_widget_order
     weights:
-      sort: 40
+      build: 40
     settings:
       sort: ASC
   translate_entity:
@@ -53,9 +53,7 @@ processor_configs:
   weight_property_order:
     processor_id: weight_property_order
     weights:
-      sort: -5
-    settings:
-      sort: ASC
+      build: -5
 empty_behavior:
   behavior: none
 show_title: false

@@ -83,6 +83,8 @@ class IndexTitleSortTest extends KernelTestBase {
       'search_api',
       'localgov_directories',
     ]);
+    // Enable localgov_directories_db such that all hooks called.
+    $this->container->get('module_installer')->install(['localgov_directories_db'], FALSE);
 
     // @todo check if we need this in the end.
     if (!Utility::isRunningInCli()) {
@@ -102,8 +104,6 @@ class IndexTitleSortTest extends KernelTestBase {
     // Add content type to search index.
     $this->createEntityReferenceField('node', $item_type_name, 'localgov_directory_channels', $this->randomString(), 'node');
 
-    // Enable localgov_directories_db such that all hooks called.
-    $this->container->get('module_installer')->install(['localgov_directories_db'], FALSE);
 
     $this->index = Index::load('localgov_directories_index_default');
     // We're not testing rendered item, and it requires pulling in a whole load
