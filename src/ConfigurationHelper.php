@@ -13,6 +13,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\field\FieldConfigInterface;
+use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Field as SearchIndexField;
 use Drupal\search_api\Utility\PluginHelperInterface;
@@ -94,6 +95,8 @@ class ConfigurationHelper implements ContainerInjectionInterface {
    *   Module extension list.
    * @param \Drupal\Core\Config\ConfigInstallerInterface $config_installer
    *   Config installer.
+   * @param \Drupal\search_api\Utility\PluginHelperInterface $search_api_plugin_helper
+   *   Search API Plugin helper.
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager, LoggerChannelFactoryInterface $logger_factory, ModuleExtensionList $module_extension_list, ConfigInstallerInterface $config_installer, PluginHelperInterface $search_api_plugin_helper) {
     $this->entityTypeManager = $entity_type_manager;
@@ -135,7 +138,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Act on a Directory channel field being added.
    */
-  public function insertedDirectoryChannelField(FieldConfigInterface $field) {
+  public function insertedDirectoryChannelField(FieldConfigInterface $field): void {
     $entity_type_id = $field->getTargetEntityTypeId();
     $entity_bundle = $field->getTargetBundle();
     // Index changes.
@@ -165,7 +168,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Act on Directory channel field being removed.
    */
-  public function deletedDirectoryChannelField(FieldConfigInterface $field) {
+  public function deletedDirectoryChannelField(FieldConfigInterface $field): void {
     // Only working for nodes at the moment.
     $entity_type_id = $field->getTargetEntityTypeId();
     $entity_bundle = $field->getTargetBundle();
@@ -179,7 +182,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Act on Directory facet field being added.
    */
-  public function insertedFacetField(FieldConfigInterface $field) {
+  public function insertedFacetField(FieldConfigInterface $field): void {
     if ($index = $this->getIndex()) {
       $this->indexAddFacetField($index);
       $index->save();
@@ -190,7 +193,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Act on Directory title sort field being added.
    */
-  public function insertedTitleSortField(FieldConfigInterface $field) {
+  public function insertedTitleSortField(FieldConfigInterface $field): void {
     if ($index = $this->getIndex()) {
       $this->indexAddTitleSortField($index);
       $index->save();
@@ -238,8 +241,11 @@ class ConfigurationHelper implements ContainerInjectionInterface {
    *
    * This assumes that the localgov_directory_facets_select field is part of a
    * Directory entry content type.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The index to the facet field to.
    */
-  protected function indexAddFacetField(IndexInterface $index) {
+  protected function indexAddFacetField(IndexInterface $index): void {
     if ($index->getField(Constants::FACET_INDEXING_FIELD)) {
       return;
     }
@@ -259,8 +265,11 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
   /**
    * Setup indexing on the Title Sort field of Directory entries.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The index to the title sort field field to.
    */
-  protected function indexAddTitleSortField(IndexInterface &$index) {
+  protected function indexAddTitleSortField(IndexInterface $index): void {
     if ($index->getField(Constants::TITLE_SORT_FIELD)) {
       return;
     }
@@ -280,8 +289,11 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
   /**
    * Setup indexing on the Directory channels field of Directory entries.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The index to the channel field to.
    */
-  protected function indexAddChannelsField(IndexInterface $index) {
+  protected function indexAddChannelsField(IndexInterface $index): void {
     if ($index->getField(Constants::CHANNEL_SELECTION_FIELD)) {
       return;
     }
@@ -302,7 +314,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Import config entity for the directory Facet.
    */
-  public function createFacet() {
+  public function createFacet(): void {
     if ($this->entityTypeManager->getStorage('facets_facet')->load(Constants::FACET_CONFIG_ENTITY_ID)) {
       return;
     }
@@ -317,6 +329,14 @@ class ConfigurationHelper implements ContainerInjectionInterface {
    * Update a block's visibility to add to content type.
    *
    * The given block should appear sidebar pages for the given content type.
+   *
+   * @param string $block_id
+   *   The block to update visibility for.
+   * @param string $content_type
+   *   The content type on which the block should be visible.
+   *
+   * @return bool
+   *   True on success.
    */
   public function blockAddContentType(string $block_id, string $content_type): bool {
     $block_config = $this->entityTypeManager->getStorage('block')->load($block_id);
@@ -355,7 +375,16 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Update a block's visibility to remove from content type.
    *
-   * The given block should no longer appear sidebar pages for the given content type.
+   * The given block should no longer appear sidebar pages for the given
+   * content type.
+   *
+   * @param string $block_id
+   *   The block to update visibility for.
+   * @param string $content_type
+   *   The content type on which the block should no longer be visible.
+   *
+   * @return bool
+   *   True on success.
    */
   public function blockRemoveContentType(string $block_id, string $content_type): bool {
     $block_config = $this->entityTypeManager->getStorage('block')->load($block_id);
@@ -394,7 +423,17 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     return TRUE;
   }
 
-  protected function indexAddBundle(IndexInterface $index, $entity_type_id, $entity_bundle) {
+  /**
+   * Add entity bundle to index datasource.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The index to add bundle to.
+   * @param string $entity_type_id
+   *   Entity type ID.
+   * @param string $entity_bundle
+   *   The bundle ID.
+   */
+  protected function indexAddBundle(IndexInterface $index, string $entity_type_id, string $entity_bundle): void {
     $datasource = $this->indexGetDatasource($index, $entity_type_id);
     if (!$datasource) {
       $this->logger->error('Failed to update the directories search index with new bundle');
@@ -409,7 +448,17 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     $datasource->setConfiguration($configuration);
   }
 
-  protected function indexRemoveBundle(IndexInterface $index, $entity_type_id, $entity_bundle) {
+  /**
+   * Remove entity bundle to index datasource.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The index to remove bundle from.
+   * @param string $entity_type_id
+   *   Entity type ID.
+   * @param string $entity_bundle
+   *   The bundle ID.
+   */
+  protected function indexRemoveBundle(IndexInterface $index, string $entity_type_id, string $entity_bundle): void {
     $datasource = $this->indexGetDatasource($index, $entity_type_id);
     if (!$datasource) {
       $this->logger->error('Failed to update the directories search index with new bundle');
@@ -424,7 +473,17 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     $datasource->setConfiguration($configuration);
   }
 
-  protected function viewSetViewMode(ViewEntityInterface $view, $entity_type_id, $entity_bundle) {
+  /**
+   * Set entity bundle default view mode in view.
+   *
+   * @param \Drupal\views\ViewEntityInterface $view
+   *   The view to update.
+   * @param string $entity_type_id
+   *   Entity type ID.
+   * @param string $entity_bundle
+   *   The bundle ID.
+   */
+  protected function viewSetViewMode(ViewEntityInterface $view, string $entity_type_id, string $entity_bundle): void {
     // Also set the default view mode for the directory view listing.
     $display = $view->get('display');
     if (isset($display['node_embed']['display_options']['row'])) {
@@ -436,7 +495,17 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     $view->set('display', $display);
   }
 
-  protected function renderedItemAddBundle(IndexInterface $index, $entity_type_id, $entity_bundle) {
+  /**
+   * Add entity bundle to index rendered item field.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The index to add bundle to.
+   * @param string $entity_type_id
+   *   Entity type ID.
+   * @param string $entity_bundle
+   *   The bundle ID.
+   */
+  protected function renderedItemAddBundle(IndexInterface $index, string $entity_type_id, string $entity_bundle): void {
     $index_field = $index->getField('rendered_item');
     if ($index_field) {
       $configuration = $index_field->getConfiguration();
@@ -445,7 +514,18 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     }
   }
 
-  protected function indexGetDatasource(IndexInterface $index, $entity_type_id) {
+  /**
+   * Get index entity datasource.
+   *
+   * @param \Drupal\search_api\IndexInterface $index
+   *   The index to retrieve the datasource from.
+   * @param string $entity_type_id
+   *   The entity type ID.
+   *
+   * @return \Drupal\search_api\Datasource\DatasourceInterface
+   *   The datasource.
+   */
+  protected function indexGetDatasource(IndexInterface $index, string $entity_type_id): DatasourceInterface {
     $datasource = $index->getDatasource('entity:' . $entity_type_id);
     if (!$datasource) {
       // If the content:node datasource has been lost so have the fields most
@@ -455,13 +535,5 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
     return $datasource;
   }
-
-  /**
-   * Act on Directory facet field being removed.
-   */
-
-  /**
-   * Act on Directory title sort field being removed.
-   */
 
 }
