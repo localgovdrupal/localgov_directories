@@ -243,7 +243,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
    * Directory entry content type.
    *
    * @param \Drupal\search_api\IndexInterface $index
-   *   The index to the facet field to.
+   *   The index to add the facet field to.
    */
   protected function indexAddFacetField(IndexInterface $index): void {
     if ($index->getField(Constants::FACET_INDEXING_FIELD)) {
@@ -328,7 +328,8 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Update a block's visibility to add to content type.
    *
-   * The given block should appear sidebar pages for the given content type.
+   * The given block should appear in the sidebars of pages for the given
+   * content type.
    *
    * @param string $block_id
    *   The block to update visibility for.
@@ -375,8 +376,8 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Update a block's visibility to remove from content type.
    *
-   * The given block should no longer appear sidebar pages for the given
-   * content type.
+   * The given block should no longer appear in the sidebars of pages for the
+   * given content type.
    *
    * @param string $block_id
    *   The block to update visibility for.

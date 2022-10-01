@@ -33,7 +33,7 @@ function localgov_directories_requirements($phase) {
   if ($phase != 'runtime') {
     return [];
   }
-  // Raise a warning if there is not backend selected, or no
+  // Raise a warning if there is no backend selected, or no
   // content types.
   $requirements = [];
   $index = \Drupal::entityTypeManager()->getStorage('search_api_index')->load(Constants::DEFAULT_INDEX);
