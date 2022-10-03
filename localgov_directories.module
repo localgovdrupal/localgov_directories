@@ -489,3 +489,10 @@ function localgov_directories_search_api_index_items_alter(IndexInterface $index
     }
   }
 }
+
+/**
+ * Implements hook_facets_search_api_query_type_mapping_alter().
+ */
+function localgov_directories_facets_search_api_query_type_mapping_alter($backend_plugin_id, array &$query_types) {
+  $query_types['localgov_directories'] = 'localgov_directories_query_type';
+}
