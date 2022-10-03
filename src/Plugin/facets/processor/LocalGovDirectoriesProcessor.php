@@ -3,7 +3,6 @@
 namespace Drupal\localgov_directories\Plugin\facets\processor;
 
 use Drupal\facets\FacetInterface;
-//use Drupal\facets\Processor\BuildProcessorInterface;
 use Drupal\facets\Processor\PreQueryProcessorInterface;
 use Drupal\facets\Processor\ProcessorPluginBase;
 
@@ -19,15 +18,11 @@ use Drupal\facets\Processor\ProcessorPluginBase;
  *   }
  * )
  */
-//class LocalGovDirectoriesProcessor extends ProcessorPluginBase implements BuildProcessorInterface {
 class LocalGovDirectoriesProcessor extends ProcessorPluginBase implements PreQueryProcessorInterface {
 
   /**
    * {@inheritdoc}
    */
-  //public function build(FacetInterface $facet, array $results) {
-   // return $results;
-  //}
   public function preQuery(FacetInterface $facet) {
     $active_items = $facet->getActiveItems();
     $facet->setActiveItems($active_items);
@@ -44,5 +39,4 @@ class LocalGovDirectoriesProcessor extends ProcessorPluginBase implements PreQue
   public function getQueryType() {
     return 'localgov_directories';
   }
-
 }

@@ -7,8 +7,7 @@ use Drupal\facets\Result\Result;
 use Drupal\search_api\Query\QueryInterface;
 
 /**
- * Provides support to "AND" facet groups while keeping the operator within a
- * facets as an "OR".
+ * "AND" facet groups while keeping the operator within a facets as an "OR".
  *
  * @FacetsQueryType(
  *   id = "localgov_directories_query_type",
@@ -47,6 +46,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
           $bundle[$directory_facet->bundle()][] = $directory_facet->id();
         }
 
+        $filter = NULL;
         foreach ($bundle as $bundle_name => $group_items) {
           unset($filter);
           $filter = $query->createConditionGroup($operator, ['facet:' . $field_identifier . '.' . $bundle_name]);
