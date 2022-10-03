@@ -14,7 +14,6 @@ dependencies:
   - drupal:views
   - pathauto:pathauto
   - search_api:search_api
-  - search_api:search_api_db
   - facets:facets
   - localgov_core:localgov_core
   - localgov_core:localgov_media
