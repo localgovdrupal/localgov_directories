@@ -7,7 +7,7 @@ use Drupal\facets\Result\Result;
 use Drupal\search_api\Query\QueryInterface;
 
 /**
- * "AND" facet groups while keeping the operator within a facets as an "OR".
+ * AND facet groups while keeping the operator within a facets as an OR.
  *
  * @FacetsQueryType(
  *   id = "localgov_directories_query_type",

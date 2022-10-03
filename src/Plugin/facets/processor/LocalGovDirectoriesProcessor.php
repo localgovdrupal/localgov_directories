@@ -39,4 +39,5 @@ class LocalGovDirectoriesProcessor extends ProcessorPluginBase implements PreQue
   public function getQueryType() {
     return 'localgov_directories';
   }
+
 }
