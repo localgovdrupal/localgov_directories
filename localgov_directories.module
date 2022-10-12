@@ -220,3 +220,13 @@ function localgov_directories_search_api_index_items_alter(IndexInterface $index
 function localgov_directories_facets_search_api_query_type_mapping_alter($backend_plugin_id, array &$query_types) {
   $query_types['localgov_directories'] = 'localgov_directories_query_type';
 }
+
+/**
+ * Implements hook_leaflet_map_view_style_alter().
+ */
+function localgov_directories_leaflet_map_view_style_alter(&$js_settings, $leaflet_map) {
+  // Add a value to the map if there are no features.
+  // https://github.com/localgovdrupal/localgov_directories/issues/229#issuecomment-1271418506
+  // This can be used in template if needed.
+  $js_settings['map']['is_empty'] = empty($js_settings['features']);
+}
