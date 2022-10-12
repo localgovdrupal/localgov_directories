@@ -215,7 +215,6 @@ class FacetsTest extends BrowserTestBase {
     // Check facets and check the right entries are shown.
     $directory_url = $channel_node->toUrl()->toString();
     $this->drupalGet($directory_url);
-    $this->assertSession()->statusCodeEquals(200);
 
     // Initially all four should be avalible.
     $this->assertSession()->pageTextContains($node_titles[0]);
