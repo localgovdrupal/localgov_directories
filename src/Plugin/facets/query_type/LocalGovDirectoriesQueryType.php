@@ -5,6 +5,7 @@ namespace Drupal\localgov_directories\Plugin\facets\query_type;
 use Drupal\facets\QueryType\QueryTypePluginBase;
 use Drupal\facets\Result\Result;
 use Drupal\search_api\Query\QueryInterface;
+use Drupal\search_api\Query\ConditionGroupInterface;
 
 /**
  * AND facet groups while keeping the operator within a facets as an OR.
@@ -63,11 +64,37 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
    * {@inheritdoc}
    */
   public function build() {
+    $results = $this->results;
     $query_operator = $this->facet->getQueryOperator();
+    $temp_query = $this->query->getOriginalQuery();
+    $temp_query->preExecute();
+    $conditions = &$temp_query->getConditionGroup()->getConditions();
+    foreach ($conditions as $key => $condition) {
+      if ($condition instanceof \Drupal\search_api\Query\ConditionGroupInterface) {
+        $tags = $condition->getTags();
+        foreach($tags as $tag) {
+          if (strpos($tag, 'facet:localgov_directory_facets_filter.') === 0) {
+            // unset($conditions[$key]);
+            $results = array_merge($results, $this->getGroupFacets($tag));
+          }
+        }
+      }
+    }
+    $filtered_results[] = reset($results);
+    foreach ($results as $result) {
+      $current_results = array_column($filtered_results, 'filter');
+      if (!in_array($result['filter'], $current_results)) {
+        $filtered_results[] = $result;
+      }
+    }
+    $results = $filtered_results;
+    // $temp_query->execute();
+    // $avalible_facets = $temp_query->getResults()->getExtraData('search_api_facets');
+    // $results = $avalible_facets['localgov_directory_facets_filter'] ?? $this->results;
 
-    if (!empty($this->results)) {
+    if (!empty($results)) {
       $facet_results = [];
-      foreach ($this->results as $result) {
+      foreach ($results as $result) {
         if ($result['count'] || $query_operator === 'or') {
           $result_filter = $result['filter'] ?? '';
           if ($result_filter[0] === '"') {
@@ -85,6 +112,20 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     }
 
     return $this->facet;
+  }
+
+  protected function getGroupFacets($filter_tag) {
+    $filter_query = $this->query->getOriginalQuery();
+    $filter_query->preExecute();
+    $conditions = &$filter_query->getConditionGroup()->getConditions();
+    foreach ($conditions as $tag => $condition) {
+      if ($condition instanceof ConditionGroupInterface && $condition->hasTag($filter_tag)) {
+        unset($conditions[$tag]);
+      }
+    }
+    $filter_query->execute();
+    $facets = $filter_query->getResults()->getExtraData('search_api_facets');
+    return $facets['localgov_directory_facets_filter'] ?? [];
   }
 
 }
