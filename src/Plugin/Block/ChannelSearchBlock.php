@@ -156,7 +156,10 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
    */
   public function getCacheContexts() {
 
-    return Cache::mergeContexts(parent::getCacheContexts(), ['route']);
+    $channel_view = Views::getView(self::CHANNEL_VIEW);
+    $channel_view->setDisplay(self::CHANNEL_VIEW_DISPLAY);
+    $contexts = $channel_view->display_handler->getCacheMetadata()->getCacheContexts();
+    return Cache::mergeContexts(parent::getCacheContexts(), $contexts);
   }
 
   /**
