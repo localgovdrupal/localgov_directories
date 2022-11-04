@@ -8,6 +8,7 @@
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\field\FieldConfigInterface;
+use Drupal\localgov_directories\ConfigurationHelper;
 use Drupal\localgov_directories\Constants as Directory;
 use Drupal\localgov_directories_location\LocationExtraFieldDisplay;
 use Drupal\node\NodeInterface;
@@ -59,7 +60,7 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
       // can add it to the Directory channel view.
       _localgov_directories_location_add_proximity_search_view_display();
 
-      localgov_directories_create_dir_facet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
+      \Drupal::classResolver(ConfigurationHelper::class)->createFacet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
 
       // The channel selection and title sort fields may have gone missing.
       _localgov_directories_restore_channel_selection_n_title_sort_fields_to_search_index($index);

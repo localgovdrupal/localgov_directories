@@ -9,8 +9,10 @@ use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\localgov_directories\Constants;
 use Drupal\node\Entity\NodeType;
 use Drupal\search_api\Entity\Index;
+use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Field;
 use Drupal\views\Entity\View;
 
@@ -22,6 +24,40 @@ function localgov_directories_install() {
   if ($services) {
     localgov_directories_optional_fields_settings($services);
   }
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function localgov_directories_requirements($phase) {
+  if ($phase != 'runtime') {
+    return [];
+  }
+  // Raise a warning if there is no backend selected, or no
+  // content types.
+  $requirements = [];
+  $index = \Drupal::entityTypeManager()->getStorage('search_api_index')->load(Constants::DEFAULT_INDEX);
+  if ($index instanceof IndexInterface) {
+    if ($index->getServerId() === NULL) {
+      $requirements['server'] = [
+        'title' => t('LocalGov Directories: Server'),
+        'description' => t('Directories requires a server. For the defaut Database server enable the <em>LocalGov Directories Database</em> module.'),
+        'severity' => REQUIREMENT_WARNING,
+      ];
+    }
+    if ($datasource = $index->getDatasource('entity:node')) {
+      $configuration = $datasource->getConfiguration();
+      if (empty($configuration['bundles']['selected'])) {
+        $requirements['content_type'] = [
+          'title' => t('LocalGov Directories: Content type'),
+          'description' => t('Directories requires at least one content. For a simple page enable the <em>LocalGov Directories Page</em> module.'),
+          'severity' => REQUIREMENT_WARNING,
+        ];
+      }
+    }
+  }
+
+  return $requirements;
 }
 
 /**
@@ -237,5 +273,31 @@ function localgov_directories_update_8006() {
   }
   else {
     return t('Unable to update directories view as sort order has already been changed. You may want to manually add sorting by localgov_directory_title_sort');
+  }
+}
+
+/**
+ * Directories Search API database becomes its own module.
+ */
+function localgov_directories_update_8007() {
+  // Prevent clash as config already installed.
+  // So it's enabled, but don't run install.
+  $config = Drupal::configFactory()->getEditable('core.extension');
+  $modules = $config->get('module');
+  $modules['localgov_directories_db'] = 0;
+  $config->set('module', $modules);
+  $config->save();
+}
+
+/**
+ * Add schema version for Directories Search API DB module.
+ */
+function localgov_directories_update_8008() {
+  $config = \Drupal::config('core.extension');
+  $modules = $config->get('module');
+  if (isset($modules['localgov_directories_db']) &&
+    !\Drupal::keyValue('system.schema')->has('localgov_directories_db')
+  ) {
+    \Drupal::keyValue('system.schema')->set('localgov_directories_db', 8000);
   }
 }

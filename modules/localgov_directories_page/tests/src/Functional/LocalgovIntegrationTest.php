@@ -6,16 +6,18 @@ use Drupal\node\NodeInterface;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\system\Functional\Menu\AssertBreadcrumbTrait;
+use Drupal\Tests\Traits\Core\CronRunTrait;
 
 /**
- * Tests pages working together with pathauto, services and topics.
+ * Tests pages working together with pathauto, services, topics, search.
  *
  * @group localgov_directories
  */
-class PathIntegrationTest extends BrowserTestBase {
+class LocalgovIntegrationTest extends BrowserTestBase {
 
   use NodeCreationTrait;
   use AssertBreadcrumbTrait;
+  use CronRunTrait;
 
   /**
    * Test breadcrumbs in the Standard profile.
@@ -55,6 +57,8 @@ class PathIntegrationTest extends BrowserTestBase {
   protected static $modules = [
     'localgov_directories',
     'localgov_directories_page',
+    'localgov_search',
+    'localgov_search_db',
   ];
 
   /**
@@ -97,6 +101,35 @@ class PathIntegrationTest extends BrowserTestBase {
     $trail = ['' => 'Home'];
     $trail += ['directory-1' => 'Directory 1'];
     $this->assertBreadcrumb(NULL, $trail);
+  }
+
+  /**
+   * LocalGov Search integration.
+   */
+  public function testLocalgovSearch() {
+    $body = [
+      'value' => 'Science is the search for truth, that is the effort to understand the world: it involves the rejection of bias, of dogma, of revelation, but not the rejection of morality.',
+      'summary' => 'One of the greatest joys known to man is to take a flight into ignorance in search of knowledge.',
+    ];
+    // Directory.
+    $directory = $this->createNode([
+      'title' => 'Directory 1',
+      'type' => 'localgov_directory',
+      'status' => NodeInterface::PUBLISHED,
+    ]);
+    $this->createNode([
+      'title' => 'Directory page 1',
+      'type' => 'localgov_directories_page',
+      'localgov_directory_channels' => ['target_id' => $directory->id()],
+      'body' => $body,
+    ]);
+    $this->cronRun();
+
+    $this->drupalGet('search', ['query' => ['s' => 'bias+dogma+revelation']]);
+    $this->assertSession()->pageTextContains('Directory page 1');
+    $this->assertSession()->responseContains('<strong>bias</strong>');
+    $this->assertSession()->responseContains('<strong>dogma</strong>');
+    $this->assertSession()->responseContains('<strong>revelation</strong>');
   }
 
 }

@@ -10,6 +10,7 @@ use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\localgov_directories\ConfigurationHelper;
 use Drupal\localgov_directories\Constants as Directory;
 use Drupal\search_api\Entity\Index as SearchIndex;
 use Drupal\search_api\Item\Field as SearchIndexField;
@@ -168,7 +169,7 @@ function localgov_directories_location_update_8007() {
   }
 
   _localgov_directories_location_add_proximity_search_view_display();
-  localgov_directories_create_dir_facet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
+  \Drupal::classResolver(ConfigurationHelper::class)->createFacet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
 
   return t('Added the location field to the Directory channel view.');
 }

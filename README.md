@@ -3,6 +3,17 @@
 Provides directories (channels) which have entries (pages, venues, etc.) which
 can be filtered and searched.
 
+## Enabling the module
+
+The 'LocalGov Directories' module enables the core functionality. You will need
+a search backend: 'LocalGov Directories Database' will provide this. You can use
+other search backends, for example solr, if doing so it is advisable to disable
+the Database module first.
+
+For the directories you will also need at least one content Entry type, these
+can be created or supplied by the Directories submodules, see the Directory
+Entries section below.
+
 ## Facets
 
 Facets types, and their facet values. Create types (eg. "Size"), and values (eg.
@@ -51,6 +62,20 @@ enabled channels. It also has contact information.
 
 A directory entry with a location to be shown on a map. Requires the
 localgov geo module.
+
+### Organisation
+
+This simple entry is primarily used if you enable Directories Open Referral.
+The standard requires all Services, by default mapped to Venues, have an
+Organisation. Other directory entry types (see Extending directory entries)
+can be mapped to Open Referral as appropriate.
+
+### Promotional pages
+
+A directory entry with additional fields with paragraphs for richer
+presentation. Better for brouchure type entries than services information.
+This type of entry would be more difficult to map for Open Referral or any
+other standard or format, but good for adding images and styling on the site.
 
 ## LocalGov Drupal Services Integration
 

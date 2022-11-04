@@ -16,13 +16,18 @@
     },
     "require-dev": {
         "localgovdrupal/localgov_services": "^2.0",
-        "localgovdrupal/localgov_openreferral": "^1.0"
+        "localgovdrupal/localgov_openreferral": "^1.0",
+        "localgovdrupal/localgov_paragraphs": "^2.0"
     },
     "suggest": {
-        "localgovdrupal/localgov_openreferral": "Enables Open Referral output of Directories"
+        "localgovdrupal/localgov_openreferral": "Enables Open Referral output of Directories",
+        "localgovdrupal/localgov_paragraphs": "For Directory Promo Page content type in Directories"
     },
     "extra": {
         "patches": {
+            "drupal/facets": {
+                "Don't render facet block if backend isn't available: https://www.drupal.org/project/facets/issues/3311856": "https://git.drupalcode.org/issue/facets-3311856/-/commit/765d5ef4228906c7f201e116763f3018a7867c96.patch"
+            },
             "drupal/search_api": {
                 "Location search for Search API Database backend": "https://www.drupal.org/files/issues/2022-07-12/2877319-30-db_backend_location_support.patch"
             },

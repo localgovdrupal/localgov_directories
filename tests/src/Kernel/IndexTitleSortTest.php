@@ -83,6 +83,8 @@ class IndexTitleSortTest extends KernelTestBase {
       'search_api',
       'localgov_directories',
     ]);
+    // Enable localgov_directories_db such that all hooks called.
+    $this->container->get('module_installer')->install(['localgov_directories_db'], FALSE);
 
     // @todo check if we need this in the end.
     if (!Utility::isRunningInCli()) {

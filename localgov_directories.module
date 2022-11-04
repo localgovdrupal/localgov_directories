@@ -5,24 +5,18 @@
  * Provides a directory facets entity type.
  */
 
-use Drupal\block\Entity\Block;
-use Drupal\Core\Config\FileStorage as ConfigFileStorage;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Render\Element;
-use Drupal\facets\Entity\Facet;
 use Drupal\field\FieldConfigInterface;
+use Drupal\localgov_directories\ConfigurationHelper;
 use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 use Drupal\localgov_roles\RolesHelper;
 use Drupal\node\NodeInterface;
 use Drupal\pathauto\Entity\PathautoPattern;
-use Drupal\search_api\Entity\Index;
 use Drupal\search_api\IndexInterface;
-use Drupal\search_api\Item\Field as SearchIndexField;
 use Drupal\localgov_directories\Constants as Directory;
-use Drupal\views\Entity\View;
 
 /**
  * Implements hook_theme().
@@ -40,6 +34,10 @@ function localgov_directories_theme() {
     'facets_item_list__checkbox__localgov_directories_facets' => [
       'base hook' => 'facets_item_list',
       'template'  => 'facets-item-list--links--localgov-directories-facets',
+    ],
+    'facets_item_list__dropdown__localgov_directories_facets' => [
+      'base hook' => 'facets_item_list',
+      'template'  => 'facets-item-list--dropdown--localgov-directories-facets',
     ],
   ];
 }
@@ -147,86 +145,14 @@ function localgov_directories_optional_fields_settings($services) {
  *   entry content type.
  */
 function localgov_directories_field_config_insert(FieldConfigInterface $field) {
-  // If a content type can be added to a directory channel add it to the index.
-  //
-  // While search_api could index more entity types to extend will require
-  // updating fields, and aggregating the facet ones. Only 'node' updated here
-  // for now.
-  if (
-    $field->getName() == 'localgov_directory_channels' &&
-    $field->getTargetEntityTypeId() == 'node' &&
-    ($index = Index::load('localgov_directories_index_default'))
-  ) {
-    $entity_type_id = 'node';
-    $entity_bundle = $field->getTargetBundle();
-
-    $index = Index::load('localgov_directories_index_default');
-    $datasource = $index->getDatasource('entity:' . $entity_type_id);
-    if (!$datasource) {
-      // If the content:node datasource has been lost so have the fields most
-      // probably and it's more of a mess. But leaving this here anyway.
-      $pluginHelper = \Drupal::service('search_api.plugin_helper');
-      $datasource = $pluginHelper->createDatasourcePlugins($index, 'entity:' . $entity_type_id);
-    }
-    if (!$datasource) {
-      \Drupal::messenger()->addMessage(t('Failed to update the directories search index with new bundle'), MessengerInterface::TYPE_ERROR);
-      return;
-    }
-
-    $configuration = $datasource->getConfiguration();
-    $configuration['bundles']['default'] = FALSE;
-    if (!in_array($entity_bundle, $configuration['bundles']['selected'])) {
-      $configuration['bundles']['selected'][] = $entity_bundle;
-    }
-    $datasource->setConfiguration($configuration);
-
-    $index_field = $index->getField('rendered_item');
-    if ($index_field) {
-      $configuration = $index_field->getConfiguration();
-      $configuration['view_mode']['entity:node'][$entity_bundle] = 'directory_index';
-      $index_field->setConfiguration($configuration);
-    }
-
-    $index->save();
-
-    // Also set the default view mode for the directory view listing.
-    $view = View::load('localgov_directory_channel');
-    if ($view) {
-      $display = $view->get('display');
-      if (isset($display['node_embed']['display_options']['row'])) {
-        $display['node_embed']['display_options']['row']['options']['view_modes']['entity:node'][$entity_bundle] = 'teaser';
-      }
-      elseif (isset($display['default']['display_options']['row'])) {
-        $display['default']['display_options']['row']['options']['view_modes']['entity:node'][$entity_bundle] = 'teaser';
-      }
-      $view->set('display', $display);
-      $view->save();
-    }
+  if ($field->getName() == Directory::CHANNEL_SELECTION_FIELD) {
+    \Drupal::classResolver(ConfigurationHelper::class)->insertedDirectoryChannelField($field);
   }
-
-  // Setup indexing on Facet selection field of a Directory entry content type.
-  $is_node_field = $field->getTargetEntityTypeId() === 'node';
-  $is_adding_facet_selection_field = $field->getName() === Directory::FACET_SELECTION_FIELD;
-  $is_adding_channel_selection_field = $field->getName() === Directory::CHANNEL_SELECTION_FIELD;
-  $dir_search_index = Index::load('localgov_directories_index_default');
-  $has_dir_search_index = $dir_search_index;
-
-  $entity_bundle = $field->getTargetBundle();
-  $entity_field_defs = Drupal::service('entity_field.manager')->getFieldDefinitions('node', $entity_bundle);
-  $has_channel_selection_field = array_key_exists(Directory::CHANNEL_SELECTION_FIELD, $entity_field_defs);
-  $has_facet_selection_field = array_key_exists(Directory::FACET_SELECTION_FIELD, $entity_field_defs);
-  $has_both_facet_and_channel_fields = (($is_adding_channel_selection_field and $has_facet_selection_field) or ($is_adding_facet_selection_field and $has_channel_selection_field));
-  $is_new_directory_entry_content_type = ($is_node_field and $has_both_facet_and_channel_fields);
-  if ($is_new_directory_entry_content_type and $has_dir_search_index) {
-    localgov_directories_add_facet_field_to_index($dir_search_index);
-    localgov_directories_create_dir_facet(Directory::FACET_CONFIG_ENTITY_ID, Directory::FACET_CONFIG_FILE);
+  elseif ($field->getName() == Directory::FACET_SELECTION_FIELD) {
+    \Drupal::classResolver(ConfigurationHelper::class)->insertedFacetField($field);
   }
-
-  // Setup Directory search block.
-  $is_creating_directory_entry_content_type = ($is_node_field and $is_adding_channel_selection_field);
-  if ($is_creating_directory_entry_content_type) {
-    $content_type = $field->getTargetBundle();
-    localgov_directories_add_block_to_content_type_sidebar(Directory::CHANNEL_SEARCH_BLOCK, $content_type);
+  elseif ($field->getName() == Directory::TITLE_SORT_FIELD) {
+    \Drupal::classResolver(ConfigurationHelper::class)->insertedTitleSortField($field);
   }
 }
 
@@ -234,37 +160,8 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
  * Implements hook_ENTITY_TYPE_delete().
  */
 function localgov_directories_field_config_delete(FieldConfigInterface $field) {
-  // If a content type can no longer be added to a directory channel remove
-  // from index.
-  if (
-    $field->getName() == 'localgov_directory_channels' &&
-    $field->getTargetEntityTypeId() == 'node' &&
-    ($index = Index::load('localgov_directories_index_default'))
-  ) {
-    $entity_type_id = 'node';
-    $entity_bundle = $field->getTargetBundle();
-
-    $index = Index::load('localgov_directories_index_default');
-    $datasource = $index->getDatasource('entity:' . $entity_type_id);
-    if (!$datasource) {
-      return;
-    }
-
-    $configuration = $datasource->getConfiguration();
-    $configuration['bundles']['default'] = FALSE;
-    if (($key = array_search($entity_bundle, $configuration['bundles']['selected'])) !== FALSE) {
-      unset($configuration['bundles']['selected'][$key]);
-    }
-    $datasource->setConfiguration($configuration);
-    $index->save();
-  }
-
-  $is_node_field = $field->getTargetEntityTypeId() === 'node';
-  $is_channel_selection_field = $field->getName() === Directory::CHANNEL_SELECTION_FIELD;
-  $is_defunct_directory_entry_content_type = ($is_node_field and $is_channel_selection_field);
-  if ($is_defunct_directory_entry_content_type) {
-    $content_type = $field->getTargetBundle();
-    localgov_directories_remove_block_from_content_type_sidebar(Directory::CHANNEL_SEARCH_BLOCK, $content_type);
+  if ($field->getName() == Directory::CHANNEL_SELECTION_FIELD) {
+    \Drupal::classResolver(ConfigurationHelper::class)->deletedDirectoryChannelField($field);
   }
 }
 
@@ -300,180 +197,6 @@ function template_preprocess_localgov_directories_facets(array &$variables) {
 }
 
 /**
- * Setup indexing on the Facet selection field of Directory entries.
- *
- * This assumes that the localgov_directory_facets_select field is part of a
- * Directory entry content type.
- */
-function localgov_directories_add_facet_field_to_index(IndexInterface $dir_search_index) {
-
-  $has_facet_index_field = $dir_search_index->getField(Directory::FACET_INDEXING_FIELD);
-  if ($has_facet_index_field) {
-    return;
-  }
-
-  $new_facet_index_field = new SearchIndexField($dir_search_index, Directory::FACET_INDEXING_FIELD);
-  $new_facet_index_field->setLabel('Facets');
-  $new_facet_index_field->setDataSourceId('entity:node');
-  $new_facet_index_field->setPropertyPath(Directory::FACET_SELECTION_FIELD);
-  $new_facet_index_field->setType('integer');
-  $new_facet_index_field->setDependencies([
-    'config' => [
-      'field.storage.node.' . Directory::FACET_SELECTION_FIELD,
-    ],
-  ]);
-  $dir_search_index->addField($new_facet_index_field);
-  $dir_search_index->save();
-}
-
-/**
- * Import config entity for the directory Facet.
- *
- * @param string $facet_id
- *   Facet entity id.
- * @param string $facet_cfg_file
- *   Config filename without the Yaml extension.
- */
-function localgov_directories_create_dir_facet(string $facet_id, string $facet_cfg_file): void {
-
-  $has_dir_facet_config = Facet::load($facet_id);
-  if ($has_dir_facet_config) {
-    return;
-  }
-
-  $conditional_config_path = \Drupal::service('extension.list.module')->getPath('localgov_directories') . '/config/conditional';
-  $import_result = localgov_directories_import_config_entity('facets_facet', $conditional_config_path, $facet_cfg_file);
-  if ($import_result) {
-    Drupal::service('config.installer')->installOptionalConfig();
-  }
-}
-
-/**
- * Create new config entity from given config file.
- *
- * @param string $entity_type
- *   Example: facets_facet.
- * @param string $config_path
- *   Example: modules/foo/config/bar.
- * @param string $config_filename
- *   Example: views.view.bar.
- *
- * @see https://www.metaltoad.com/blog/programmatically-importing-drupal-8-field-configurations
- * @see https://stackoverflow.com/a/52277490
- */
-function localgov_directories_import_config_entity(string $entity_type, string $config_path, string $config_filename): bool {
-
-  $config_src = new ConfigFileStorage($config_path);
-  if (empty($config_src)) {
-    return FALSE;
-  }
-
-  $config_values = $config_src->read($config_filename);
-  if (empty($config_values)) {
-    return FALSE;
-  }
-
-  try {
-    Drupal::service('entity_type.manager')->getStorage($entity_type)->create($config_values)->save();
-  }
-  catch (Exception $e) {
-    Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to create new config entity: %filename.  Error: %msg', [
-      '%filename' => $config_filename,
-      '%msg' => $e->getMessage(),
-    ]);
-
-    return FALSE;
-  }
-
-  return TRUE;
-}
-
-/**
- * Update a block's visibility.
- *
- * The given block should appear in pages for the given content type.
- */
-function localgov_directories_add_block_to_content_type_sidebar(string $block_id, string $content_type): bool {
-
-  $block_config = Block::load($block_id);
-  if (empty($block_config)) {
-    Drupal::service('logger.factory')->get('localgov_directories')->error('Block %block-id is missing.  Cannot update its visibility settings.', [
-      '%block-id' => $block_id,
-    ]);
-
-    return FALSE;
-  }
-
-  try {
-    $block_visibility_config = $block_config->getVisibility();
-    $block_visibility_config['node_type']['bundles'][$content_type] = $content_type;
-    $block_config->setVisibilityConfig('node_type', $block_visibility_config['node_type']);
-    $block_config->save();
-  }
-  catch (Exception $e) {
-    Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to add %content-type content type to %block-id block: %error-msg', [
-      '%content-type' => $content_type,
-      '%block-id' => $block_id,
-      '%error-msg' => $e->getMessage(),
-    ]);
-
-    return FALSE;
-  }
-
-  Drupal::service('logger.factory')->get('localgov_directories')->notice('Added %content-type content type to %block-id block.', [
-    '%content-type' => $content_type,
-    '%block-id' => $block_id,
-  ]);
-
-  return TRUE;
-}
-
-/**
- * Update a block's visibility.
- *
- * The given block should **not** appear in pages for the given content type.
- */
-function localgov_directories_remove_block_from_content_type_sidebar(string $block_id, string $content_type): bool {
-
-  $block_config = Block::load($block_id);
-  if (empty($block_config)) {
-    Drupal::service('logger.factory')->get('localgov_directories')->error('Block %block-id is missing.  Cannot update its visibility settings.', [
-      '%block-id' => $block_id,
-    ]);
-
-    return FALSE;
-  }
-
-  try {
-    $block_visibility_config = $block_config->getVisibility();
-
-    if (empty($block_visibility_config['node_type']['bundles'][$content_type])) {
-      return FALSE;
-    }
-
-    unset($block_visibility_config['node_type']['bundles'][$content_type]);
-    $block_config->setVisibilityConfig('node_type', $block_visibility_config['node_type']);
-    $block_config->save();
-  }
-  catch (Exception $e) {
-    Drupal::service('logger.factory')->get('localgov_directories')->error('Failed to remove %content-type content type from %block-id block: %error-msg', [
-      '%content-type' => $content_type,
-      '%block-id' => $block_id,
-      '%error-msg' => $e->getMessage(),
-    ]);
-
-    return FALSE;
-  }
-
-  Drupal::service('logger.factory')->get('localgov_directories')->notice('Removed %content-type content type from %block-id block.', [
-    '%content-type' => $content_type,
-    '%block-id' => $block_id,
-  ]);
-
-  return TRUE;
-}
-
-/**
  * Implements hook_search_api_index_items_alter().
  *
  * Populate localgov_directory_title_sort if empty.
@@ -489,4 +212,14 @@ function localgov_directories_search_api_index_items_alter(IndexInterface $index
       }
     }
   }
+}
+
+/**
+ * Implements hook_leaflet_map_view_style_alter().
+ */
+function localgov_directories_leaflet_map_view_style_alter(&$js_settings, $leaflet_map) {
+  // Add a value to the map if there are no features.
+  // https://github.com/localgovdrupal/localgov_directories/issues/229#issuecomment-1271418506
+  // This can be used in template if needed.
+  $js_settings['map']['is_empty'] = empty($js_settings['features']);
 }
