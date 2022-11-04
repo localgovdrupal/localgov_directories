@@ -187,7 +187,10 @@ class ConfigurationHelper implements ContainerInjectionInterface {
       $this->indexAddFacetField($index);
       $index->save();
     }
-    $this->createFacet(Constants::FACET_CONFIG_ENTITY_ID, Constants::FACET_CONFIG_FILE);
+
+    if ($index && $index->status()) {
+      $this->createFacet(Constants::FACET_CONFIG_ENTITY_ID, Constants::FACET_CONFIG_FILE);
+    }
   }
 
   /**

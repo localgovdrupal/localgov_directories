@@ -164,7 +164,7 @@ function localgov_directories_location_update_8005() {
 function localgov_directories_location_update_8007() {
 
   $index = SearchIndex::load('localgov_directories_index_default');
-  if (!$index->getField('localgov_location')) {
+  if ($index->status() && !$index->getField('localgov_location')) {
     return t('The location field has no search index.  We cannot use it in the Directory channel view');
   }
 

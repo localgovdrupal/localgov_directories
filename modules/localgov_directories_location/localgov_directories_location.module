@@ -44,8 +44,8 @@ function localgov_directories_location_node_view(array &$build, NodeInterface $n
  *
  * In a fresh installation of localgov_directories, saving the search index
  * drops the localgov_directory_channels and localgov_directory_title_sort
- * fields from the index as they are no attached to any content type yet.  So we
- * add them again as we are now certain that they are attached to a content
+ * fields from the index as they are not attached to any content type yet.  So
+ * we add them again as we are now certain that they are attached to a content
  * type.
  */
 function localgov_directories_location_field_config_insert(FieldConfigInterface $field) {
@@ -54,7 +54,7 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
   $new_field_name = $field->getName();
   $is_node_entity_type = $field->getTargetEntityTypeId() === 'node';
 
-  if ($new_field_name === 'localgov_location' && $is_node_entity_type && $index && !$index->getField('localgov_location')) {
+  if ($new_field_name === 'localgov_location' && $is_node_entity_type && $index && $index->status() && !$index->getField('localgov_location')) {
     if (_localgov_directories_location_add_location_field_to_search_index($field, $index)) {
       // Now that the location field is part of the Directories search index, we
       // can add it to the Directory channel view.
