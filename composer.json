@@ -32,8 +32,8 @@
                 "Location search for Search API Database backend": "https://www.drupal.org/files/issues/2022-07-12/2877319-30-db_backend_location_support.patch"
             },
             "drupal/search_api_location": {
-                "Geocoder selection plus Coordinate extraction bug": "https://www.drupal.org/files/issues/2022-06-03/3283994-3_0.patch",
-                "Schema fix for Views filter": "https://www.drupal.org/files/issues/2022-07-17/3296407-1-views-filter-schema-fix.patch"
+                "Geocoder selection bug": "https://www.drupal.org/files/issues/2022-11-09/3283994-6-location-input-geocoder-plugin-fix.patch",
+                "Schema fix for Views filter": "https://www.drupal.org/files/issues/2022-07-17/3296407-5-views-filter-schema-fix.patch"
             }
         }
     }
