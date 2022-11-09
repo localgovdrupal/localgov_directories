@@ -33,7 +33,7 @@
             },
             "drupal/search_api_location": {
                 "Geocoder selection bug": "https://www.drupal.org/files/issues/2022-11-09/3283994-6-location-input-geocoder-plugin-fix.patch",
-                "Schema fix for Views filter": "https://www.drupal.org/files/issues/2022-07-17/3296407-5-views-filter-schema-fix.patch"
+                "Schema fix for Views filter": "https://www.drupal.org/files/issues/2022-11-09/3296407-5-views-filter-schema-fix.patch"
             }
         }
     }
