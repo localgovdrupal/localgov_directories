@@ -7,7 +7,10 @@
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\field\FieldConfigInterface;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\localgov_directories\ConfigurationHelper;
 use Drupal\localgov_directories\Constants as Directory;
 use Drupal\localgov_directories_location\LocationExtraFieldDisplay;
@@ -49,6 +52,10 @@ function localgov_directories_location_node_view(array &$build, NodeInterface $n
  * type.
  */
 function localgov_directories_location_field_config_insert(FieldConfigInterface $field) {
+
+  if (!_localgov_directories_location_has_location_search()) {
+    return;
+  }
 
   $index = SearchIndex::load('localgov_directories_index_default');
   $new_field_name = $field->getName();
@@ -113,8 +120,8 @@ function _localgov_directories_location_add_location_field_to_search_index(Field
  */
 function _localgov_directories_location_add_proximity_search_view_display(): void {
 
-  $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
-  $view_with_proximity_search = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
+  $this_module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
+  $view_with_proximity_search = Yaml::decode(file_get_contents($this_module_path . '/config/override/views.view.localgov_directory_channel.yml'));
 
   $view = View::load('localgov_directory_channel');
   if ($view) {
@@ -155,4 +162,81 @@ function _localgov_directories_location_restore_channel_selection_n_title_sort_f
     $index->save();
     $index->reindex();
   }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update() for hook_search_api_index_update().
+ *
+ * Whenever the Directory search index is updated, check if we need to setup
+ * proximity search.  This is useful where location search was unavailable when
+ * this module was installed but has now become available.
+ */
+function localgov_directories_search_api_index_update(SearchIndexInterface $search_index) {
+
+  if ($search_index->id() !== Directory::DEFAULT_INDEX) {
+    return;
+  }
+
+  if ($search_index->getField('localgov_location')) {
+    return;
+  }
+
+  if (!_localgov_directories_location_has_location_search()) {
+    return;
+  }
+
+  $location_field_configs = \Drupal::service('entity_type.manager')
+    ->getStorage('field_config')
+    ->loadByProperties([
+      'field_name' => 'localgov_location',
+      'entity_type' => 'node',
+    ]);
+  array_walk($location_field_configs, 'localgov_directories_location_field_config_insert');
+
+  // Setup the per-Directory channel Proximity search activation field.
+  $this_module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
+  if (!FieldConfig::loadByName('node', 'localgov_directory', 'localgov_proximity_search_cfg')) {
+    $proximity_search_cfg_field = Yaml::decode(file_get_contents($this_module_path . '/config/conditional/field.field.node.localgov_directory.localgov_proximity_search_cfg.yml'));
+    FieldConfig::create($proximity_search_cfg_field)->save();
+
+    _localgov_directories_location_set_proximity_search_cfg_display();
+  }
+}
+
+/**
+ * Sets up display for the proximity config field.
+ *
+ * - Adds the Proximity search config field to the Directory channel form.
+ * - Hides it from Directory channel entity view.
+ */
+function _localgov_directories_location_set_proximity_search_cfg_display(): void {
+  $this_module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
+
+  // Add Proximity search activation field to Directory channel form.
+  $dir_channel_form_display = EntityFormDisplay::load('node.localgov_directory.default');
+  if (!$dir_channel_form_display->getComponent('localgov_proximity_search_cfg')) {
+    $dir_channel_form_display_with_proximity_search = Yaml::decode(file_get_contents($this_module_path . '/config/override/core.entity_form_display.node.localgov_directory.default.yml'));
+
+    if (isset($dir_channel_form_display_with_proximity_search['content']['localgov_proximity_search_cfg'])) {
+      $dir_channel_form_display->setComponent('localgov_proximity_search_cfg', $dir_channel_form_display_with_proximity_search['content']['localgov_proximity_search_cfg'])->save();
+    }
+  }
+
+  // Hide the Proximity search activation field from Directory channel.
+  $dir_channel_view_display = EntityViewDisplay::load('node.localgov_directory.default');
+  if (!$dir_channel_view_display->getComponent('localgov_proximity_search_cfg')) {
+    $dir_channel_view_display->removeComponent('localgov_proximity_search_cfg')->save();
+  }
+}
+
+/**
+ * Does the Directory search backend support location search?
+ */
+function _localgov_directories_location_has_location_search($search_index_name = 'localgov_directories_index_default'): bool {
+
+  $search_index = SearchIndex::load($search_index_name);
+  $search_server = $search_index->getServerInstance();
+  $has_location_search = $search_server ? $search_server->supportsDataType('location') : FALSE;
+
+  return $has_location_search;
 }
