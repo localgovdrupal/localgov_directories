@@ -43,7 +43,11 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
   }
 
   /**
-   * Enables localgov_directories_venue module.
+   * Sets up location search for venues.
+   *
+   * - Activates the Directory search index.
+   * - Enables localgov_directories_venue module.
+   * - Adds the localgov_location field to the search index.
    */
   protected function setUp(): void {
     parent::setUp();
@@ -57,6 +61,18 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
       'node',
       'search_api',
       'localgov_directories',
+      'localgov_directories_db',
+    ]);
+
+    // Enable the Directory search index.
+    $localgov_directories_db_module_path = $this->container->get('extension.list.module')->getPath('localgov_directories_db');
+    require_once "$localgov_directories_db_module_path/localgov_directories_db.install";
+    localgov_directories_db_install(FALSE);
+
+    // Now that the search index is available, we are ready to add the
+    // localgov_location field to this index.  So let's import it.
+    // @see localgov_directories_location_field_config_insert().
+    $this->installConfig([
       'localgov_directories_location',
       'localgov_directories_venue',
     ]);
@@ -80,6 +96,7 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
     'leaflet_views',
     'link',
     'localgov_directories',
+    'localgov_directories_db',
     'localgov_directories_location',
     'localgov_directories_venue',
     'localgov_geo',

@@ -38,7 +38,7 @@ function localgov_directories_location_node_view(array &$build, NodeInterface $n
 /**
  * Implements hook_ENTITY_TYPE_insert().
  *
- * Once the localgov_location field is available, we need to add it the
+ * Once the localgov_location field is available, we need to add it to the
  * Directories search index and also enable the Proximity search display of the
  * Directory channel View.
  *
@@ -63,7 +63,7 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
       \Drupal::classResolver(ConfigurationHelper::class)->createFacet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
 
       // The channel selection and title sort fields may have gone missing.
-      _localgov_directories_restore_channel_selection_n_title_sort_fields_to_search_index($index);
+      _localgov_directories_location_restore_channel_selection_n_title_sort_fields_to_search_index($index);
     }
   }
   elseif (in_array($new_field_name, [
@@ -72,7 +72,7 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
   ]) && $is_node_entity_type && $index) {
     // The channel selection and title sort fields may have gone missing from
     // the search index when we added localgov_location.
-    _localgov_directories_restore_channel_selection_n_title_sort_fields_to_search_index($index);
+    _localgov_directories_location_restore_channel_selection_n_title_sort_fields_to_search_index($index);
   }
 }
 
@@ -132,7 +132,7 @@ function _localgov_directories_location_add_proximity_search_view_display(): voi
  * If needed, adds the channel selection and the title sort fields to the search
  * index.
  */
-function _localgov_directories_restore_channel_selection_n_title_sort_fields_to_search_index(SearchIndexInterface $index): void {
+function _localgov_directories_location_restore_channel_selection_n_title_sort_fields_to_search_index(SearchIndexInterface $index): void {
 
   if (!$index->getField('localgov_directory_channels')) {
     $channel_field = new SearchIndexField($index, 'localgov_directory_channels');

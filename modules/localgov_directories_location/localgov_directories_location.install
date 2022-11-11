@@ -25,8 +25,8 @@ use Drupal\views\Entity\View;
  *   form.  Also hides it from entity view.
  */
 function localgov_directories_location_install() {
-  // Retrieves view display mode config and adds location-related sectins to the
-  // existing configuration.
+  // Retrieves view display mode config and adds location-related sections to
+  // the existing configuration.
   $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
   $view_with_map_embed = Yaml::decode(file_get_contents($module_path . '/config/override/views.view.localgov_directory_channel.yml'));
   $view = View::load('localgov_directory_channel');
