@@ -115,11 +115,12 @@ configuration will be imported.
 
 ### Proximity search
 
-Proximity search is available when at least one of the available Directory entry
-content types (e.g. localgov_directories_venue) is using location through the
-localgov_location field.  At this point a new "Proximity search settings" choice
-field becomes available in Directory channel forms.  Activating this will
-present a location filter as part of the channel search form.
+Proximity search is made available when:
+- The Directory search backend supports location search.  At the moment the *search_api_solr* search backend from the [search_api_solr module](https://www.drupal.org/project/search_api_solr) is the only such known backend.
+- At least one of the available Directory entry content types (e.g. localgov_directories_venue) is using location through the
+localgov_location field.
+
+When location search is available, a new "Proximity search settings" choice field becomes available in Directory channel forms.  Activating this will present a Proximity search filter as part of the channel search form.
 
 ## Block placement
 
