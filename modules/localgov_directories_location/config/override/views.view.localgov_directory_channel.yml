@@ -894,7 +894,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ (localgov_location_distance / 1609) | round(1) }} miles'
+            text: '{{ (localgov_location_distance / 1.609) | round(1) }} miles'
             make_link: false
             path: ''
             absolute: false
@@ -1121,7 +1121,7 @@ display:
         filters: false
         filter_groups: false
       display_description: 'Proximity search for Directory entries'
-      display_comment: 'MySQL''s distance calculation uses meter as the unit.  The "Proximity" field uses the "Rewrite results" settings to display such distances in miles.  1 Mile is 1609 meter.'
+      display_comment: 'Solr''s distance calculation uses Kilometer as the unit by default.  The "Proximity" field uses the "Rewrite results" settings to display such distances in miles.  1 Mile is 1609 meter.'
       display_extenders: {  }
     cache_metadata:
       max-age: -1
