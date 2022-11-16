@@ -5,21 +5,15 @@
  * Provides a location extension to directories.
  */
 
-use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
-use Drupal\Core\Entity\Entity\EntityFormDisplay;
-use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\field\FieldConfigInterface;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\localgov_directories\ConfigurationHelper;
 use Drupal\localgov_directories\Constants as Directory;
 use Drupal\localgov_directories_location\LocationExtraFieldDisplay;
+use Drupal\localgov_directories_location\ProximitySearchSetup;
 use Drupal\node\NodeInterface;
 use Drupal\search_api\Entity\Index as SearchIndex;
 use Drupal\search_api\IndexInterface as SearchIndexInterface;
-use Drupal\search_api\Item\Field as SearchIndexField;
-use Drupal\views\Entity\View;
 
 /**
  * Implements hook_entity_extra_field_info().
@@ -54,7 +48,8 @@ function localgov_directories_location_node_view(array &$build, NodeInterface $n
  */
 function localgov_directories_location_field_config_insert(FieldConfigInterface $field) {
 
-  if (!_localgov_directories_location_has_location_search()) {
+  $proximity_search_setup = \Drupal::classResolver(ProximitySearchSetup::class);
+  if (!$proximity_search_setup->hasLocationSearch()) {
     return;
   }
 
@@ -62,25 +57,18 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
   $new_field_name = $field->getName();
   $is_node_entity_type = $field->getTargetEntityTypeId() === 'node';
 
-  if ($new_field_name === 'localgov_location' && $is_node_entity_type && $index && $index->status() && !$index->getField('localgov_location')) {
-    if (_localgov_directories_location_add_location_field_to_search_index($field, $index)) {
-      // Now that the location field is part of the Directories search index, we
-      // can add it to the Directory channel view.
-      _localgov_directories_location_add_proximity_search_view_display();
-
+  if ($new_field_name === Directory::LOCATION_FIELD && $is_node_entity_type && $index && $index->status() && !$index->getField(Directory::LOCATION_FIELD)) {
+    if ($proximity_search_setup->setup($field, $index)) {
       \Drupal::classResolver(ConfigurationHelper::class)->createFacet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
-
-      // The channel selection and title sort fields may have gone missing.
-      _localgov_directories_location_restore_channel_selection_n_title_sort_fields_to_search_index($index);
     }
   }
   elseif (in_array($new_field_name, [
-    'localgov_directory_channels',
-    'localgov_directory_title_sort',
+    Directory::CHANNEL_SELECTION_FIELD,
+    Directory::TITLE_SORT_FIELD,
   ]) && $is_node_entity_type && $index) {
     // The channel selection and title sort fields may have gone missing from
     // the search index when we added localgov_location.
-    _localgov_directories_location_restore_channel_selection_n_title_sort_fields_to_search_index($index);
+    $proximity_search_setup->repairSearchIndex($index);
   }
 }
 
@@ -93,169 +81,30 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
  */
 function localgov_directories_location_search_api_index_update(SearchIndexInterface $search_index) {
 
-  $touched = &drupal_static(__FUNCTION__);
-  if (isset($touched)) {
+  $has_proximity_search_setup_ended = &drupal_static(__FUNCTION__);
+  if (isset($has_proximity_search_setup_ended)) {
     return;
   }
-  $touched = TRUE;
+  $has_proximity_search_setup_ended = TRUE;
 
   if ($search_index->id() !== Directory::DEFAULT_INDEX) {
     return;
   }
 
-  if ($search_index->getField('localgov_location')) {
+  if ($search_index->getField(Directory::LOCATION_FIELD)) {
     return;
   }
 
-  if (!_localgov_directories_location_has_location_search()) {
+  $proximity_search_setup = \Drupal::classResolver(ProximitySearchSetup::class);
+  if (!$proximity_search_setup->hasLocationSearch()) {
     return;
   }
 
   $location_field_configs = \Drupal::service('entity_type.manager')
     ->getStorage('field_config')
     ->loadByProperties([
-      'field_name'  => 'localgov_location',
+      'field_name'  => Directory::LOCATION_FIELD,
       'entity_type' => 'node',
     ]);
   array_walk($location_field_configs, 'localgov_directories_location_field_config_insert');
-
-  // Setup the per-Directory channel Proximity search activation field.
-  $this_module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
-  if (!FieldStorageConfig::loadByName('node', 'localgov_proximity_search_cfg')) {
-    $proximity_search_cfg_field_storage = Yaml::decode(file_get_contents($this_module_path . '/config/install/field.storage.node.localgov_proximity_search_cfg.yml'));
-    FieldStorageConfig::create($proximity_search_cfg_field_storage)->save();
-  }
-  if (!FieldConfig::loadByName('node', 'localgov_directory', 'localgov_proximity_search_cfg')) {
-    $proximity_search_cfg_field = Yaml::decode(file_get_contents($this_module_path . '/config/conditional/field.field.node.localgov_directory.localgov_proximity_search_cfg.yml'));
-    FieldConfig::create($proximity_search_cfg_field)->save();
-
-    _localgov_directories_location_set_proximity_search_cfg_display();
-  }
-}
-
-/**
- * Sets up indexing for location.
- *
- * Adds the localgov_location field to the Directories search index.
- */
-function _localgov_directories_location_add_location_field_to_search_index(FieldConfigInterface $field, SearchIndexInterface $index): bool {
-
-  $index_datasrc = $index->getDatasource('entity:node');
-  if (empty($index_datasrc)) {
-    return FALSE;
-  }
-
-  $entity_bundle = $field->getTargetBundle();
-  $datasrc_cfg = $index_datasrc->getConfiguration();
-  $is_bundle_indexed = in_array($entity_bundle, $datasrc_cfg['bundles']['selected']);
-  if (!$is_bundle_indexed) {
-    $datasrc_cfg['bundles']['selected'][] = $entity_bundle;
-    $index_datasrc->setConfiguration($datasrc_cfg);
-  }
-
-  $location_field = new SearchIndexField($index, 'localgov_location');
-  $location_field->setLabel('Location » Geo » location');
-  $location_field->setDatasourceId('entity:node');
-  $location_field->setType('location');
-  $location_field->setPropertyPath('localgov_location:entity:location');
-  $index->addField($location_field);
-  $index->save();
-  $index->reindex();
-
-  return TRUE;
-}
-
-/**
- * Adds the Proximity search display to the Directory channel view.
- */
-function _localgov_directories_location_add_proximity_search_view_display(): void {
-
-  $this_module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
-  $view_with_proximity_search = Yaml::decode(file_get_contents($this_module_path . '/config/override/views.view.localgov_directory_channel.yml'));
-
-  $view = View::load('localgov_directory_channel');
-  if ($view) {
-    $display = $view->get('display');
-    $display['node_embed_for_proximity_search'] = $view_with_proximity_search['display']['node_embed_for_proximity_search'];
-    $display['embed_map'] = $view_with_proximity_search['display']['embed_map'];
-    $view->set('display', $display);
-    $view->save();
-  }
-}
-
-/**
- * Restores missing search index fields.
- *
- * If needed, adds the channel selection and the title sort fields to the search
- * index.
- */
-function _localgov_directories_location_restore_channel_selection_n_title_sort_fields_to_search_index(SearchIndexInterface $index): void {
-
-  if (!$index->getField('localgov_directory_channels')) {
-    $channel_field = new SearchIndexField($index, 'localgov_directory_channels');
-    $channel_field->setLabel('Directory channels');
-    $channel_field->setDatasourceId('entity:node');
-    $channel_field->setType('integer');
-    $channel_field->setPropertyPath('localgov_directory_channels');
-    $index->addField($channel_field);
-    $index->save();
-    $index->reindex();
-  }
-
-  if (!$index->getField('localgov_directory_title_sort')) {
-    $sort_title_field = new SearchIndexField($index, 'localgov_directory_title_sort');
-    $sort_title_field->setLabel('Title (sort)');
-    $sort_title_field->setDatasourceId('entity:node');
-    $sort_title_field->setType('string');
-    $sort_title_field->setPropertyPath('localgov_directory_title_sort');
-    $index->addField($sort_title_field);
-    $index->save();
-    $index->reindex();
-  }
-}
-
-/**
- * Sets up display for the proximity config field.
- *
- * - Adds the Proximity search config field to the Directory channel form.
- * - Hides it from Directory channel entity view.
- */
-function _localgov_directories_location_set_proximity_search_cfg_display(): void {
-  $this_module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
-
-  // Add Proximity search activation field to Directory channel form.
-  $dir_channel_form_display = EntityFormDisplay::load('node.localgov_directory.default');
-  if (!$dir_channel_form_display->getComponent('localgov_proximity_search_cfg')) {
-    $dir_channel_form_display_with_proximity_search = Yaml::decode(file_get_contents($this_module_path . '/config/override/core.entity_form_display.node.localgov_directory.default.yml'));
-
-    if (isset($dir_channel_form_display_with_proximity_search['content']['localgov_proximity_search_cfg'])) {
-      $dir_channel_form_display->setComponent('localgov_proximity_search_cfg', $dir_channel_form_display_with_proximity_search['content']['localgov_proximity_search_cfg'])->save();
-    }
-  }
-
-  // Hide the Proximity search activation field from Directory channel.
-  $dir_channel_view_display = EntityViewDisplay::load('node.localgov_directory.default');
-  if (!$dir_channel_view_display->getComponent('localgov_proximity_search_cfg')) {
-    $dir_channel_view_display->removeComponent('localgov_proximity_search_cfg')->save();
-  }
-}
-
-/**
- * Is the Search index ready for location search?
- *
- * Criteria for readiness:
- * - Search index is in "enabled" state.
- * - Search backend of the search index supports location search.
- */
-function _localgov_directories_location_has_location_search($search_index_name = Directory::DEFAULT_INDEX): bool {
-
-  $search_index = SearchIndex::load($search_index_name);
-  if (empty($search_index) || !$search_index->status()) {
-    return FALSE;
-  }
-
-  $search_server = $search_index->getServerInstance();
-  $has_location_search = $search_server ? $search_server->supportsDataType('location') : FALSE;
-
-  return $has_location_search;
 }

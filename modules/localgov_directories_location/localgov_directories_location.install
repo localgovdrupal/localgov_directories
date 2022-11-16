@@ -6,13 +6,9 @@
  */
 
 use Drupal\Component\Serialization\Yaml;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\localgov_directories\ConfigurationHelper;
 use Drupal\localgov_directories\Constants as Directory;
-use Drupal\search_api\Entity\Index as SearchIndex;
-use Drupal\search_api\Item\Field as SearchIndexField;
 use Drupal\views\Entity\View;
+use Drupal\localgov_directories_location\ProximitySearchSetup;
 
 /**
  * Implements hook_install().
@@ -38,16 +34,6 @@ function localgov_directories_location_install($is_syncing) {
     $display['embed_map'] = $view_with_map_embed['display']['embed_map'];
     $view->set('display', $display);
     $view->save();
-  }
-
-  if (_localgov_directories_location_has_location_search()) {
-    $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
-    if (!FieldConfig::loadByName('node', 'localgov_directory', 'localgov_proximity_search_cfg')) {
-      $proximity_search_cfg_field = Yaml::decode(file_get_contents($module_path . '/config/conditional/field.field.node.localgov_directory.localgov_proximity_search_cfg.yml'));
-      FieldConfig::create($proximity_search_cfg_field)->save();
-
-      _localgov_directories_location_set_proximity_search_cfg_display();
-    }
   }
 }
 
@@ -82,45 +68,12 @@ function localgov_directories_location_update_8001() {
 }
 
 /**
- * Adds proximity search config field to dir channel.
+ * Sets up proximity search.
  */
 function localgov_directories_location_update_8003() {
 
-  if (!_localgov_directories_location_has_location_search()) {
-    return t('Search index is not ready for location search.');
-  }
-
-  $module_path = \Drupal::service('extension.list.module')->getPath('localgov_directories_location');
-
-  $result = [];
-  if (!FieldStorageConfig::loadByName('node', 'localgov_proximity_search_cfg')) {
-    $proximity_search_cfg_field_storage = Yaml::decode(file_get_contents($module_path . '/config/install/field.storage.node.localgov_proximity_search_cfg.yml'));
-    FieldStorageConfig::create($proximity_search_cfg_field_storage)->save();
-  }
-  else {
-    $result[] = t('Proximity search configuration field already exists.');
-  }
-
-  if (!FieldConfig::loadByName('node', 'localgov_directory', 'localgov_proximity_search_cfg')) {
-    $proximity_search_cfg_field = Yaml::decode(file_get_contents($module_path . '/config/conditional/field.field.node.localgov_directory.localgov_proximity_search_cfg.yml'));
-    FieldConfig::create($proximity_search_cfg_field)->save();
-
-    _localgov_directories_location_set_proximity_search_cfg_display();
-  }
-  else {
-    $result[] = t('Proximity search configuration field already exists in the directory channel content type.');
-  }
-
-  return implode(', ', $result);
-}
-
-/**
- * Adds new location field to search index.
- */
-function localgov_directories_location_update_8005() {
-  $index = SearchIndex::load('localgov_directories_index_default');
-  $has_location_search = _localgov_directories_location_has_location_search();
-  if (!$has_location_search || !$index->status()) {
+  $proximity_search_setup = \Drupal::classResolver(ProximitySearchSetup::class);
+  if (!$proximity_search_setup->hasLocationSearch()) {
     return t('Search index is not ready for location search.');
   }
 
@@ -129,42 +82,11 @@ function localgov_directories_location_update_8005() {
     'search_api_location_geocoder',
   ]);
 
-  if (!$index->getField('localgov_location')) {
-    $location_field = new SearchIndexField($index, 'localgov_location');
-    $location_field->setLabel('Location » Geo » location');
-    $location_field->setDatasourceId('entity:node');
-    $location_field->setType('location');
-    $location_field->setPropertyPath('localgov_location:entity:location');
-    $index->addField($location_field);
-    $index->save();
-    $index->reindex();
-    return t('The directories index has been updated, and a reindex requested. You will need to run an index manually, or wait for it to run on cron, for it to update.');
-  }
-  else {
-    return t('Unable to update search index: localgov_directories_index_default not found.');
-  }
-}
-
-/**
- * Adds Views proximity search display.
- *
- * Also adds a Facet that relies on this View.
- */
-function localgov_directories_location_update_8007() {
-
-  $index = SearchIndex::load('localgov_directories_index_default');
-  $has_location_search = _localgov_directories_location_has_location_search();
-
-  if (!$has_location_search || !$index->status()) {
-    return t('Search index is not ready for location search.');
-  }
-
-  if (!$index->getField('localgov_location')) {
-    return t('The location field has no search index.  We cannot use it in the Directory channel view');
-  }
-
-  _localgov_directories_location_add_proximity_search_view_display();
-  \Drupal::classResolver(ConfigurationHelper::class)->createFacet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
-
-  return t('Added the location field to the Directory channel view.');
+  $location_field_configs = \Drupal::service('entity_type.manager')
+    ->getStorage('field_config')
+    ->loadByProperties([
+      'field_name'  => Directory::LOCATION_FIELD,
+      'entity_type' => 'node',
+    ]);
+  array_walk($location_field_configs, 'localgov_directories_location_field_config_insert');
 }

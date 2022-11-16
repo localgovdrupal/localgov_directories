@@ -11,6 +11,10 @@ class Constants {
 
   const DEFAULT_INDEX = 'localgov_directories_index_default';
 
+  const LOCATION_FIELD = 'localgov_location';
+
+  const LOCATION_MODULE = 'localgov_directories_location';
+
   const PROXIMITY_SEARCH_CFG_FIELD = 'localgov_proximity_search_cfg';
 
   const CHANNEL_SEARCH_BLOCK = 'localgov_directories_channel_search_block';
@@ -18,6 +22,8 @@ class Constants {
   const CHANNEL_SELECTION_FIELD = 'localgov_directory_channels';
 
   const TITLE_SORT_FIELD = 'localgov_directory_title_sort';
+
+  const SEARCH_API_LOCATION_DATATYPE = 'location';
 
   const FACET_INDEXING_FIELD = 'localgov_directory_facets_filter';
 
@@ -38,6 +44,8 @@ class Constants {
   const CHANNEL_VIEW_DISPLAY = 'node_embed';
 
   const CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY = 'node_embed_for_proximity_search';
+
+  const CHANNEL_VIEW_MAP_DISPLAY = 'embed_map';
 
   const CHANNEL_NODE_BUNDLE = 'localgov_directory';
 
