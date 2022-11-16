@@ -6,6 +6,7 @@ namespace Drupal\Tests\localgov_directories_venue\Kernel;
 
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\localgov_directories\Constants as Directory;
+use Drupal\search_api\Entity\Index as SearchIndex;
 use Drupal\views\Views;
 
 /**
@@ -26,6 +27,14 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
    * Here we verify the existence of the new display and the facet.
    */
   public function testViewUpgrade(): void {
+
+    $has_location_search = SearchIndex::load(Directory::DEFAULT_INDEX)
+      ->getServerInstance()
+      ->supportsDataType(Directory::SEARCH_API_LOCATION_DATATYPE);
+    if (!$has_location_search) {
+      $this->markTestSkipped('Database lacks location search feature.');
+      return;
+    }
 
     $view = Views::getView(Directory::CHANNEL_VIEW);
     $view->setDisplay(Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY);
