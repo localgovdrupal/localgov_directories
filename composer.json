@@ -28,9 +28,6 @@
             "drupal/facets": {
                 "Don't render facet block if backend isn't available: https://www.drupal.org/project/facets/issues/3311856": "https://git.drupalcode.org/issue/facets-3311856/-/commit/765d5ef4228906c7f201e116763f3018a7867c96.patch"
             },
-            "drupal/search_api": {
-                "Location search for Search API Database backend": "https://www.drupal.org/files/issues/2022-07-12/2877319-30-db_backend_location_support.patch"
-            },
             "drupal/search_api_location": {
                 "Geocoder selection bug": "https://www.drupal.org/files/issues/2022-11-09/3283994-6-location-input-geocoder-plugin-fix.patch",
                 "Schema fix for Views filter": "https://www.drupal.org/files/issues/2022-11-09/3296407-5-views-filter-schema-fix.patch"
