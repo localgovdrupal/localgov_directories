@@ -122,6 +122,8 @@ localgov_location field.
 
 When location search is available, a new "Proximity search settings" choice field becomes available in Directory channel forms.  Activating this will present a Proximity search filter as part of the channel search form.
 
+The Proximity search filter uses the following distances out-of-the-box: 1km for 1/2 mile, 2km for 1 mile, 3km for 2 miles, 5km for 3 miles, 8km for 5 miles, and 16km for 10 miles.  These mappings are not exact.  This is due to Solr's insistence on using round Kilometer values during location-based filtering.  To update these distance values, edit the Proximity filter's settings in the *Directory channel* view's *Embed: Proximity search* and *Embed map* displays.
+
 ## Block placement
 
 When using a theme other than the default LocalGov Base or LocalGov Scarfolk, the
