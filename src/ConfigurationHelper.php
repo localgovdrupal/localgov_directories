@@ -342,10 +342,6 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   public function blockAddContentType(string $block_id, string $content_type): bool {
     $block_config = $this->entityTypeManager->getStorage('block')->load($block_id);
     if (!$block_config instanceof BlockInterface) {
-      $this->logger->error('Block %block-id is missing.  Cannot update its visibility settings.', [
-        '%block-id' => $block_id,
-      ]);
-
       return FALSE;
     }
 
