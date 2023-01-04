@@ -3,7 +3,7 @@ type: module
 description: 'Provides a standard organisation type for either as directory entry, or for other Open Referral compatible entries.'
 package: LocalGov Drupal
 core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - field_group:field_group
   - localgov_directories:localgov_directories
