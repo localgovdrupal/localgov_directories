@@ -8,3 +8,7 @@ localgov_directories_search:
   dependencies:
     - core/drupalSettings
     - core/once
+
+localgov_directories_maps:
+  js:
+    js/localgov_directories_maps.js: {}

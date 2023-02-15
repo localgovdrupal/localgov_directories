@@ -223,3 +223,17 @@ function localgov_directories_leaflet_map_view_style_alter(&$js_settings, $leafl
   // This can be used in template if needed.
   $js_settings['map']['is_empty'] = empty($js_settings['features']);
 }
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter().
+ */
+function localgov_directories_form_node_form_alter(&$form, &$form_state, $form_id) {
+  $forms = [
+    'node_localgov_directories_org_edit_form',
+    'node_localgov_directories_venue_edit_form',
+  ];
+  
+  if (in_array($form_id, $forms)) {
+    $form['#attached']['library'][] = 'localgov_directories/localgov_directories_maps';
+  }
+}
