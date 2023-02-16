@@ -21,7 +21,7 @@ class DirectoryVenueTest extends BrowserTestBase {
    *
    * @var string
    */
-  protected $profile = 'standard';
+  protected $profile = 'testing';
 
   /**
    * Use stark as tests are not dependent on core markup.

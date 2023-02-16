@@ -19,7 +19,13 @@ class RolesIntegrationTest extends KernelTestBase {
    * @var array
    */
   protected static $modules = [
+    'entity_reference_revisions',
+    'node',
+    'paragraphs',
+    'paragraphs_library',
+    'path',
     'system',
+    'toolbar',
     'user',
     'localgov_roles',
   ];
@@ -29,14 +35,20 @@ class RolesIntegrationTest extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->installConfig(['user', 'localgov_roles']);
+
+    $this->installConfig([
+      'user',
+    ]);
   }
 
   /**
    * Check default roles applied.
    */
   public function testEnablingRolesModule() {
-    $this->container->get('module_installer')->install(['localgov_directories_page']);
+    $this->container->get('module_installer')->install([
+
+      'localgov_directories_page',
+    ]);
 
     $editor = Role::load(RolesHelper::EDITOR_ROLE);
     $author = Role::load(RolesHelper::AUTHOR_ROLE);
