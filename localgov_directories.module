@@ -230,7 +230,9 @@ function localgov_directories_leaflet_map_view_style_alter(&$js_settings, $leafl
 function localgov_directories_form_node_form_alter(&$form, &$form_state, $form_id) {
   $forms = [
     'node_localgov_directories_org_edit_form',
+    'node_localgov_directories_org_form',
     'node_localgov_directories_venue_edit_form',
+    'node_localgov_directories_venue_form',
   ];
   
   if (in_array($form_id, $forms)) {
