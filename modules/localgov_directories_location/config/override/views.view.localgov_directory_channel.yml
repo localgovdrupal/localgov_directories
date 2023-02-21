@@ -599,7 +599,6 @@ display:
           entity_source: __base_table
           entity_source_submit: 'Update Entity Source'
           name_field: title
-          description_field: search_api_rendered_item
           view_mode: full
           leaflet_map: 'OSM Mapnik'
           height: '400'
@@ -607,9 +606,6 @@ display:
           hide_empty_map: true
           disable_wheel: false
           gesture_handling: false
-          reset_map:
-            control: false
-            position: topright
           map_position:
             force: false
             center:
