@@ -72,6 +72,7 @@ class LocalgovDirectoriesFacetsListBuilder extends EntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
+      ->accessCheck(TRUE)
       ->sort($this->entityType->getKey('bundle'))
       ->sort($this->entityType->getKey('weight'))
       ->sort($this->entityType->getKey('label'));
