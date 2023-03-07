@@ -124,6 +124,11 @@ When location search is available, a new "Proximity search settings" choice fiel
 
 The Proximity search filter uses the following distances out-of-the-box: 1km for 1/2 mile, 2km for 1 mile, 3km for 2 miles, 5km for 3 miles, 8km for 5 miles, and 16km for 10 miles.  These mappings are not exact.  This is due to Solr's insistence on using round Kilometer values during location-based filtering.  To update these distance values, edit the Proximity filter's settings in the *Directory channel* view's *Embed: Proximity search* and *Embed map* displays.
 
+#### Supported database backends
+The [dev release of the search_api module](https://www.drupal.org/project/search_api/releases/8.x-1.x-dev) now supports location-based search in database search backends.  Supported database versions are:
+- MySQL 5.7 and later.
+- MariaDB 10.2.38, 10.3.29, 10.4.19, 10.5.10 and later.
+
 ## Block placement
 
 When using a theme other than the default LocalGov Base or LocalGov Scarfolk, the
