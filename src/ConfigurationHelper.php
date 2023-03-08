@@ -124,14 +124,14 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * Get index to work on.
    */
-  public function getIndex(): IndexInterface {
+  public function getIndex(): ?IndexInterface {
     return $this->index ?? $this->entityTypeManager->getStorage('search_api_index')->load(Constants::DEFAULT_INDEX);
   }
 
   /**
    * Get directory view to work on.
    */
-  public function getView(): ViewEntityInterface {
+  public function getView(): ?ViewEntityInterface {
     return $this->view ?? $this->entityTypeManager->getStorage('view')->load('localgov_directory_channel');
   }
 
@@ -342,10 +342,6 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   public function blockAddContentType(string $block_id, string $content_type): bool {
     $block_config = $this->entityTypeManager->getStorage('block')->load($block_id);
     if (!$block_config instanceof BlockInterface) {
-      $this->logger->error('Block %block-id is missing.  Cannot update its visibility settings.', [
-        '%block-id' => $block_id,
-      ]);
-
       return FALSE;
     }
 
