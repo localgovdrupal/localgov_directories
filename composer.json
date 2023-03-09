@@ -14,9 +14,9 @@
         "localgovdrupal/localgov_geo": "dev-feature/drupal-10 as 1.3.0"
     },
     "require-dev": {
-        "localgovdrupal/localgov_services": "^2.0",
-        "localgovdrupal/localgov_openreferral": "^1.0",
-        "localgovdrupal/localgov_paragraphs": "^2.0"
+        "localgovdrupal/localgov_services": "dev-feature/drupal-10 as 2.1.0",
+        "localgovdrupal/localgov_openreferral": "dev-feature/drupal-10 as 1.1.0",
+        "localgovdrupal/localgov_paragraphs": "dev-feature/drupal-10 as 2.3.0"
     },
     "suggest": {
         "localgovdrupal/localgov_openreferral": "Enables Open Referral output of Directories",
