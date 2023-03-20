@@ -286,6 +286,19 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
         $group_items[$entity->bundle()]['items'][$key] = $item;
       }
     }
+
+    // This is usually on a channel node. If so remove facets not active on
+    // channel.
+    if (($channel = \Drupal::routeMatch()->getParameter('node'))
+      && $channel instanceof NodeInterface
+      && $channel->bundle() == 'localgov_directory'
+    ) {
+      $active_facets = array_column($channel->localgov_directory_facets_enable->getValue(), 'target_id');
+    }
+    if ($active_facets) {
+      $group_items = array_intersect_key($group_items, array_flip($active_facets));
+    }
+
     $type_storage = $this->entityTypeManager
       ->getStorage('localgov_directories_facets_type');
     foreach ($group_items as $bundle => $items) {
