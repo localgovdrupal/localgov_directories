@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Plugin\PluginBase;
 use Drupal\Core\Render\Markup;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
@@ -64,6 +65,13 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected $formBuilder;
 
   /**
+   * Current route match.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
+
+  /**
    * DirectoryExtraFieldDisplay constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -76,13 +84,16 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    *   Plugin Block Manager.
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
    *   Form Builder.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   Current route match.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EntityFieldManagerInterface $entity_field_manager, BlockManagerInterface $plugin_manager_block, FormBuilderInterface $form_builder) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EntityFieldManagerInterface $entity_field_manager, BlockManagerInterface $plugin_manager_block, FormBuilderInterface $form_builder, RouteMatchInterface $route_match) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityRepository = $entity_repository;
     $this->entityFieldManager = $entity_field_manager;
     $this->pluginBlockManager = $plugin_manager_block;
     $this->formBuilder = $form_builder;
+    $this->routeMatch = $route_match;
   }
 
   /**
@@ -94,7 +105,8 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
       $container->get('entity.repository'),
       $container->get('entity_field.manager'),
       $container->get('plugin.manager.block'),
-      $container->get('form_builder')
+      $container->get('form_builder'),
+      $container->get('current_route_match')
     );
   }
 
@@ -289,7 +301,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
 
     // This is usually on a channel node. If so remove facets not active on
     // channel.
-    if (($channel = \Drupal::routeMatch()->getParameter('node'))
+    if (($channel = $this->routeMatch->getParameter('node'))
       && $channel instanceof NodeInterface
       && $channel->bundle() == 'localgov_directory'
     ) {
