@@ -16,6 +16,7 @@ use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\localgov_directories\Constants as Directory;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
 use Drupal\node\NodeInterface;
@@ -169,7 +170,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     $node_types = $this->entityTypeManager->getStorage('node_type')->loadMultiple();
     foreach ($node_types as $type_id => $type) {
       $fields = $this->entityFieldManager->getFieldDefinitions('node', $type_id);
-      if (isset($fields['localgov_directory_channels'])) {
+      if (isset($fields[Directory::CHANNEL_SELECTION_FIELD])) {
         $entry_types[$type_id] = $type_id;
       }
     }
@@ -201,14 +202,15 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    * Retrieves view, and sets render array.
    */
   protected function getViewEmbed(NodeInterface $node, $search_filter = FALSE) {
-    $view = Views::getView('localgov_directory_channel');
-    if (!$view || !$view->access('node_embed')) {
+    $view = Views::getView(Directory::CHANNEL_VIEW);
+    $views_display = self::determineChannelViewDisplay($node);
+    if (!$view || !$view->access($views_display)) {
       return;
     }
     $render = [
       '#type' => 'view',
-      '#name' => 'localgov_directory_channel',
-      '#display_id' => 'node_embed',
+      '#name' => Directory::CHANNEL_VIEW,
+      '#display_id' => $views_display,
       '#arguments' => [$node->id()],
     ];
     if (!$search_filter) {
@@ -225,12 +227,14 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected function getFacetsBlock(NodeInterface $node) {
     // The facet manager build needs the results of the query. Which might not
     // have been run by our nicely lazy loaded views render array.
-    $view = Views::getView('localgov_directory_channel');
+    $view = Views::getView(Directory::CHANNEL_VIEW);
     $view->setArguments([$node->id()]);
-    $view->execute('node_embed');
+    $views_display = self::determineChannelViewDisplay($node);
+    $view->execute($views_display);
 
     if (!empty($view->result)) {
-      $block = $this->pluginBlockManager->createInstance('facet_block' . PluginBase::DERIVATIVE_SEPARATOR . 'localgov_directories_facets');
+      $facet_id = self::determineFacetForChannel($node);
+      $block = $this->pluginBlockManager->createInstance('facet_block' . PluginBase::DERIVATIVE_SEPARATOR . $facet_id);
       return $block->build();
     }
     else {
@@ -244,10 +248,11 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected function getSearchBlock(NodeInterface $node) {
     $forms = $form_list = [];
     foreach ($node->localgov_directory_channels as $delta => $channel) {
-      $view = Views::getView('localgov_directory_channel');
-      if ($view && ($node = $channel->entity)) {
-        $view->setDisplay('node_embed');
-        $view->setArguments([$node->id()]);
+      $view = Views::getView(Directory::CHANNEL_VIEW);
+      if ($view && ($channel_node = $channel->entity)) {
+        $views_display = self::determineChannelViewDisplay($channel_node);
+        $view->setDisplay($views_display);
+        $view->setArguments([$channel_node->id()]);
         $view->initHandlers();
         $form_state = (new FormState())
           ->setStorage([
@@ -259,10 +264,10 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
           ->setAlwaysProcess()
           ->disableRedirect();
         $form = $this->formBuilder->buildForm('\Drupal\views\Form\ViewsExposedForm', $form_state);
-        $form['#action'] = $node->toUrl()->toString();
+        $form['#action'] = $channel_node->toUrl()->toString();
         $form['#attributes']['class'][] = $delta ? 'localgov-search-channel-secondary' : 'localgov-search-channel-primary';
-        $channel_label = $this->entityRepository->getTranslationFromContext($node)->label();
-        $form['#id'] .= '--' . $node->id();
+        $channel_label = $this->entityRepository->getTranslationFromContext($channel_node)->label();
+        $form['#id'] .= '--' . $channel_node->id();
         $form["#info"]["filter-search_api_fulltext"]["label"] = $this->t('Search <span class="localgov-search-channel" id="@id--channel">@channel</span>', [
           '@id' => $form['#id'],
           '@channel' => $channel_label,
@@ -290,7 +295,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    */
   public function preprocessFacetList(array &$variables) {
     $facet_storage = $this->entityTypeManager
-      ->getStorage('localgov_directories_facets');
+      ->getStorage(Directory::FACET_CONFIG_ENTITY_ID);
     $group_items = [];
     foreach ($variables['items'] as $key => $item) {
       if ($entity = $facet_storage->load($item['value']['#attributes']['data-drupal-facet-item-value'])) {
@@ -312,7 +317,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     }
 
     $type_storage = $this->entityTypeManager
-      ->getStorage('localgov_directories_facets_type');
+      ->getStorage(Directory::FACET_TYPE_CONFIG_ENTITY_ID);
     foreach ($group_items as $bundle => $items) {
       $entity = $type_storage->load($bundle);
       assert($entity instanceof LocalgovDirectoriesFacetsType);
@@ -341,6 +346,34 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     }
 
     return $bundle1['weight'] < $bundle2['weight'] ? -1 : 1;
+  }
+
+  /**
+   * Finds the relevant Views display.
+   *
+   * Determines if the given directory channel needs the usual Views display or
+   * a proximity search display.
+   */
+  public static function determineChannelViewDisplay(NodeInterface $channel_node): string {
+
+    $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
+    $views_display = $has_proximity_search ? Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY : Directory::CHANNEL_VIEW_DISPLAY;
+    return $views_display;
+  }
+
+  /**
+   * Finds the relevant Facet for a directory channel.
+   *
+   * Channels use different Views displays depending on whether proximity search
+   * is in use or not.  The directory related Facets are attached to these Views
+   * displays.  This means the choice of Facet differs depending on the use of
+   * proximity search.
+   */
+  public static function determineFacetForChannel(NodeInterface $channel_node): string {
+
+    $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
+    $facet_id = $has_proximity_search ? Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH : Directory::FACET_CONFIG_ENTITY_ID;
+    return $facet_id;
   }
 
   /**
