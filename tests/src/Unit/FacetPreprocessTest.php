@@ -138,7 +138,7 @@ class FacetPreprocessTest extends UnitTestCase {
     $this->mockEntityFieldManager = $this->createMock(EntityFieldManagerInterface::class);
     $this->mockBlockPluginManager = $this->createMock(BlockManagerInterface::class);
     $this->mockFormBuilder        = $this->createMock(FormBuilderInterface::class);
-    $this->mockRouteMatch = $this->createMock(RouteMatchInterface::class);
+    $this->mockRouteMatch         = $this->createMock(RouteMatchInterface::class);
   }
 
   /**
