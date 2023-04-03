@@ -306,13 +306,14 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
 
     // This is usually on a channel node. If so remove facets not active on
     // channel.
+    $active_facets = NULL;
     if (($channel = $this->routeMatch->getParameter('node'))
       && $channel instanceof NodeInterface
       && $channel->bundle() == 'localgov_directory'
     ) {
       $active_facets = array_column($channel->localgov_directory_facets_enable->getValue(), 'target_id');
     }
-    if ($active_facets) {
+    if (!is_null($active_facets)) {
       $group_items = array_intersect_key($group_items, array_flip($active_facets));
     }
 
