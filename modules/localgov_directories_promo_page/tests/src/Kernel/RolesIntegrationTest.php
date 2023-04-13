@@ -21,15 +21,23 @@ class RolesIntegrationTest extends KernelTestBase {
   protected static $modules = [
     'address',
     'block',
+    'entity_reference_revisions',
     'facets',
     'field',
+    'field_formatter_class',
     'field_group',
+    'file',
     'filter',
     'image',
+    'layout_discovery',
+    'layout_paragraphs',
     'link',
     'media',
     'media_library',
+    'menu_ui',
     'node',
+    'options',
+    'paragraphs',
     'path',
     'path_alias',
     'pathauto',
@@ -46,6 +54,8 @@ class RolesIntegrationTest extends KernelTestBase {
     'localgov_roles',
     'localgov_directories',
     'localgov_directories_promo_page',
+    'localgov_paragraphs',
+    'localgov_paragraphs_layout',
   ];
 
   /**
@@ -62,6 +72,7 @@ class RolesIntegrationTest extends KernelTestBase {
       'node',
       'search_api',
       'localgov_roles',
+      'localgov_paragraphs_layout',
       'localgov_directories',
       'localgov_directories_promo_page',
     ]);
