@@ -78,7 +78,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     foreach ($conditions as $key => $condition) {
       if ($condition instanceof ConditionGroupInterface) {
         $tags = $condition->getTags();
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
           if (strpos($tag, 'facet:' . $field_identifier . '.') === 0) {
             $facet_conditions[$key] = $tag;
           }
@@ -87,12 +87,11 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     }
 
     // Run query elimnating each facet group and return the resulting facets.
-    $results = $this->results;
-    foreach($facet_conditions as $key => $filter_tag) {
+    foreach ($facet_conditions as $key => $filter_tag) {
       $group_facets = $this->getResultingFacetsFromFacetGroupExceptOwn($filter_tag);
-      
+
       // Remove any duplicate facets, or they show up multiple times.
-      $group_facets_filtered = array_filter($group_facets, function($item) use ($results) {
+      $group_facets_filtered = array_filter($group_facets, function ($item) use ($results) {
         $facet_ids = array_column($results, 'filter');
         if (in_array($item['filter'], $facet_ids)) {
           return FALSE;
@@ -126,27 +125,28 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
   }
 
   /**
-   * Get facets from a facet group except it's own with a corresponding tag
-   * 
+   * Get facets from a facet group except it's own with a corresponding tag.
+   *
    * Re-run the search api query, this time removing all the other facet groups
    * except the one specified by the filter tag. The purpose of this is to get
    * the other facets that would be limited by setting of the passed in groups
-   * facets. It allows us to see the other possible facets that could be 
+   * facets. It allows us to see the other possible facets that could be
    * selected as part of an 'OR' group 'AND' the facets selected in the passed
    * in group.
    *
-   * @param String $filter_tag
+   * @param string $filter_tag
    *   The search api tag of the facet group.
-   * @return Array
+   *
+   * @return array
    *   Search api query facet results.
    */
-  protected function getResultingFacetsFromFacetGroupExceptOwn(String $filter_tag):Array {
+  protected function getResultingFacetsFromFacetGroupExceptOwn(string $filter_tag): array {
 
     // Set up a special filter query which needs to clone the original.
     $filter_query = clone $this->query->getOriginalQuery();
     $filter_query->preExecute();
 
-    // Find conditions
+    // Find conditions.
     $conditions = &$filter_query->getConditionGroup()->getConditions();
 
     // Store removed conditions so we can reset them.
@@ -174,7 +174,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
 
     // Beacuse for reasons unknown, removing the conditions removes it from all
     // the following queries, even though we are fetching the original query.
-    // We can get around that by readding the conditions back in now that we 
+    // We can get around that by readding the conditions back in now that we
     // have the facets we want.
     $conditions = array_merge($conditions, $removed_conditions);
 
@@ -188,7 +188,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
       ->condition('bundle', $facet_type_id)
       ->execute();
     $found_facets = $facets['localgov_directory_facets_filter'] ?? [];
-    $found_facets = array_filter($found_facets, function($item) use($group_facet_ids) {
+    $found_facets = array_filter($found_facets, function ($item) use ($group_facet_ids) {
       if (!in_array(intval(trim($item['filter'], '"')), $group_facet_ids)) {
         return TRUE;
       }
