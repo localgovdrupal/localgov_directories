@@ -83,7 +83,9 @@ function localgov_directories_localgov_roles_default() {
 function localgov_directories_modules_installed($modules) {
   $services = in_array('localgov_services_navigation', $modules);
   if ($services) {
-    \Drupal::service('config.installer')->installOptionalConfig();
+    \Drupal::service('config.installer')->installOptionalConfig(NULL, [
+      'config' => 'field.storage.node.localgov_services_parent',
+    ]);
     localgov_directories_optional_fields_settings($services);
   }
 }
