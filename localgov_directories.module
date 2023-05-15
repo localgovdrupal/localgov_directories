@@ -145,7 +145,7 @@ function localgov_directories_optional_fields_settings($services) {
             'placeholder' => '',
             'match_limit' => 10,
           ],
-          'weight' => 51,
+          'weight' => -10,
         ])->save();
       }
     }
