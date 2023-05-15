@@ -282,6 +282,16 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    * @see localgov_directories_preprocess_facets_item_list()
    */
   public function preprocessFacetList(array &$variables) {
+    $reset_all = NULL;
+    $show_reset_link = [];
+
+    // Check if the show reset link has been enabled.
+    foreach ($variables['items'] as $key => $item) {
+      if ($variables["items"][$key]["value"]["#attributes"]["data-drupal-facet-item-value"] == 'reset_all') {
+        $show_reset_link = current($variables["items"]);
+      }
+    }
+
     $facet_storage = $this->entityTypeManager
       ->getStorage(Directory::FACET_CONFIG_ENTITY_ID);
     $group_items = [];
@@ -301,6 +311,16 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     }
     uasort($group_items, 'static::compareFacetBundlesByWeight');
     $variables['items'] = $group_items;
+
+    // Add the reset link.
+    $variables['items']['show_reset_all']['items'][] = $show_reset_link;
+
+    $reset_all = $variables['items']['show_reset_all'];
+
+    // Place the reset link at the top of the filters.
+    array_unshift($variables['items'], $reset_all);
+    array_pop($variables['items']);
+
   }
 
   /**
