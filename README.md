@@ -19,8 +19,19 @@ Entries section below.
 Facets types, and their facet values. Create types (eg. "Size"), and values (eg.
 "Large", "Medium", "Small"). These can then be used on entries to filter to them.
 
-By design the intention is that these can be excluded from configuration export,
-and controlled on the site by administrators who create tyes as required.
+The automatically enabled Facets are their own entity type. They are intended
+for creation and management by content editors on the production site. Adding
+a facet type will automatically make it available on Directory Channels, and
+add any values to the Facet block on the page, without any additional site
+building. As such by design they are excluded from configuration export.
+
+### Using Taxonomy Term Facets
+
+If you want a controlled or imported taxonomy you can add standard taxonomy term
+facets to you directory index. Do this as you would with any search api index:
+This requires creating the vocabulary. Adding the vocabulary to the appropriate
+content type. Adding it to the index. Placing the block on the appropriate
+channel pages.
 
 ## Directories (Channels)
 
