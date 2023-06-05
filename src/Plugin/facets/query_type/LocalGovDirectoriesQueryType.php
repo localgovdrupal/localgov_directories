@@ -71,7 +71,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     // Get passed in facets.
     $temp_query = $this->query->getOriginalQuery();
     $temp_query->preExecute();
-    $conditions = &$temp_query->getConditionGroup()->getConditions();
+    $conditions = $temp_query->getConditionGroup()->getConditions();
 
     // Find all the facet condition groups.
     $facet_conditions = [];
@@ -147,7 +147,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     $filter_query->preExecute();
 
     // Find conditions.
-    $conditions = &$filter_query->getConditionGroup()->getConditions();
+    $conditions = $filter_query->getConditionGroup()->getConditions();
 
     // Store removed conditions so we can reset them.
     $removed_conditions = [];
@@ -172,10 +172,8 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     $facets = $filter_query->getResults()->getExtraData('search_api_facets');
     $filter_query->postExecute();
 
-    // Beacuse for reasons unknown, removing the conditions removes it from all
-    // the following queries, even though we are fetching the original query.
-    // We can get around that by readding the conditions back in now that we
-    // have the facets we want.
+    // Without deep cloning we've affected the conditions, reset these for the
+    // query.
     $conditions = array_merge($conditions, $removed_conditions);
 
     // Since we will get every facet from the passed in facet group,
