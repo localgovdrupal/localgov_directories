@@ -2,12 +2,13 @@ name: 'LocalGov Directories'
 type: module
 description: 'Provides a directory facets entity.'
 package: LocalGov Drupal
-core: 8.x
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - drupal:address
   - drupal:block
+  - drupal:image
   - drupal:link
+  - drupal:media
   - drupal:node
   - drupal:path
   - drupal:telephone

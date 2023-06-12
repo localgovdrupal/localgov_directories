@@ -2,7 +2,7 @@ name: 'LocalGov Directories Page'
 type: module
 description: 'Provides a basic entry type for directory channels.'
 package: LocalGov Drupal
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^9 || ^10
 dependencies:
   - drupal:link
   - address:address

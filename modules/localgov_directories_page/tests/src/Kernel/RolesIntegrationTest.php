@@ -19,9 +19,33 @@ class RolesIntegrationTest extends KernelTestBase {
    * @var array
    */
   protected static $modules = [
+    'address',
+    'block',
+    'facets',
+    'field',
+    'field_group',
+    'filter',
+    'image',
+    'link',
+    'media',
+    'media_library',
+    'node',
+    'path',
+    'path_alias',
+    'pathauto',
+    'role_delegation',
+    'search_api',
+    'search_api_db',
     'system',
+    'telephone',
+    'text',
+    'token',
+    'toolbar',
     'user',
+    'views',
     'localgov_roles',
+    'localgov_directories',
+    'localgov_directories_page',
   ];
 
   /**
@@ -29,14 +53,25 @@ class RolesIntegrationTest extends KernelTestBase {
    */
   protected function setUp(): void {
     parent::setUp();
-    $this->installConfig(['user', 'localgov_roles']);
+
+    $this->installEntitySchema('node');
+    $this->installEntitySchema('search_api_task');
+    $this->installEntitySchema('user');
+    $this->installSchema('node', ['node_access']);
+    $this->installConfig([
+      'node',
+      'search_api',
+      'localgov_roles',
+      'localgov_directories',
+      'localgov_directories_page',
+    ]);
   }
 
   /**
    * Check default roles applied.
    */
   public function testEnablingRolesModule() {
-    $this->container->get('module_installer')->install(['localgov_directories_page']);
+    RolesHelper::assignModuleRoles('localgov_directories_page');
 
     $editor = Role::load(RolesHelper::EDITOR_ROLE);
     $author = Role::load(RolesHelper::AUTHOR_ROLE);

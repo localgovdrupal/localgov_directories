@@ -73,6 +73,7 @@ class FacetMapping implements ContainerInjectionInterface {
     // Add or remove Open Referral mappings from facet types as required by
     // their listing in directories with Open Referral entries.
     $facet_query = $facet_storage->getQuery()
+      ->accessCheck(TRUE)
       ->execute();
     foreach ($facet_query as $facet_type) {
       if (in_array($facet_type, $openreferral_facets) &&
