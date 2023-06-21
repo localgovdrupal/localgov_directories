@@ -288,6 +288,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     // Check if the show reset link has been enabled.
     foreach ($variables['items'] as $key => $item) {
       if ($variables["items"][$key]["value"]["#attributes"]["data-drupal-facet-item-value"] == 'reset_all') {
+        $variables["attributes"]["class"][] = "facet-show-reset";
         $show_reset_link = current($variables["items"]);
       }
     }
@@ -312,14 +313,15 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     uasort($group_items, 'static::compareFacetBundlesByWeight');
     $variables['items'] = $group_items;
 
-    // Add the reset link.
-    $variables['items']['show_reset_all']['items'][] = $show_reset_link;
+    if (!empty($show_reset_link)) {
+      // Add the reset link.
+      $variables['items']['show_reset_all']['items'][] = $show_reset_link;
+      $reset_all = $variables['items']['show_reset_all'];
+      // Place the reset link at the top of the facet filters.
+      array_unshift($variables['items'], $reset_all);
+      array_pop($variables['items']);
 
-    $reset_all = $variables['items']['show_reset_all'];
-
-    // Place the reset link at the top of the filters.
-    array_unshift($variables['items'], $reset_all);
-    array_pop($variables['items']);
+    }
 
   }
 
