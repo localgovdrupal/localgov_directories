@@ -24,6 +24,27 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
   use NodeCreationTrait;
 
   /**
+   * Array of directory nodes.
+   *
+   * @var \Drupal\node\Entity\Node[]
+   */
+  protected $directories = [];
+
+  /**
+   * Array of facet.
+   *
+   * @var \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets[]
+   */
+  protected $facets = [];
+
+  /**
+   * Array of facet types.
+   *
+   * @var \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType[]
+   */
+  protected $facet_types = [];
+
+  /**
    * A user with mininum permissions for test.
    *
    * @var \Drupal\user\UserInterface
