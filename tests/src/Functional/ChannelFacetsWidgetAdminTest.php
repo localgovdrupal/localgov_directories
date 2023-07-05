@@ -24,7 +24,7 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
   /**
    * Array of of directory nodes.
    *
-   * @var \Drupal\node\Entity\Node[];
+   * @var \Drupal\node\Entity\Node[]
    */
   protected $directories = [];
 
