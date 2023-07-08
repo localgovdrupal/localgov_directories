@@ -29,6 +29,13 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
   protected $user;
 
   /**
+   * Directory nodes.
+   *
+   * @var \Drupal\node\NodeInterface
+   */
+  protected $directories = [];
+
+  /**
    * Modules to enable.
    *
    * @var array
