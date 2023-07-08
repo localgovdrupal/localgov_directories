@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   module:
-    - localgov_geo
+    - geo_entity
     - node
 id: node.localgov_location
 field_name: localgov_location
