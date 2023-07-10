@@ -22,7 +22,7 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
   use NodeCreationTrait;
 
   /**
-   * Array of of directory nodes.
+   * Array of directory nodes.
    *
    * @var \Drupal\node\Entity\Node[]
    */
@@ -119,8 +119,6 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
         'settings[handler_settings][target_bundles][localgov_directory]' => TRUE,
       ]
     );
-    $this->drupalGet('/admin/structure/types/manage/entry_2');
-    print_r($this->getSession()->getPage()->getHtml());
     $this->fieldUIAddExistingField(
       'admin/structure/types/manage/entry_2',
       'field_channels',

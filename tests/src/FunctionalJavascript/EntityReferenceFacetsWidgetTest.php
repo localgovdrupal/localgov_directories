@@ -42,7 +42,7 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
    *
    * @var \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType[]
    */
-  protected $facetsTypes = [];
+  protected $facetTypes = [];
 
   /**
    * A user with mininum permissions for test.
