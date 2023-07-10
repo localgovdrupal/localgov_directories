@@ -24,6 +24,27 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
   use NodeCreationTrait;
 
   /**
+   * Array of directory nodes.
+   *
+   * @var \Drupal\node\Entity\Node[]
+   */
+  protected $directories = [];
+
+  /**
+   * Array of facet.
+   *
+   * @var \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets[]
+   */
+  protected $facets = [];
+
+  /**
+   * Array of facet types.
+   *
+   * @var \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType[]
+   */
+  protected $facetsTypes = [];
+
+  /**
    * A user with mininum permissions for test.
    *
    * @var \Drupal\user\UserInterface
@@ -60,7 +81,7 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
         'label' => $type_id,
       ]);
       $type->save();
-      $this->facet_types[$type_id] = $type;
+      $this->facetTypes[$type_id] = $type;
       for ($j = 0; $j < 5; $j++) {
         $facet = LocalgovDirectoriesFacets::create([
           'bundle' => $type_id,
@@ -76,7 +97,7 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
       'label' => 'facetbundleonefacet',
     ]);
     $type->save();
-    $this->facet_types['facetbundleonefacet'] = $type;
+    $this->facetTypes['facetbundleonefacet'] = $type;
     $facet = LocalgovDirectoriesFacets::create([
       'bundle' => 'facetbundleonefacet',
       'title' => $this->randomMachineName(),
@@ -86,13 +107,13 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
 
     // Directory 1
     // Single facet bundle.
-    reset($this->facet_types);
+    reset($this->facetTypes);
     $directory = $this->createNode([
       'title' => 'Directory 1',
       'type' => 'localgov_directory',
       'status' => NodeInterface::PUBLISHED,
       'localgov_directory_facets_enable' => [
-        ['target_id' => key($this->facet_types)],
+        ['target_id' => key($this->facetTypes)],
       ],
     ]);
     $directory->save();
@@ -101,7 +122,7 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
     // Directory 2.
     // All facet bundles.
     $all_enabled = [];
-    foreach ($this->facet_types as $type_id => $type) {
+    foreach ($this->facetTypes as $type_id => $type) {
       $all_enabled[] = ['target_id' => $type_id];
     }
     $directory = $this->createNode([
@@ -200,9 +221,9 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
     foreach ($this->facets[$facet_type_enabled] as $facet) {
       $assert_session->fieldExists($facet->label());
     }
-    next($this->facet_types);
+    next($this->facetTypes);
     // But not others.
-    $facet_not_enabled = key($this->facet_types);
+    $facet_not_enabled = key($this->facetTypes);
     $assert_session->elementNotExists('css', '[data-drupal-selector="edit-localgov-directory-facets-select-' . $facet_not_enabled . '"]');
 
     // Enable other channel.
