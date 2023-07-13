@@ -52,27 +52,6 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
   protected $user;
 
   /**
-   * Test facet types.
-   *
-   * @var \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType
-   */
-  protected $facet_types;
-
-  /**
-   * Test directories.
-   *
-   * @var \Drupal\node\NodeInterface
-   */
-  protected $directories;
-
-  /**
-   * Test facets.
-   *
-   * @var \Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets
-   */
-  protected $facets;
-
-  /**
    * Modules to enable.
    *
    * @var array
