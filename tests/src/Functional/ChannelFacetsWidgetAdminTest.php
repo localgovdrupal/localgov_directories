@@ -22,7 +22,14 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
   use NodeCreationTrait;
 
   /**
-   * A user with mininum permissions for test.
+   * Array of directory nodes.
+   *
+   * @var \Drupal\node\Entity\Node[]
+   */
+  protected $directories = [];
+
+  /**
+   * A user with minimum permissions for test.
    *
    * @var \Drupal\user\UserInterface
    */
