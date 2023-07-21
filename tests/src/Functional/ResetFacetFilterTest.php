@@ -5,6 +5,7 @@ namespace Drupal\Tests\localgov_directories\Functional;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\node\NodeInterface;
 
 /**
  * Tests the existence of the localgov_directories_facets facet edit page.
@@ -33,7 +34,7 @@ class ResetFacetFilterTest extends BrowserTestBase {
   protected static $modules = [
     'localgov_directories',
     'localgov_directories_db',
-    'localgov_directories_venue',
+    'localgov_directories_page',
   ];
 
   /**
@@ -59,6 +60,34 @@ class ResetFacetFilterTest extends BrowserTestBase {
     ]);
 
     $facet->save();
+
+    // Directory Channel.
+    $directory = $this->createNode([
+      'title' => 'Test Channel',
+      'type' => 'localgov_directory',
+      'status' => NodeInterface::PUBLISHED,
+      'localgov_directory_facets_enable' => [$type_id],
+    ]);
+
+    $directory->save();
+
+    $this->directory_channel_node_id = $directory->id();
+
+    // Directory Venue.
+    for ($j = 1; $j < 3; $j++) {
+      $directory_venue = $this->createNode([
+        'title' => 'Page ' . $j,
+        'type' => 'localgov_directories_page',
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => ['target_id' => $directory->id()],
+        'localgov_directory_facets_select' => [$facet->id()],
+      ]);
+      $directory_venue->save();
+
+      $this->drupalPlaceBlock('facet_block:localgov_directories_facets');
+
+    }
+
   }
 
   /**
@@ -66,9 +95,10 @@ class ResetFacetFilterTest extends BrowserTestBase {
    */
   public function testShowResetFilterLink() {
 
+    $id = 'localgov_directories_facets';
     $this->drupalLogin($this->adminUser);
 
-    $this->drupalGet('admin/config/search/facets/localgov_directories_facets/edit');
+    $this->drupalGet('admin/config/search/facets/' . $id . '/edit');
     $this->assertSession()->pageTextContains('Edit Facets facet');
 
     $this->assertSession()->fieldExists('widget_config[show_numbers]');
@@ -79,7 +109,6 @@ class ResetFacetFilterTest extends BrowserTestBase {
 
     $this->assertSession()->fieldExists('widget_config[hide_reset_when_no_selection]');
     $this->assertSession()->checkboxNotChecked('widget_config[hide_reset_when_no_selection]');
-
 
     // Change the facet settings.
     $edit = [
@@ -95,5 +124,10 @@ class ResetFacetFilterTest extends BrowserTestBase {
     $this->assertSession()->checkboxChecked('widget_config[show_reset_link]');
     $this->assertSession()->checkboxChecked('widget_config[hide_reset_when_no_selection]');
 
+    $this->drupalGet('node/' . $this->directory_channel_node_id);
+
+    $this->assertSession()->pageTextContains('facet-item__count');
+
   }
+
 }
