@@ -109,6 +109,7 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
     'localgov_directories_location',
     'localgov_directories_venue',
     'localgov_geo',
+    'geo_entity',
     'media',
     'media_library',
     'node',
