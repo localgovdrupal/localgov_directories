@@ -49,6 +49,7 @@ class RolesIntegrationTest extends KernelTestBase {
     'localgov_directories_location',
     'localgov_directories_venue',
     'localgov_geo',
+    'geo_entity',
   ];
 
   /**
@@ -60,7 +61,7 @@ class RolesIntegrationTest extends KernelTestBase {
     $this->installEntitySchema('node');
     $this->installEntitySchema('search_api_task');
     $this->installEntitySchema('user');
-    $this->installEntitySchema('localgov_geo');
+    $this->installEntitySchema('geo_entity');
     $this->installSchema('node', ['node_access']);
     $this->installConfig([
       'node',
