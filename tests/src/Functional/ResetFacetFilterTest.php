@@ -4,8 +4,9 @@ namespace Drupal\Tests\localgov_directories\Functional;
 
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
-use Drupal\Tests\BrowserTestBase;
 use Drupal\node\NodeInterface;
+use Drupal\search_api\Entity\Index as SearchIndex;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests the existence of the localgov_directories_facets facet edit page.
@@ -47,18 +48,17 @@ class ResetFacetFilterTest extends BrowserTestBase {
     ]);
 
     // To submit a directory we need a facet.
-    $type_id = $this->randomMachineName();
-    $type = LocalgovDirectoriesFacetsType::create([
-      'id' => $type_id,
-      'label' => $type_id,
+    $facet_type_id = $this->randomMachineName();
+    $facet_type = LocalgovDirectoriesFacetsType::create([
+      'id' => $facet_type_id,
+      'label' => $facet_type_id,
     ]);
-    $type->save();
+    $facet_type->save();
 
     $facet = LocalgovDirectoriesFacets::create([
-      'bundle' => $type_id,
+      'bundle' => $facet_type_id,
       'title' => $this->randomMachineName(),
     ]);
-
     $facet->save();
 
     // Directory Channel.
@@ -66,28 +66,29 @@ class ResetFacetFilterTest extends BrowserTestBase {
       'title' => 'Test Channel',
       'type' => 'localgov_directory',
       'status' => NodeInterface::PUBLISHED,
-      'localgov_directory_facets_enable' => [$type_id],
+      'localgov_directory_facets_enable' => [$facet_type_id],
     ]);
 
     $directory->save();
 
     $this->directory_channel_node_id = $directory->id();
 
-    // Directory Venue.
+    // Directory pages.
     for ($j = 1; $j < 3; $j++) {
-      $directory_venue = $this->createNode([
+      $directory_page = $this->createNode([
         'title' => 'Page ' . $j,
         'type' => 'localgov_directories_page',
         'status' => NodeInterface::PUBLISHED,
-        'localgov_directory_channels' => ['target_id' => $directory->id()],
+        'localgov_directory_channels' => [$directory->id()],
         'localgov_directory_facets_select' => [$facet->id()],
       ]);
-      $directory_venue->save();
-
-      $this->drupalPlaceBlock('facet_block:localgov_directories_facets');
-
+      $directory_page->save();
     }
 
+    // Directory listings are sourced from a search index.
+    SearchIndex::load('localgov_directories_index_default')->indexItems();
+
+    $this->drupalPlaceBlock('facet_block:localgov_directories_facets');
   }
 
   /**
@@ -125,9 +126,7 @@ class ResetFacetFilterTest extends BrowserTestBase {
     $this->assertSession()->checkboxChecked('widget_config[hide_reset_when_no_selection]');
 
     $this->drupalGet('node/' . $this->directory_channel_node_id);
-
-    $this->assertSession()->pageTextContains('facet-item__count');
-
+    $this->assertSession()->responseContains('facet-item__count');
   }
 
 }
