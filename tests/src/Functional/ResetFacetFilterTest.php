@@ -115,7 +115,7 @@ class ResetFacetFilterTest extends BrowserTestBase {
     $edit = [
       'widget_config[show_numbers]' => TRUE,
       'widget_config[show_reset_link]' => TRUE,
-      'widget_config[hide_reset_when_no_selection]' => TRUE,
+      'widget_config[hide_reset_when_no_selection]' => FALSE,
     ];
 
     $this->submitForm($edit, 'Save');
@@ -123,8 +123,8 @@ class ResetFacetFilterTest extends BrowserTestBase {
 
     $this->assertSession()->checkboxChecked('widget_config[show_numbers]');
     $this->assertSession()->checkboxChecked('widget_config[show_reset_link]');
-    $this->assertSession()->checkboxChecked('widget_config[hide_reset_when_no_selection]');
 
+    // Display the Directory Channel page.
     $this->drupalGet('node/' . $this->directory_channel_node_id);
     $this->assertSession()->responseContains('facet-item__count');
   }
