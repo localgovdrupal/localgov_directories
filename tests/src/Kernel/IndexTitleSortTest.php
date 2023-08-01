@@ -8,12 +8,12 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
-use Drupal\Tests\node\Traits\NodeCreationTrait;
-use Drupal\Tests\search_api\Kernel\ResultsTrait;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Utility\Utility;
+use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
+use Drupal\Tests\node\Traits\NodeCreationTrait;
+use Drupal\Tests\search_api\Kernel\ResultsTrait;
 
 /**
  * Tests population of the search sort field.
