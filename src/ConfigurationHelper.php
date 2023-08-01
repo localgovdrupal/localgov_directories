@@ -324,7 +324,9 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
     $conditional_config_path = $this->moduleExtensionList->getPath('localgov_directories') . '/config/conditional';
     if ($this->importConfigEntity('facets_facet', $conditional_config_path, $facet_cfg_file)) {
-      $this->configInstaller->installOptionalConfig();
+      $this->configInstaller->installOptionalConfig(NULL, [
+        'config' => 'facets.facet.localgov_directories_facets',
+      ]);
     }
   }
 
