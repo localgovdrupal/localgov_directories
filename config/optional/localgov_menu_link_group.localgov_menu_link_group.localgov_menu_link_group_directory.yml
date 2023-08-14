@@ -6,7 +6,7 @@ dependencies:
       - localgov_directories
       - localgov_menu_link_group
 id: localgov_menu_link_group_directory
-group_label: Directory
+group_label: Directories
 weight: 0
 parent_menu: admin
 parent_menu_link: 'admin_toolbar_tools.extra_links:node.add'
