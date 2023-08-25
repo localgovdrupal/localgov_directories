@@ -99,6 +99,10 @@ class ResetFacetFilterTest extends BrowserTestBase {
     $id = 'localgov_directories_facets';
     $this->drupalLogin($this->adminUser);
 
+    // Not displaying the reset link..
+    $this->drupalGet('node/' . $this->directory_channel_node_id);
+    $this->assertSession()->ElementNotExists('css', '.facets-reset');
+
     $this->drupalGet('admin/config/search/facets/' . $id . '/edit');
     $this->assertSession()->pageTextContains('Edit Facets facet');
 
@@ -124,9 +128,9 @@ class ResetFacetFilterTest extends BrowserTestBase {
     $this->assertSession()->checkboxChecked('widget_config[show_numbers]');
     $this->assertSession()->checkboxChecked('widget_config[show_reset_link]');
 
-    // Display the Directory Channel page.
+    // Now displaying the reset link.
     $this->drupalGet('node/' . $this->directory_channel_node_id);
-    $this->assertSession()->responseContains('facet-item__count');
+    $this->assertSession()->ElementExists('css', '.facets-reset');
   }
 
 }
