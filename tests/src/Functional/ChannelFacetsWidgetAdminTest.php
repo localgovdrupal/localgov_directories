@@ -152,7 +152,7 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
     $this->submitForm(
       [
         'set_default_value' => TRUE,
-        'default_value_input[field_channels][primary]' => $this->directories[2]->id()
+        'default_value_input[field_channels][primary]' => $this->directories[2]->id(),
       ],
       'edit-submit'
     );
