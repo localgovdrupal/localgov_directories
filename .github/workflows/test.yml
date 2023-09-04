@@ -84,10 +84,6 @@ jobs:
           composer --working-dir=./html require --no-install drupal/core-recommended:${{ matrix.drupal-version }} drupal/core-composer-scaffold:${{ matrix.drupal-version }} drupal/core-project-message:${{ matrix.drupal-version }} drupal/core-dev:${{ matrix.drupal-version }}
           composer --working-dir=./html install
 
-      - name: DON'T MERGE THIS - Require Drupal 10 compatible branches
-        run: |
-          composer --working-dir=./html require localgovdrupal/localgov_geo:"dev-feature/drupal-10 as 1.3.0"
-
       - name: Obtain the test target using Composer
         if: env.HEAD_USER == 'localgovdrupal'
         run: |
