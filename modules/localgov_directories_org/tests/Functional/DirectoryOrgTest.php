@@ -53,7 +53,7 @@ class DirectoryOrgTest extends BrowserTestBase {
     'core.entity_form_display.geo_entity.address.inline',
     // Missing schema:
     // - content.postal_address.settings.providers.
-    // - content.postal_address.settings.geocode_geofield
+    // - content.postal_address.settings.geocode_geofield.
     'core.entity_form_display.localgov_geo.address.default',
     'core.entity_form_display.localgov_geo.address.inline',
   ];
