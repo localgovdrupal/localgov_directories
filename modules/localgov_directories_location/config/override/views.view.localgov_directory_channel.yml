@@ -6,9 +6,9 @@ dependencies:
     - field.storage.node.body
     - search_api.index.localgov_directories_index_default
   module:
+    - geo_entity
     - geofield
     - leaflet_views
-    - geo_entity
     - search_api
     - search_api_location_views
     - text
@@ -146,7 +146,6 @@ display:
           order: DESC
           expose:
             label: ''
-            field_identifier: search_api_relevance
           exposed: false
         localgov_directory_title_sort:
           id: localgov_directory_title_sort
@@ -159,7 +158,6 @@ display:
           order: ASC
           expose:
             label: ''
-            field_identifier: localgov_directory_title_sort
           exposed: false
       arguments:
         localgov_directory_channels:
@@ -249,8 +247,10 @@ display:
         options:
           view_modes:
             'entity:node':
+              localgov_directories_page: teaser
               localgov_directories_venue: teaser
               localgov_directory_page: search_result
+              localgov_directory_promo_page: teaser
       query:
         type: search_api_query
         options:
@@ -270,6 +270,7 @@ display:
         - 'user.node_grants:view'
       tags:
         - 'config:search_api.index.localgov_directories_index_default'
+        - 'search_api_list:localgov_directories_index_default'
   embed_map:
     id: embed_map
     display_title: 'Embed: map'
@@ -315,7 +316,7 @@ display:
             trim: false
             preserve_tags: ''
             html: false
-          element_type: ''
+          element_type: div
           element_class: ''
           element_label_type: ''
           element_label_class: ''
@@ -330,7 +331,7 @@ display:
           click_sort_column: value
           type: string
           settings:
-            link_to_entity: false
+            link_to_entity: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -358,7 +359,7 @@ display:
           entity_type: geo_entity
           plugin_id: search_api_field
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -429,7 +430,7 @@ display:
           admin_label: ''
           plugin_id: search_api_rendered_item
           label: ''
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -473,6 +474,7 @@ display:
             'entity:node':
               localgov_directories_page: teaser
               localgov_directories_venue: teaser
+              localgov_directory_promo_page: default
       pager:
         type: none
         options:
@@ -532,10 +534,10 @@ display:
           plugin_id: search_api_location
           operator: '<'
           value:
+            value: ''
             distance:
               from: '-'
               to: '-'
-            value: ''
           group: 1
           exposed: true
           expose:
@@ -568,7 +570,11 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           plugin: geocode
-          plugin-raw:
+          plugin-geocode:
+            plugins:
+              localgov_default_osm:
+                checked: '1'
+                weight: '0'
             radius_type: select
             radius_options: "- -\r\n1 1/2 mile\r\n2 1 mile\r\n3 2 miles\r\n5 3 miles\r\n8 5 miles\r\n16 10 miles"
             radius_units: km
@@ -578,11 +584,7 @@ display:
             radius_background_color: ''
             radius_background_transparency: ''
             marker_image: ''
-          plugin-geocode:
-            plugins:
-              localgov_default_osm:
-                checked: '1'
-                weight: '0'
+          plugin-raw:
             radius_type: select
             radius_options: "- -\r\n1 1/2 mile\r\n2 1 mile\r\n3 2 miles\r\n5 3 miles\r\n8 5 miles\r\n16 10 miles"
             radius_units: km
@@ -599,18 +601,35 @@ display:
           entity_source: __base_table
           entity_source_submit: 'Update Entity Source'
           name_field: title
-          view_mode: full
+          leaflet_tooltip:
+            value: ''
+            options: '{"permanent":false,"direction":"center"}'
+          leaflet_popup:
+            value: '#rendered_view_fields'
+            options: '{"maxWidth":"300","minWidth":"50","autoPan":true}'
+            view_mode: full
           leaflet_map: 'OSM Mapnik'
           height: '400'
           height_unit: px
           hide_empty_map: true
           disable_wheel: false
           gesture_handling: false
+          reset_map:
+            control: false
+            options: '{"position":"topleft","title":"Reset View"}'
+          map_scale:
+            control: false
+            options: '{"position":"bottomright","maxWidth":100,"metric":true,"imperial":false,"updateWhenIdle":false}'
+          locate:
+            control: false
+            options: '{"position":"topright","setView":"untilPanOrZoom","returnToPrevBounds":true,"keepCurrentZoomLevel":true,"strings":{"title":"Locate my position"}}'
+            automatic: false
           map_position:
             force: false
             center:
-              lat: !!float 0
-              lon: !!float 0
+              lat: 0.0
+              lon: 0.0
+            zoomControlPosition: topleft
             zoom: 12
             minZoom: 1
             maxZoom: 18
@@ -646,6 +665,9 @@ display:
           geocoder:
             control: false
             settings:
+              autocomplete:
+                placeholder: 'Search Address'
+                title: 'Search an Address on the Map'
               position: topright
               input_size: 25
               providers:
@@ -661,7 +683,10 @@ display:
                 kml_file:
                   weight: '0'
                   checked: 0
-                localgov_default_osm:
+                geo_entity_osm:
+                  weight: '0'
+                  checked: 0
+                geo_entity_demo_photon:
                   weight: '0'
                   checked: 0
               min_terms: 4
@@ -669,13 +694,18 @@ display:
               zoom: 16
               popup: false
               options: ''
+          map_lazy_load:
+            lazy_load: false
+          feature_properties:
+            values: ''
       row:
-        type: search_api
+        type: fields
         options:
-          view_modes:
-            'entity:node':
-              localgov_directories_page: teaser
-              localgov_directories_venue: teaser
+          default_field_elements: true
+          inline:
+            title: title
+          separator: ''
+          hide_empty: false
       defaults:
         empty: false
         pager: false
@@ -709,6 +739,7 @@ display:
       tags:
         - 'config:field.storage.geo_entity.location'
         - 'config:search_api.index.localgov_directories_index_default'
+        - 'search_api_list:localgov_directories_index_default'
   node_embed:
     id: node_embed
     display_title: Embed
@@ -729,6 +760,7 @@ display:
         - 'user.node_grants:view'
       tags:
         - 'config:search_api.index.localgov_directories_index_default'
+        - 'search_api_list:localgov_directories_index_default'
   node_embed_for_proximity_search:
     id: node_embed_for_proximity_search
     display_title: 'Embed: Proximity search'
@@ -1036,10 +1068,10 @@ display:
           plugin_id: search_api_location
           operator: '<'
           value:
+            value: ''
             distance:
               from: '-'
               to: '-'
-            value: ''
           group: 1
           exposed: true
           expose:
@@ -1072,7 +1104,11 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           plugin: geocode
-          plugin-raw:
+          plugin-geocode:
+            plugins:
+              localgov_default_osm:
+                checked: '1'
+                weight: '0'
             radius_type: select
             radius_options: "- -\r\n1 1/2 mile\r\n2 1 mile\r\n3 2 miles\r\n5 3 miles\r\n8 5 miles\r\n16 10 miles"
             radius_units: km
@@ -1082,11 +1118,7 @@ display:
             radius_background_color: ''
             radius_background_transparency: ''
             marker_image: ''
-          plugin-geocode:
-            plugins:
-              localgov_default_osm:
-                checked: '1'
-                weight: '0'
+          plugin-raw:
             radius_type: select
             radius_options: "- -\r\n1 1/2 mile\r\n2 1 mile\r\n3 2 miles\r\n5 3 miles\r\n8 5 miles\r\n16 10 miles"
             radius_units: km
@@ -1130,3 +1162,4 @@ display:
       tags:
         - 'config:field.storage.node.body'
         - 'config:search_api.index.localgov_directories_index_default'
+        - 'search_api_list:localgov_directories_index_default'
