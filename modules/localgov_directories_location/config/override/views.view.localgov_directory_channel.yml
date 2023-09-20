@@ -607,7 +607,6 @@ display:
           leaflet_popup:
             value: '#rendered_view_fields'
             options: '{"maxWidth":"300","minWidth":"50","autoPan":true}'
-            view_mode: full
           leaflet_map: 'OSM Mapnik'
           height: '400'
           height_unit: px
@@ -696,8 +695,6 @@ display:
               options: ''
           map_lazy_load:
             lazy_load: false
-          feature_properties:
-            values: ''
       row:
         type: fields
         options:
