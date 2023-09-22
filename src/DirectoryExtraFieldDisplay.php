@@ -336,7 +336,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
       $group_items[$bundle]['title'] = Html::escape($this->entityRepository->getTranslationFromContext($entity)->label());
       $group_items[$bundle]['weight'] = $entity->get('weight');
     }
-    uasort($group_items, 'static::compareFacetBundlesByWeight');
+    uasort($group_items, static::compareFacetBundlesByWeight(...));
     $variables['items'] = $group_items;
 
     if (!empty($show_reset_link)) {
@@ -346,9 +346,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
       // Place the reset link at the top of the facet filters.
       array_unshift($variables['items'], $reset_all);
       array_pop($variables['items']);
-
     }
-
   }
 
   /**
