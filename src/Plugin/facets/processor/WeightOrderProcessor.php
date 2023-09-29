@@ -7,7 +7,6 @@ namespace Drupal\localgov_directories\Plugin\facets\processor;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\facets\Processor\SortProcessorPluginBase;
-use Drupal\facets\Result\Result;
 use Drupal\facets\Result\ResultInterface;
 use Drupal\localgov_directories\Constants as Directory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -32,15 +31,21 @@ class WeightOrderProcessor extends SortProcessorPluginBase implements ContainerF
    *
    * Compare *Facet items* by the value of their *weight* property.
    */
-  public function sortResults(Result $a, Result $b) {
+  public function sortResults(ResultInterface $a, ResultInterface $b) {
 
-    $this->loadFacetWeightsOnce($a, $b);
+    $a_facet_id = $a->getRawValue();
+    $b_facet_id = $b->getRawValue();
 
-    if ($a->facetWeight === $b->facetWeight) {
+    $this->loadFacetWeightsOnce($a_facet_id, $b_facet_id);
+
+    $a_weight = $this->facetsWeightMap[$a_facet_id];
+    $b_weight = $this->facetsWeightMap[$b_facet_id];
+
+    if ($a_weight === $b_weight) {
       return 0;
     }
 
-    return ($a->facetWeight < $b->facetWeight) ? -1 : 1;
+    return ($a_weight < $b_weight) ? -1 : 1;
   }
 
   /**
@@ -52,18 +57,16 @@ class WeightOrderProcessor extends SortProcessorPluginBase implements ContainerF
    * Subsequent comparisons reuse this weight value instead of reloading this
    * Facet item.
    */
-  protected function loadFacetWeightsOnce(ResultInterface $a, ResultInterface $b): void {
+  protected function loadFacetWeightsOnce(int|string $a_facet_id, int|string $b_facet_id): void {
 
-    if (!isset($a->facetWeight)) {
-      $a_facet_id     = $a->getRawValue();
+    if (!array_key_exists($a_facet_id, $this->facetsWeightMap)) {
       $a_facet_entity = $this->dirFacetStorage->load($a_facet_id);
-      $a->facetWeight = $a_facet_entity->get('weight')->value ?? 0;
+      $this->facetsWeightMap[$a_facet_id] = $a_facet_entity->get('weight')->value ?? 0;
     }
 
-    if (!isset($b->facetWeight)) {
-      $b_facet_id     = $b->getRawValue();
+    if (!array_key_exists($b_facet_id, $this->facetsWeightMap)) {
       $b_facet_entity = $this->dirFacetStorage->load($b_facet_id);
-      $b->facetWeight = $b_facet_entity->get('weight')->value ?? 0;
+      $this->facetsWeightMap[$b_facet_id] = $b_facet_entity->get('weight')->value ?? 0;
     }
   }
 
@@ -103,5 +106,12 @@ class WeightOrderProcessor extends SortProcessorPluginBase implements ContainerF
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected $dirFacetStorage;
+
+  /**
+   * Mapping between facet id and facet weight.
+   *
+   * @var array
+   */
+  protected $facetsWeightMap = [];
 
 }
