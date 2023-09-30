@@ -39,7 +39,7 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
     $view = Views::getView(Directory::CHANNEL_VIEW);
     $view->setDisplay(Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY);
     $display_for_proximity_search = $view->getDisplay();
-    $has_proximity_search_display = !empty($display_for_proximity_search);
+    $has_proximity_search_display = $display_for_proximity_search;
     $this->assertTrue($has_proximity_search_display);
 
     $filters = $display_for_proximity_search->getOption('filters');

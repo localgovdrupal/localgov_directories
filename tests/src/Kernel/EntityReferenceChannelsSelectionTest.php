@@ -57,6 +57,27 @@ class EntityReferenceChannelsSelectionTest extends KernelTestBase {
   protected $selectionHandler;
 
   /**
+   * Directory nodes for testing.
+   *
+   * @var \Drupal\node\Entity\Node[]
+   */
+  protected $directoryNodes;
+
+  /**
+   * Page type for testing.
+   *
+   * @var string
+   */
+  protected $pageType;
+
+  /**
+   * Other type for testing.
+   *
+   * @var string
+   */
+  protected $otherType;
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
@@ -79,30 +100,30 @@ class EntityReferenceChannelsSelectionTest extends KernelTestBase {
     $node2 = $this->createNode(['type' => 'localgov_directory']);
     $node3 = $this->createNode(['type' => 'localgov_directory']);
 
-    $this->directory_nodes = [];
+    $this->directoryNodes = [];
     foreach ([$node1, $node2, $node3] as $node) {
-      $this->directory_nodes[$node->id()] = $node;
+      $this->directoryNodes[$node->id()] = $node;
     }
 
-    $this->page_type = strtolower($this->randomMachineName());
-    NodeType::create(['type' => $this->page_type])->save();
+    $this->pageType = strtolower($this->randomMachineName());
+    NodeType::create(['type' => $this->pageType])->save();
     $handler_settings = [
       'sort' => [
         'field' => 'title',
         'direction' => 'DESC',
       ],
     ];
-    $this->createEntityReferenceField('node', $this->page_type, 'localgov_directory_channels', $this->randomString(), 'node', 'localgov_directories_channels_selection', $handler_settings);
+    $this->createEntityReferenceField('node', $this->pageType, 'localgov_directory_channels', $this->randomString(), 'node', 'localgov_directories_channels_selection', $handler_settings);
 
-    $this->other_type = strtolower($this->randomMachineName());
-    NodeType::create(['type' => $this->other_type])->save();
+    $this->otherType = strtolower($this->randomMachineName());
+    NodeType::create(['type' => $this->otherType])->save();
     $handler_settings = [
       'sort' => [
         'field' => 'title',
         'direction' => 'DESC',
       ],
     ];
-    $this->createEntityReferenceField('node', $this->other_type, 'localgov_directory_channels', $this->randomString(), 'node', 'localgov_directories_channels_selection', $handler_settings);
+    $this->createEntityReferenceField('node', $this->otherType, 'localgov_directory_channels', $this->randomString(), 'node', 'localgov_directories_channels_selection', $handler_settings);
   }
 
   /**
@@ -110,39 +131,39 @@ class EntityReferenceChannelsSelectionTest extends KernelTestBase {
    */
   public function testSelectionHandler() {
     // Check the three directory nodes are returned.
-    $field_config = FieldConfig::loadByName('node', $this->page_type, 'localgov_directory_channels');
-    $page = $this->createNode(['type' => $this->page_type]);
+    $field_config = FieldConfig::loadByName('node', $this->pageType, 'localgov_directory_channels');
+    $page = $this->createNode(['type' => $this->pageType]);
     $this->selectionHandler = $this->container->get('plugin.manager.entity_reference_selection')->getSelectionHandler($field_config, $page);
     $selection = $this->selectionHandler->getReferenceableEntities();
     foreach ($selection as $node_type => $values) {
       foreach ($values as $nid => $label) {
-        $this->assertSame($node_type, $this->directory_nodes[$nid]->bundle());
-        $this->assertSame(trim(strip_tags($label)), Html::escape($this->directory_nodes[$nid]->label()));
+        $this->assertSame($node_type, $this->directoryNodes[$nid]->bundle());
+        $this->assertSame(trim(strip_tags($label)), Html::escape($this->directoryNodes[$nid]->label()));
       }
     }
 
     // Remove one directory node and make it only accessible to the other type.
-    $directory = array_pop($this->directory_nodes);
-    $directory->localgov_directory_channel_types = [['target_id' => $this->other_type]];
+    $directory = array_pop($this->directoryNodes);
+    $directory->localgov_directory_channel_types = [['target_id' => $this->otherType]];
     $directory->save();
     $selection = $this->selectionHandler->getReferenceableEntities();
     foreach ($selection as $node_type => $values) {
       foreach ($values as $nid => $label) {
-        $this->assertSame($node_type, $this->directory_nodes[$nid]->bundle());
-        $this->assertSame(trim(strip_tags($label)), Html::escape($this->directory_nodes[$nid]->label()));
+        $this->assertSame($node_type, $this->directoryNodes[$nid]->bundle());
+        $this->assertSame(trim(strip_tags($label)), Html::escape($this->directoryNodes[$nid]->label()));
       }
     }
 
     // Check the removed node is accessible to the other type.
-    $field_config = FieldConfig::loadByName('node', $this->other_type, 'localgov_directory_channels');
-    $other = $this->createNode(['type' => $this->other_type]);
+    $field_config = FieldConfig::loadByName('node', $this->otherType, 'localgov_directory_channels');
+    $other = $this->createNode(['type' => $this->otherType]);
     $this->selectionHandler = $this->container->get('plugin.manager.entity_reference_selection')->getSelectionHandler($field_config, $other);
     $other_selection = $this->selectionHandler->getReferenceableEntities();
-    $this->directory_nodes[$directory->id()] = $directory;
+    $this->directoryNodes[$directory->id()] = $directory;
     foreach ($other_selection as $node_type => $values) {
       foreach ($values as $nid => $label) {
-        $this->assertSame($node_type, $this->directory_nodes[$nid]->bundle());
-        $this->assertSame(trim(strip_tags($label)), Html::escape($this->directory_nodes[$nid]->label()));
+        $this->assertSame($node_type, $this->directoryNodes[$nid]->bundle());
+        $this->assertSame(trim(strip_tags($label)), Html::escape($this->directoryNodes[$nid]->label()));
       }
     }
 

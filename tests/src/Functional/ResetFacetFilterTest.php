@@ -28,6 +28,13 @@ class ResetFacetFilterTest extends BrowserTestBase {
   protected $adminUser;
 
   /**
+   * Directory Channel Node Id.
+   *
+   * @var string|int|null
+   */
+  protected $directoryChannelNodeId;
+
+  /**
    * Modules to enable.
    *
    * @var array
@@ -71,7 +78,7 @@ class ResetFacetFilterTest extends BrowserTestBase {
 
     $directory->save();
 
-    $this->directory_channel_node_id = $directory->id();
+    $this->directoryChannelNodeId = $directory->id();
 
     // Directory pages.
     for ($j = 1; $j < 3; $j++) {
@@ -100,7 +107,7 @@ class ResetFacetFilterTest extends BrowserTestBase {
     $this->drupalLogin($this->adminUser);
 
     // Not displaying the reset link..
-    $this->drupalGet('node/' . $this->directory_channel_node_id);
+    $this->drupalGet('node/' . $this->directoryChannelNodeId);
     $this->assertSession()->ElementNotExists('css', '.facets-reset');
 
     $this->drupalGet('admin/config/search/facets/' . $id . '/edit');
@@ -129,7 +136,7 @@ class ResetFacetFilterTest extends BrowserTestBase {
     $this->assertSession()->checkboxChecked('widget_config[show_reset_link]');
 
     // Now displaying the reset link.
-    $this->drupalGet('node/' . $this->directory_channel_node_id);
+    $this->drupalGet('node/' . $this->directoryChannelNodeId);
     $this->assertSession()->ElementExists('css', '.facets-reset');
   }
 
