@@ -7,6 +7,7 @@ namespace Drupal\Tests\localgov_directories_venue\Kernel;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\localgov_directories\Constants as Directory;
 use Drupal\search_api\Entity\Index as SearchIndex;
+use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\views\Views;
 
 /**
@@ -39,7 +40,7 @@ class ViewUpgradeForProximitySearchTest extends KernelTestBase {
     $view = Views::getView(Directory::CHANNEL_VIEW);
     $view->setDisplay(Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY);
     $display_for_proximity_search = $view->getDisplay();
-    $has_proximity_search_display = !empty($display_for_proximity_search);
+    $has_proximity_search_display = $display_for_proximity_search instanceof DisplayPluginBase;
     $this->assertTrue($has_proximity_search_display);
 
     $filters = $display_for_proximity_search->getOption('filters');
