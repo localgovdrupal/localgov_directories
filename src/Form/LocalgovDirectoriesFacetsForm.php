@@ -51,6 +51,8 @@ class LocalgovDirectoriesFacetsForm extends ContentEntityForm {
     }
 
     $form_state->setRedirect('entity.localgov_directories_facets.collection');
+
+    return $result;
   }
 
 }
