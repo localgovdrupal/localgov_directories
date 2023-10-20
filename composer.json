@@ -16,7 +16,7 @@
     },
     "require-dev": {
         "localgovdrupal/localgov_services": "^2.1",
-        "localgovdrupal/localgov_openreferral": "^1.1",
+        "localgovdrupal/localgov_openreferral": "^2.0",
         "localgovdrupal/localgov_paragraphs": "^2.3"
     },
     "suggest": {
