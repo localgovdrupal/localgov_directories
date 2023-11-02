@@ -4,8 +4,8 @@ namespace Drupal\localgov_directories\Plugin\facets\query_type;
 
 use Drupal\facets\QueryType\QueryTypePluginBase;
 use Drupal\facets\Result\Result;
-use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Query\ConditionGroupInterface;
+use Drupal\search_api\Query\QueryInterface;
 
 /**
  * AND facet groups while keeping the operator within a facets as an OR.
@@ -147,22 +147,23 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     $filter_query->preExecute();
 
     // Find conditions.
-    $conditions = $filter_query->getConditionGroup()->getConditions();
+    // By reference is required or the incorrect conditions are applied.
+    $conditions = &$filter_query->getConditionGroup()->getConditions();
 
     // Store removed conditions so we can reset them.
     $removed_conditions = [];
 
     // Loop through each conditions, removing ones that are not this filter tag.
-    foreach ($conditions as $tag => $condition) {
+    foreach ($conditions as $cid => $condition) {
       if ($condition instanceof ConditionGroupInterface) {
-        $tags = $condition->getTags();
+        $cids = $condition->getTags();
 
         // @todo Check that we are only removing facet conditions.
-        if (!in_array($filter_tag, $tags)) {
+        if (!in_array($filter_tag, $cids)) {
 
           // Store the removed conditions and remove it.
-          $removed_conditions[$tag] = $conditions[$tag];
-          unset($conditions[$tag]);
+          $removed_conditions[$cid] = $conditions[$cid];
+          unset($conditions[$cid]);
         }
       }
     }
@@ -184,6 +185,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
       ->getStorage('localgov_directories_facets')
       ->getQuery()
       ->condition('bundle', $facet_type_id)
+      ->accessCheck(TRUE)
       ->execute();
     $found_facets = $facets['localgov_directory_facets_filter'] ?? [];
     $found_facets = array_filter($found_facets, function ($item) use ($group_facet_ids) {
