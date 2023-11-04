@@ -143,8 +143,11 @@ class FacetsTest extends BrowserTestBase {
 
   /**
    * Test facets filter with And groups.
+   *
+   * Verifies that the correct entries are visible using an OR filter within
+   * facet groups and a AND filter accross the groups.
    */
-  public function testFacetsFilters() {
+  public function testFacetsGroupFilters() {
 
     // Set up some directory entires.
     $directory_nodes = [
@@ -359,7 +362,7 @@ class FacetsTest extends BrowserTestBase {
         ],
       ],
       [
-        // Entry 3 has facet 2 only
+        // Entry 3 has facet 2 only.
         'title' => 'Entry 3 ' . $this->randomMachineName(8),
         'type' => 'localgov_directories_page',
         'body' => [
@@ -404,9 +407,6 @@ class FacetsTest extends BrowserTestBase {
     foreach ($directory_nodes as $node) {
       $this->createNode($node);
     }
-
-    // Get titles for comparison.
-    $node_titles = array_column($directory_nodes, 'title');
 
     // Run cron so the directory entires are indexed.
     $this->cronRun();
