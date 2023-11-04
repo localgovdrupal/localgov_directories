@@ -40,9 +40,26 @@ class FacetsTest extends BrowserTestBase {
   ];
 
   /**
-   * Test facets filter with And groups.
+   * Facet labels.
+   *
+   * Used for reference in each test.
+   *
+   * @var array
    */
-  public function testFacetsFilters() {
+  protected $facetLabels;
+
+  /**
+   * Channel node page.
+   *
+   * @var \Drupal\node\NodeInterface
+   */
+  protected $channelNode;
+
+  /**
+   * Set up users, node and facets.
+   */
+  protected function setUp() :void {
+    parent::setUp();
 
     // Set up admin user.
     $admin_user = $this->drupalCreateUser([
@@ -92,9 +109,9 @@ class FacetsTest extends BrowserTestBase {
     foreach ($facets as $facet_item) {
       $facet = LocalgovDirectoriesFacets::create($facet_item);
       $facet->save();
-      $facet_entities[] = $facet;
+      $this->facet_entities[] = $facet;
     }
-    $facet_labels = array_column($facets, 'title');
+    $this->facet_labels = array_column($facets, 'title');
 
     // Set up a directory channel and assign the facets to it.
     $body = [
@@ -102,7 +119,7 @@ class FacetsTest extends BrowserTestBase {
       'summary' => 'One of the greatest joys known to man is to take a flight into ignorance in search of knowledge.',
     ];
 
-    $channel_node = $this->createNode([
+    $this->channel_node = $this->createNode([
       'title' => 'Directory channel',
       'type' => 'localgov_directory',
       'status' => NodeInterface::PUBLISHED,
@@ -122,6 +139,13 @@ class FacetsTest extends BrowserTestBase {
       ],
     ]);
 
+  }
+
+  /**
+   * Test facets filter with And groups.
+   */
+  public function testFacetsFilters() {
+
     // Set up some directory entires.
     $directory_nodes = [
       // Entry 1 has facet 1 only.
@@ -131,12 +155,12 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $channel_node->id(),
+            'target_id' => $this->channel_node->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $facet_entities[0]->id(),
+            'target_id' => $this->facet_entities[0]->id(),
           ],
         ],
       ],
@@ -147,12 +171,12 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $channel_node->id(),
+            'target_id' => $this->channel_node->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $facet_entities[1]->id(),
+            'target_id' => $this->facet_entities[1]->id(),
           ],
         ],
       ],
@@ -163,15 +187,15 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $channel_node->id(),
+            'target_id' => $this->channel_node->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $facet_entities[0]->id(),
+            'target_id' => $this->facet_entities[0]->id(),
           ],
           [
-            'target_id' => $facet_entities[2]->id(),
+            'target_id' => $this->facet_entities[2]->id(),
           ],
         ],
       ],
@@ -182,21 +206,21 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $channel_node->id(),
+            'target_id' => $this->channel_node->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $facet_entities[0]->id(),
+            'target_id' => $this->facet_entities[0]->id(),
           ],
           [
-            'target_id' => $facet_entities[1]->id(),
+            'target_id' => $this->facet_entities[1]->id(),
           ],
           [
-            'target_id' => $facet_entities[2]->id(),
+            'target_id' => $this->facet_entities[2]->id(),
           ],
           [
-            'target_id' => $facet_entities[3]->id(),
+            'target_id' => $this->facet_entities[3]->id(),
           ],
         ],
       ],
@@ -213,7 +237,7 @@ class FacetsTest extends BrowserTestBase {
     $this->cronRun();
 
     // Check facets and check the right entries are shown.
-    $directory_url = $channel_node->toUrl()->toString();
+    $directory_url = $this->channel_node->toUrl()->toString();
     $this->drupalGet($directory_url);
 
     // Initially all four should be avalible.
@@ -224,7 +248,7 @@ class FacetsTest extends BrowserTestBase {
 
     // Facet 1.
     // Click facet 1, should show entry 1, 3 and 4.
-    $this->getSession()->getPage()->clickLink($facet_labels[0]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[0]);
     $this->assertSession()->pageTextContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -232,7 +256,7 @@ class FacetsTest extends BrowserTestBase {
 
     // Facet 1 OR Facet 2.
     // Click facet 2 (with 1 still clicked), should show entry 1, 2, 3 and 4.
-    $this->getSession()->getPage()->clickLink($facet_labels[1]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
     $this->assertSession()->pageTextContains($node_titles[0]);
     $this->assertSession()->pageTextContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -241,8 +265,8 @@ class FacetsTest extends BrowserTestBase {
     // Facet 1 AND Facet 3.
     // Click facet 2 to deselect, click facet 3 (with 1 still clicked),
     // should show entry 3 and 4.
-    $this->getSession()->getPage()->clickLink($facet_labels[1]);
-    $this->getSession()->getPage()->clickLink($facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -251,7 +275,7 @@ class FacetsTest extends BrowserTestBase {
     // Facet 1 AND (Facet 3 OR Facet 4).
     // Click facet 4 (with 1 and 3 still clicked),
     // should show entry 3 and 4.
-    $this->getSession()->getPage()->clickLink($facet_labels[3]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[3]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -260,7 +284,7 @@ class FacetsTest extends BrowserTestBase {
     // Facet 1 AND Facet 4.
     // Click facet 3 to deselect (with 1 and 4 still clicked),
     // should show entry 4 only.
-    $this->getSession()->getPage()->clickLink($facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextNotContains($node_titles[2]);
@@ -269,12 +293,218 @@ class FacetsTest extends BrowserTestBase {
     // (Facet 1 OR Facet 2) AND (Facet 3 OR Facet 4).
     // Click facet 2 and 3 (with 1 and 4 still clicked),
     // all facets selected, but should only show entry 3 and 4.
-    $this->getSession()->getPage()->clickLink($facet_labels[1]);
-    $this->getSession()->getPage()->clickLink($facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
     $this->assertSession()->pageTextContains($node_titles[3]);
+  }
+
+  /**
+   * Test facet selection shows possible facets that could be selected.
+   *
+   * Verifies that when facets are selected, facets that would offer a possible
+   * selection are visible and not hidden. This occurs due to the way facets are
+   * generated from the result set. Since each facet group is an OR, if there
+   * are entries that could be shown by selecting OR in the group whilst
+   * applying the AND filter from the other groups, they need to be selectable.
+   */
+  public function testFacetSearchShowsAccessibleFacet() {
+
+    // Set up some directory entires.
+    $directory_nodes = [
+      // Entry 1 has facet 1 and 3.
+      [
+        'title' => 'Entry 1 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'body' => [
+          'value' => 'Contains facet 1 and facet 3.',
+        ],
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channel_node->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facet_entities[0]->id(),
+          ],
+          [
+            'target_id' => $this->facet_entities[2]->id(),
+          ],
+        ],
+      ],
+      [
+        // Entry 2 has facet 1 and 4.
+        'title' => 'Entry 2 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'body' => [
+          'value' => 'Contains facet 1 and facet 4.',
+        ],
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channel_node->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facet_entities[0]->id(),
+          ],
+          [
+            'target_id' => $this->facet_entities[3]->id(),
+          ],
+        ],
+      ],
+      [
+        // Entry 3 has facet 2 only
+        'title' => 'Entry 3 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'body' => [
+          'value' => 'Contains facet 2 only.',
+        ],
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channel_node->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facet_entities[1]->id(),
+          ],
+        ],
+      ],
+      [
+        // Entry 4 has facet 2 and 4.
+        'title' => 'Entry 4 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'body' => [
+          'value' => 'Contains facet 2 and facet 4.',
+        ],
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channel_node->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facet_entities[1]->id(),
+          ],
+          [
+            'target_id' => $this->facet_entities[3]->id(),
+          ],
+        ],
+      ],
+    ];
+
+    foreach ($directory_nodes as $node) {
+      $this->createNode($node);
+    }
+
+    // Get titles for comparison.
+    $node_titles = array_column($directory_nodes, 'title');
+
+    // Run cron so the directory entires are indexed.
+    $this->cronRun();
+
+    // Check facets and check the right entries are shown.
+    $directory_url = $this->channel_node->toUrl()->toString();
+    $this->drupalGet($directory_url);
+
+    // Click facet 1.
+    // Applies condition entries have facet 1.
+    // For each facet group, we are testing for possible facets in each group,
+    // Eg. In group 2 we look for facets which would apply with facet 1 from
+    // group 1 also selected.
+    // Show facets where entries would show for:-
+    // - group 1 AND no restriction.
+    // - group 2 AND facet 1.
+    $this->getSession()->getPage()->clickLink($this->facet_labels[0]);
+
+    // Assert that facets 1, 2, 3 and 4 are visible.
+    // Because entry 2 has facet 2 which is in the same group as facet 1,
+    // user could click on facet 2 as an OR condition even though entry 2
+    // is not visible. Facet 4 will be visible as entry 2 has facet 1 and 4.
+    $this->assertSession()->pageTextContains($this->facet_labels[0]);
+    $this->assertSession()->pageTextContains($this->facet_labels[1]);
+    $this->assertSession()->pageTextContains($this->facet_labels[2]);
+    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+
+    // Click facet 3.
+    // Applies condition entries have facet 1 AND facet 3.
+    // Now each group will have a filter applied, all facets from group 1 which
+    // would apply when facet 3 is selected, and all facets from group 2 which
+    // would apply when facet 1 is selected, and then the results are combined.
+    // Show facets where entries would show for:-
+    // - group 1 AND facet 3.
+    // - group 2 AND facet 1.
+    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
+
+    // Assert that facets 1, 3 and 4 are visible (2 should be hidden).
+    // Since the AND condition that is now applied from facet 3 will
+    // eliminate entry 2, so appling it would have no effect. Facet 4 will still
+    // be visible as Entry 2 has facet 1 and facet 4, so user could click on
+    // on facet 4 and see entry 2.
+    $this->assertSession()->pageTextContains($this->facet_labels[0]);
+    $this->assertSession()->pageTextNotContains($this->facet_labels[1]);
+    $this->assertSession()->pageTextContains($this->facet_labels[2]);
+    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+
+    // Click facet 4.
+    // Applies condition entries have facet 1 AND (facet 3 OR facet 4).
+    // Show facets where entries would show for:-
+    // - group 1 AND (facet 3 or facet 4).
+    // - group 2 AND facet 1.
+    $this->getSession()->getPage()->clickLink($this->facet_labels[3]);
+
+    // Assert that facets 1, 2, 3 and 4 are visible.
+    // Since entry 4 has facet 2 and facet 4, when the AND condition is applied
+    // from the second facet group (facets 3 & 4) this will allow facet 2 to be
+    // selected as it selected it would now produce a valid result.
+    $this->assertSession()->pageTextContains($this->facet_labels[0]);
+    $this->assertSession()->pageTextContains($this->facet_labels[1]);
+    $this->assertSession()->pageTextContains($this->facet_labels[2]);
+    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+
+    // Click to deselect facet 1 and 3 and then click to select facet 2.
+    // Applies condition entries have facet 2 AND facet 4.
+    // Show facets where entries would show for:-
+    // - group 1 AND facet 4.
+    // - group 2 AND facet 2.
+    $this->getSession()->getPage()->clickLink($this->facet_labels[0]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
+
+    // Assert that facets 1, 2 and 4 are visible (3 should be hidden).
+    // Since the AND condition from the first facet group will only apply to
+    // facet 4 and the AND condition from the second group will apply to facet 1
+    // OR facet 2 (entry 4 has facets 2 & 4, not shown entry 2 has facet 1 & 3
+    // so facet 1 is reachable and will genrate a valid result).
+    $this->assertSession()->pageTextContains($this->facet_labels[0]);
+    $this->assertSession()->pageTextContains($this->facet_labels[1]);
+    $this->assertSession()->pageTextNotContains($this->facet_labels[2]);
+    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+
+    // Click to deselect facet 4.
+    // Applies conditions entries have facet 2.
+    // Show facets where entries would show for:-
+    // - group 1 AND no restriction.
+    // - group 2 AND facet 2.
+    $this->getSession()->getPage()->clickLink($this->facet_labels[3]);
+
+    // Assert that facet 1, 2 and 4 are visible (3 should be hidden).
+    // Since no AND condition applies from the second facet group, facet 1
+    // can be potentially selected in an OR group with facet 2 as the hidden
+    // entry 1 has facet 1. The And condition from the first group with facet 2
+    // prevents facet 3 from being reachable, as no entries have facet 2 and 3.
+    $this->assertSession()->pageTextContains($this->facet_labels[0]);
+    $this->assertSession()->pageTextContains($this->facet_labels[1]);
+    $this->assertSession()->pageTextNotContains($this->facet_labels[2]);
+    $this->assertSession()->pageTextContains($this->facet_labels[3]);
   }
 
 }
