@@ -46,7 +46,16 @@ class FacetsTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected $facetLabels;
+  protected $facetLabels = [];
+
+  /**
+   * Facet entities.
+   *
+   * Used to set facets accross each test.
+   *
+   * @var array
+   */
+  protected $facetEntities = [];
 
   /**
    * Channel node page.
@@ -109,9 +118,9 @@ class FacetsTest extends BrowserTestBase {
     foreach ($facets as $facet_item) {
       $facet = LocalgovDirectoriesFacets::create($facet_item);
       $facet->save();
-      $this->facet_entities[] = $facet;
+      $this->facetEntities[] = $facet;
     }
-    $this->facet_labels = array_column($facets, 'title');
+    $this->facetLabels = array_column($facets, 'title');
 
     // Set up a directory channel and assign the facets to it.
     $body = [
@@ -163,7 +172,7 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[0]->id(),
+            'target_id' => $this->facetEntities[0]->id(),
           ],
         ],
       ],
@@ -179,7 +188,7 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[1]->id(),
+            'target_id' => $this->facetEntities[1]->id(),
           ],
         ],
       ],
@@ -195,10 +204,10 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[0]->id(),
+            'target_id' => $this->facetEntities[0]->id(),
           ],
           [
-            'target_id' => $this->facet_entities[2]->id(),
+            'target_id' => $this->facetEntities[2]->id(),
           ],
         ],
       ],
@@ -214,16 +223,16 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[0]->id(),
+            'target_id' => $this->facetEntities[0]->id(),
           ],
           [
-            'target_id' => $this->facet_entities[1]->id(),
+            'target_id' => $this->facetEntities[1]->id(),
           ],
           [
-            'target_id' => $this->facet_entities[2]->id(),
+            'target_id' => $this->facetEntities[2]->id(),
           ],
           [
-            'target_id' => $this->facet_entities[3]->id(),
+            'target_id' => $this->facetEntities[3]->id(),
           ],
         ],
       ],
@@ -251,7 +260,7 @@ class FacetsTest extends BrowserTestBase {
 
     // Facet 1.
     // Click facet 1, should show entry 1, 3 and 4.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[0]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[0]);
     $this->assertSession()->pageTextContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -259,7 +268,7 @@ class FacetsTest extends BrowserTestBase {
 
     // Facet 1 OR Facet 2.
     // Click facet 2 (with 1 still clicked), should show entry 1, 2, 3 and 4.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[1]);
     $this->assertSession()->pageTextContains($node_titles[0]);
     $this->assertSession()->pageTextContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -268,8 +277,8 @@ class FacetsTest extends BrowserTestBase {
     // Facet 1 AND Facet 3.
     // Click facet 2 to deselect, click facet 3 (with 1 still clicked),
     // should show entry 3 and 4.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
-    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[1]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[2]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -278,7 +287,7 @@ class FacetsTest extends BrowserTestBase {
     // Facet 1 AND (Facet 3 OR Facet 4).
     // Click facet 4 (with 1 and 3 still clicked),
     // should show entry 3 and 4.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[3]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[3]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -287,7 +296,7 @@ class FacetsTest extends BrowserTestBase {
     // Facet 1 AND Facet 4.
     // Click facet 3 to deselect (with 1 and 4 still clicked),
     // should show entry 4 only.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[2]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextNotContains($node_titles[2]);
@@ -296,8 +305,8 @@ class FacetsTest extends BrowserTestBase {
     // (Facet 1 OR Facet 2) AND (Facet 3 OR Facet 4).
     // Click facet 2 and 3 (with 1 and 4 still clicked),
     // all facets selected, but should only show entry 3 and 4.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
-    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[1]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[2]);
     $this->assertSession()->pageTextNotContains($node_titles[0]);
     $this->assertSession()->pageTextNotContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -332,10 +341,10 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[0]->id(),
+            'target_id' => $this->facetEntities[0]->id(),
           ],
           [
-            'target_id' => $this->facet_entities[2]->id(),
+            'target_id' => $this->facetEntities[2]->id(),
           ],
         ],
       ],
@@ -354,10 +363,10 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[0]->id(),
+            'target_id' => $this->facetEntities[0]->id(),
           ],
           [
-            'target_id' => $this->facet_entities[3]->id(),
+            'target_id' => $this->facetEntities[3]->id(),
           ],
         ],
       ],
@@ -376,7 +385,7 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[1]->id(),
+            'target_id' => $this->facetEntities[1]->id(),
           ],
         ],
       ],
@@ -395,10 +404,10 @@ class FacetsTest extends BrowserTestBase {
         ],
         'localgov_directory_facets_select' => [
           [
-            'target_id' => $this->facet_entities[1]->id(),
+            'target_id' => $this->facetEntities[1]->id(),
           ],
           [
-            'target_id' => $this->facet_entities[3]->id(),
+            'target_id' => $this->facetEntities[3]->id(),
           ],
         ],
       ],
@@ -423,16 +432,16 @@ class FacetsTest extends BrowserTestBase {
     // Show facets where entries would show for:-
     // - group 1 AND no restriction.
     // - group 2 AND facet 1.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[0]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[0]);
 
     // Assert that facets 1, 2, 3 and 4 are visible.
     // Because entry 2 has facet 2 which is in the same group as facet 1,
     // user could click on facet 2 as an OR condition even though entry 2
     // is not visible. Facet 4 will be visible as entry 2 has facet 1 and 4.
-    $this->assertSession()->pageTextContains($this->facet_labels[0]);
-    $this->assertSession()->pageTextContains($this->facet_labels[1]);
-    $this->assertSession()->pageTextContains($this->facet_labels[2]);
-    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+    $this->assertSession()->pageTextContains($this->facetLabels[0]);
+    $this->assertSession()->pageTextContains($this->facetLabels[1]);
+    $this->assertSession()->pageTextContains($this->facetLabels[2]);
+    $this->assertSession()->pageTextContains($this->facetLabels[3]);
 
     // Click facet 3.
     // Applies condition entries have facet 1 AND facet 3.
@@ -442,69 +451,69 @@ class FacetsTest extends BrowserTestBase {
     // Show facets where entries would show for:-
     // - group 1 AND facet 3.
     // - group 2 AND facet 1.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[2]);
 
     // Assert that facets 1, 3 and 4 are visible (2 should be hidden).
     // Since the AND condition that is now applied from facet 3 will
     // eliminate entry 2, so appling it would have no effect. Facet 4 will still
     // be visible as Entry 2 has facet 1 and facet 4, so user could click on
     // on facet 4 and see entry 2.
-    $this->assertSession()->pageTextContains($this->facet_labels[0]);
-    $this->assertSession()->pageTextNotContains($this->facet_labels[1]);
-    $this->assertSession()->pageTextContains($this->facet_labels[2]);
-    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+    $this->assertSession()->pageTextContains($this->facetLabels[0]);
+    $this->assertSession()->pageTextNotContains($this->facetLabels[1]);
+    $this->assertSession()->pageTextContains($this->facetLabels[2]);
+    $this->assertSession()->pageTextContains($this->facetLabels[3]);
 
     // Click facet 4.
     // Applies condition entries have facet 1 AND (facet 3 OR facet 4).
     // Show facets where entries would show for:-
     // - group 1 AND (facet 3 or facet 4).
     // - group 2 AND facet 1.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[3]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[3]);
 
     // Assert that facets 1, 2, 3 and 4 are visible.
     // Since entry 4 has facet 2 and facet 4, when the AND condition is applied
     // from the second facet group (facets 3 & 4) this will allow facet 2 to be
     // selected as it selected it would now produce a valid result.
-    $this->assertSession()->pageTextContains($this->facet_labels[0]);
-    $this->assertSession()->pageTextContains($this->facet_labels[1]);
-    $this->assertSession()->pageTextContains($this->facet_labels[2]);
-    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+    $this->assertSession()->pageTextContains($this->facetLabels[0]);
+    $this->assertSession()->pageTextContains($this->facetLabels[1]);
+    $this->assertSession()->pageTextContains($this->facetLabels[2]);
+    $this->assertSession()->pageTextContains($this->facetLabels[3]);
 
     // Click to deselect facet 1 and 3 and then click to select facet 2.
     // Applies condition entries have facet 2 AND facet 4.
     // Show facets where entries would show for:-
     // - group 1 AND facet 4.
     // - group 2 AND facet 2.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[0]);
-    $this->getSession()->getPage()->clickLink($this->facet_labels[2]);
-    $this->getSession()->getPage()->clickLink($this->facet_labels[1]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[0]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[2]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[1]);
 
     // Assert that facets 1, 2 and 4 are visible (3 should be hidden).
     // Since the AND condition from the first facet group will only apply to
     // facet 4 and the AND condition from the second group will apply to facet 1
     // OR facet 2 (entry 4 has facets 2 & 4, not shown entry 2 has facet 1 & 3
     // so facet 1 is reachable and will genrate a valid result).
-    $this->assertSession()->pageTextContains($this->facet_labels[0]);
-    $this->assertSession()->pageTextContains($this->facet_labels[1]);
-    $this->assertSession()->pageTextNotContains($this->facet_labels[2]);
-    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+    $this->assertSession()->pageTextContains($this->facetLabels[0]);
+    $this->assertSession()->pageTextContains($this->facetLabels[1]);
+    $this->assertSession()->pageTextNotContains($this->facetLabels[2]);
+    $this->assertSession()->pageTextContains($this->facetLabels[3]);
 
     // Click to deselect facet 4.
     // Applies conditions entries have facet 2.
     // Show facets where entries would show for:-
     // - group 1 AND no restriction.
     // - group 2 AND facet 2.
-    $this->getSession()->getPage()->clickLink($this->facet_labels[3]);
+    $this->getSession()->getPage()->clickLink($this->facetLabels[3]);
 
     // Assert that facet 1, 2 and 4 are visible (3 should be hidden).
     // Since no AND condition applies from the second facet group, facet 1
     // can be potentially selected in an OR group with facet 2 as the hidden
     // entry 1 has facet 1. The And condition from the first group with facet 2
     // prevents facet 3 from being reachable, as no entries have facet 2 and 3.
-    $this->assertSession()->pageTextContains($this->facet_labels[0]);
-    $this->assertSession()->pageTextContains($this->facet_labels[1]);
-    $this->assertSession()->pageTextNotContains($this->facet_labels[2]);
-    $this->assertSession()->pageTextContains($this->facet_labels[3]);
+    $this->assertSession()->pageTextContains($this->facetLabels[0]);
+    $this->assertSession()->pageTextContains($this->facetLabels[1]);
+    $this->assertSession()->pageTextNotContains($this->facetLabels[2]);
+    $this->assertSession()->pageTextContains($this->facetLabels[3]);
   }
 
 }
