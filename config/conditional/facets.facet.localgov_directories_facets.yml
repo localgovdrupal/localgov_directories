@@ -54,6 +54,11 @@ processor_configs:
     processor_id: weight_property_order
     weights:
       build: -5
+  localgov_directories_processor:
+    processor_id: localgov_directories_processor
+    weights:
+      pre_query: 35
+    settings: {  }
 empty_behavior:
   behavior: none
 show_title: false
