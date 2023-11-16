@@ -169,7 +169,6 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     // Execute the filter query and get the facets returned.
     $filter_query->execute();
     $facets = $filter_query->getResults()->getExtraData('search_api_facets');
-    // dpm($facets);
     $filter_query->postExecute();
 
     // Without deep cloning we've affected the conditions, reset these for the
