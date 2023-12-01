@@ -55,7 +55,6 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-        width_breakpoint: 1138
       label: Description
     group_directory:
       children:
