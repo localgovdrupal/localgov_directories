@@ -8,6 +8,8 @@
 use Drupal\Component\Serialization\Yaml;
 use Drupal\localgov_directories\Constants as Directory;
 use Drupal\localgov_directories_location\ProximitySearchSetup;
+use Drupal\search_api\Entity\Index as SearchIndex;
+use Drupal\search_api\Item\Field as SearchIndexField;
 use Drupal\views\Entity\View;
 
 /**
@@ -23,6 +25,15 @@ function localgov_directories_location_install($is_syncing) {
   if ($is_syncing) {
     return;
   }
+
+  $index = SearchIndex::load(Directory::DEFAULT_INDEX);
+  $location_field = new SearchIndexField($index, Directory::LOCATION_FIELD_WKT);
+  $location_field->setLabel('Location » Geo » location WKT');
+  $location_field->setDatasourceId('entity:node');
+  $location_field->setType('string');
+  $location_field->setPropertyPath('localgov_location:entity:location');
+  $index->addField($location_field);
+  $index->save();
 
   // Retrieves view display mode config and adds location-related sections to
   // the existing configuration.
