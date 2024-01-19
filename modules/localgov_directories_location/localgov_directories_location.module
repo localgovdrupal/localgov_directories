@@ -85,7 +85,7 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
       \Drupal::classResolver(ConfigurationHelper::class)->createFacet(Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH, Directory::FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH);
     }
   }
- }
+}
 
 /**
  * Implements hook_ENTITY_TYPE_update() for hook_search_api_index_update().
