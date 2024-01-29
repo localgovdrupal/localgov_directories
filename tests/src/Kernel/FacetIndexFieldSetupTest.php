@@ -17,8 +17,11 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
  */
 class FacetIndexFieldSetupTest extends KernelTestBase {
 
-  use EntityReferenceTestTrait;
   use NodeCreationTrait;
+  // FIXME: Replace with EntityReferenceFieldCreationTrait when Drupal 10.1 is
+  // end of life.
+  // @phpstan-ignore-next-line.
+  use EntityReferenceTestTrait;
 
   /**
    * Skip schema checks.

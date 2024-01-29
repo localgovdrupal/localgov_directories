@@ -20,8 +20,12 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
 class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
 
   use ContentTypeCreationTrait;
-  use EntityReferenceTestTrait;
   use NodeCreationTrait;
+  // FIXME: Replace with EntityReferenceFieldCreationTrait when Drupal 10.1 is
+  // end of life.
+  // @phpstan-ignore-next-line.
+  use EntityReferenceTestTrait;
+
 
   /**
    * Array of directory nodes.
