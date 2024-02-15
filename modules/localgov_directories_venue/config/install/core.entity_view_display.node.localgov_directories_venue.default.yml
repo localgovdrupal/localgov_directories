@@ -63,22 +63,22 @@ content:
     label: hidden
     type: text_default
     weight: 0
-    settings: {  }
-    third_party_settings: {  }
+    settings: {}
+    third_party_settings: {}
     region: content
   localgov_directory_email:
     weight: 8
     label: inline
-    settings: {  }
-    third_party_settings: {  }
-    type: basic_string
+    settings: {}
+    third_party_settings: {}
+    type: email_mailto
     region: content
   localgov_directory_files:
     weight: 1
     label: above
     settings:
       link: true
-    third_party_settings: {  }
+    third_party_settings: {}
     type: entity_reference_label
     region: content
   localgov_directory_job_title:
@@ -86,7 +86,7 @@ content:
     label: inline
     settings:
       link_to_entity: false
-    third_party_settings: {  }
+    third_party_settings: {}
     type: string
     region: content
   localgov_directory_name:
@@ -94,21 +94,21 @@ content:
     label: inline
     settings:
       link_to_entity: false
-    third_party_settings: {  }
+    third_party_settings: {}
     type: string
     region: content
   localgov_directory_notes:
     weight: 4
     label: above
-    settings: {  }
-    third_party_settings: {  }
+    settings: {}
+    third_party_settings: {}
     type: text_default
     region: content
   localgov_directory_opening_times:
     weight: 3
     label: above
-    settings: {  }
-    third_party_settings: {  }
+    settings: {}
+    third_party_settings: {}
     type: text_default
     region: content
   localgov_directory_phone:
@@ -116,7 +116,7 @@ content:
     label: inline
     settings:
       title: ''
-    third_party_settings: {  }
+    third_party_settings: {}
     type: telephone_link
     region: content
   localgov_directory_website:
@@ -128,7 +128,7 @@ content:
       url_plain: false
       rel: ''
       target: ''
-    third_party_settings: {  }
+    third_party_settings: {}
     type: link
     region: content
   localgov_location:
@@ -137,7 +137,7 @@ content:
     settings:
       view_mode: embed
       link: false
-    third_party_settings: {  }
+    third_party_settings: {}
     type: entity_reference_entity_view
     region: content
 hidden:
