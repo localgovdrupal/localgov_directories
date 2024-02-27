@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - '3.x'
+  workflow_dispatch:
 
 env:
   LOCALGOV_DRUPAL_PROJECT: localgovdrupal/localgov_directories
@@ -27,6 +28,7 @@ jobs:
           - '~10.0'
         php-version:
           - '8.1'
+          - '8.2'
 
     steps:
 
@@ -110,6 +112,7 @@ jobs:
           - '~10.0'
         php-version:
           - '8.1'
+          - '8.2'
 
     steps:
 
@@ -145,6 +148,7 @@ jobs:
           - '~10.0'
         php-version:
           - '8.1'
+          - '8.2'
 
     steps:
 
@@ -179,6 +183,7 @@ jobs:
           - '~10.0'
         php-version:
           - '8.1'
+          - '8.2'
 
     steps:
 
@@ -204,4 +209,4 @@ jobs:
           mkdir -p ./html/web/sites/simpletest && chmod 777 ./html/web/sites/simpletest
           sed -i "s#http://localgov.lndo.site#http://drupal#" ./html/phpunit.xml.dist
           docker exec -t drupal bash -c 'chown docker:docker -R /var/www/html'
-          docker exec -u docker -t drupal bash -c "cd /var/www/html && ./bin/paratest --processes=4 ${{ env.LOCALGOV_DRUPAL_PROJECT_PATH }}"
+          docker exec -u docker -t drupal bash -c "cd /var/www/html && ./bin/paratest --processes=4 /var/www/html/${{ env.LOCALGOV_DRUPAL_PROJECT_PATH }}"

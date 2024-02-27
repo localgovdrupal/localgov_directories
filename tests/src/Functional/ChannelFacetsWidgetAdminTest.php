@@ -18,8 +18,11 @@ class ChannelFacetsWidgetAdminTest extends BrowserTestBase {
 
   use FieldUiTestTrait;
   use ContentTypeCreationTrait;
-  use EntityReferenceTestTrait;
   use NodeCreationTrait;
+  // FIXME: Replace with EntityReferenceFieldCreationTrait when Drupal 10.1 is
+  // end of life.
+  // @phpstan-ignore-next-line.
+  use EntityReferenceTestTrait;
 
   /**
    * A user with minimum permissions for test.

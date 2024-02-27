@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\Tests\localgov_directories\Kernel;
 
@@ -22,9 +22,12 @@ use Drupal\Tests\search_api\Kernel\ResultsTrait;
  */
 class IndexTitleSortTest extends KernelTestBase {
 
-  use EntityReferenceTestTrait;
   use NodeCreationTrait;
   use ResultsTrait;
+  // FIXME: Replace with EntityReferenceFieldCreationTrait when Drupal 10.1 is
+  // end of life.
+  // @phpstan-ignore-next-line.
+  use EntityReferenceTestTrait;
 
   /**
    * {@inheritdoc}
