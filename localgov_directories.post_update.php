@@ -31,7 +31,7 @@ function localgov_directories_post_update_replace_node_type_condition() {
  * Updates the node type visibility condition again.
  *
  * Because we'd still been installing old config.
- * https://github.com/localgovdrupal/localgov_directories/pull/342/files
+ * https://github.com/localgovdrupal/localgov_directories/pull/342/files.
  */
 function localgov_directories_post_update_replace_node_type_condition_again() {
   $config_factory = \Drupal::configFactory();
