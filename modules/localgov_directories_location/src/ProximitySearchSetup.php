@@ -244,7 +244,7 @@ class ProximitySearchSetup implements ContainerInjectionInterface {
   /**
    * Entity type manager service.
    *
-   * @var Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected EntityTypeManagerInterface $etm;
 
