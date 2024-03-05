@@ -26,3 +26,26 @@ function localgov_directories_post_update_replace_node_type_condition() {
     }
   }
 }
+
+/**
+ * Updates the node type visibility condition again.
+ *
+ * Because we'd still been installing old config.
+ * https://github.com/localgovdrupal/localgov_directories/pull/342/files
+ */
+function localgov_directories_post_update_replace_node_type_condition_again() {
+  $config_factory = \Drupal::configFactory();
+  foreach ($config_factory->listAll('block.block.') as $block_config_name) {
+    $block = $config_factory->getEditable($block_config_name);
+
+    if ($block->get('visibility.node_type')) {
+      $configuration = $block->get('visibility.node_type');
+      if ($configuration['id'] == 'node_type') {
+        $configuration['id'] = 'entity_bundle:node';
+        $block->set('visibility.entity_bundle:node', $configuration);
+        $block->clear('visibility.node_type');
+        $block->save(TRUE);
+      }
+    }
+  }
+}
