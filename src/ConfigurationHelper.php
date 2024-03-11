@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\localgov_directories;
 
@@ -29,7 +29,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
   /**
    * The Search API directory index.
    *
-   * @var \Drupal\search_api\Entity\IndexInterface
+   * @var \Drupal\search_api\IndexInterface
    */
   protected ?IndexInterface $index;
 
