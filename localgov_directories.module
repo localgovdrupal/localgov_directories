@@ -9,6 +9,7 @@ use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Render\Element;
+use Drupal\facets\FacetInterface;
 use Drupal\field\FieldConfigInterface;
 use Drupal\localgov_directories\ConfigurationHelper;
 use Drupal\localgov_directories\Constants as Directory;
@@ -169,6 +170,18 @@ function localgov_directories_field_config_insert(FieldConfigInterface $field) {
   elseif ($field->getName() == Directory::TITLE_SORT_FIELD) {
     \Drupal::classResolver(ConfigurationHelper::class)->insertedTitleSortField($field);
   }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ *
+ * - Load optional configuration (presently facet blocks) when the facet is
+ *   configured.
+ */
+function localgov_directories_facets_facet_insert(FacetInterface $facet) {
+  \Drupal::service('config.installer')->installOptionalConfig(NULL, [
+    'config' => 'facets.facet.' . $facet->id(),
+  ]);
 }
 
 /**
