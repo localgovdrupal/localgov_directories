@@ -194,6 +194,18 @@ function localgov_directories_field_config_delete(FieldConfigInterface $field) {
 }
 
 /**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function localgov_directories_search_api_index_update(IndexInterface $index) {
+  if ($index->status()
+    && $index->getField(Directory::FACET_INDEXING_FIELD)
+  ) {
+    \Drupal::classResolver(ConfigurationHelper::class)
+      ->createFacet(Directory::FACET_CONFIG_ENTITY_ID, Directory::FACET_CONFIG_FILE);
+  }
+}
+
+/**
  * Implements theme preprocess_facets_item_list().
  *
  * @see facets_preprocess_facets_item_list()
