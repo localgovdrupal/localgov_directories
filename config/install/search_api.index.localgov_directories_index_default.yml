@@ -25,6 +25,14 @@ field_settings:
         'entity:node':
           localgov_directories_page: directory_index
           node: directory_index
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: text
+    dependencies:
+      module:
+        - node
 datasource_settings:
   'entity:node':
     bundles:
@@ -45,4 +53,4 @@ tracker_settings:
 options:
   index_directly: true
   cron_limit: 50
-server: NULL 
+server: NULL
