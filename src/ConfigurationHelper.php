@@ -352,8 +352,8 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
     try {
       $visibility = $block_config->getVisibility();
-      $visibility['node_type']['bundles'][$content_type] = $content_type;
-      $block_config->setVisibilityConfig('node_type', $visibility['node_type']);
+      $visibility['entity_bundle:node']['bundles'][$content_type] = $content_type;
+      $block_config->setVisibilityConfig('entity_bundle:node', $visibility['node_type']);
       $block_config->save();
     }
     catch (\Exception $e) {
@@ -400,11 +400,11 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
     try {
       $visibility = $block_config->getVisibility();
-      if (empty($visibility['node_type']['bundles'][$content_type])) {
+      if (empty($visibility['entity_bundle:node']['bundles'][$content_type])) {
         return FALSE;
       }
-      unset($visibility['node_type']['bundles'][$content_type]);
-      $block_config->setVisibilityConfig('node_type', $visibility['node_type']);
+      unset($visibility['entity_bundle:node']['bundles'][$content_type]);
+      $block_config->setVisibilityConfig('entity_bundle_node', $visibility['node_type']);
       $block_config->save();
     }
     catch (\Exception $e) {
