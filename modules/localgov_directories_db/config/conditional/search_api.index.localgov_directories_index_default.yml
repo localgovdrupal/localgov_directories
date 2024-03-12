@@ -46,6 +46,7 @@ field_settings:
     label: Title
     datasource_id: 'entity:node'
     property_path: title
+    boost: 5.0
     type: text
     dependencies:
       module:
