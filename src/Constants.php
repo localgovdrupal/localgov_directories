@@ -13,6 +13,8 @@ class Constants {
 
   const LOCATION_FIELD = 'localgov_location';
 
+  const LOCATION_FIELD_WKT = 'localgov_location_wkt';
+
   const LOCATION_MODULE = 'localgov_directories_location';
 
   const PROXIMITY_SEARCH_CFG_FIELD = 'localgov_proximity_search_cfg';
