@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Drupal\localgov_directories_location;
 
@@ -244,7 +244,7 @@ class ProximitySearchSetup implements ContainerInjectionInterface {
   /**
    * Entity type manager service.
    *
-   * @var Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected EntityTypeManagerInterface $etm;
 

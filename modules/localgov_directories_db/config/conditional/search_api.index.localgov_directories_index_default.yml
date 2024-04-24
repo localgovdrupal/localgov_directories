@@ -8,11 +8,11 @@ dependencies:
     - search_api.server.localgov_directories_default
     - core.entity_view_mode.node.directory_index
   module:
-    - search_api
     - node
+    - search_api
 id: localgov_directories_index_default
 name: Directories
-description: ''
+description: 'Default search index for LocalGov Directories channel, installed by LocalGov Directories Database.'
 read_only: false
 field_settings:
   localgov_directory_channels:
@@ -42,6 +42,15 @@ field_settings:
         'entity:node':
           localgov_directories_page: directory_index
           node: directory_index
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    boost: 5.0
+    type: text
+    dependencies:
+      module:
+        - node
 datasource_settings:
   'entity:node':
     bundles:
@@ -54,31 +63,67 @@ datasource_settings:
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  custom_value: {  }
   entity_status: {  }
-  ignorecase:
-    all_fields: true
+  entity_type: {  }
+  highlight:
+    weights:
+      postprocess_query: 0
+    prefix: '<strong>'
+    suffix: '</strong>'
+    excerpt: true
+    excerpt_always: false
+    excerpt_length: 256
+    exclude_fields: {  }
+    highlight: always
+    highlight_partial: false
+  html_filter:
+    weights:
+      preprocess_index: -15
+      preprocess_query: -15
+    all_fields: false
     fields:
-      - localgov_directory_title_sort
       - rendered_item
+      - title
+    title: true
+    alt: true
+    tags:
+      b: 2
+      h1: 5
+      h2: 3
+      h3: 2
+      strong: 2
+  ignorecase:
     weights:
       preprocess_index: -20
       preprocess_query: -20
+    all_fields: true
+    fields:
+      - localgov_directory_channels
+      - localgov_directory_title_sort
+      - rendered_item
+      - title
   language_with_fallback: {  }
   rendered_item: {  }
   stemmer:
-    all_fields: true
-    fields:
-      - rendered_item
-    exceptions:
-      mexican: mexic
-      texan: texa
     weights:
       preprocess_index: 0
       preprocess_query: 0
-  stopwords:
     all_fields: true
     fields:
       - rendered_item
+      - title
+    exceptions:
+      mexican: mexic
+      texan: texa
+  stopwords:
+    weights:
+      preprocess_index: -5
+      preprocess_query: -2
+    all_fields: true
+    fields:
+      - rendered_item
+      - title
     stopwords:
       - a
       - an
@@ -115,27 +160,28 @@ processor_settings:
       - was
       - will
       - with
-    weights:
-      preprocess_index: -5
-      preprocess_query: -2
   tokenizer:
-    all_fields: true
-    fields:
-      - rendered_item
-    spaces: ''
-    overlap_cjk: 1
-    minimum_word_size: '3'
     weights:
       preprocess_index: -6
       preprocess_query: -6
-  transliteration:
     all_fields: true
     fields:
-      - localgov_directory_title_sort
       - rendered_item
+      - title
+    spaces: ''
+    ignored: ._-
+    overlap_cjk: 1
+    minimum_word_size: '3'
+  transliteration:
     weights:
       preprocess_index: -20
       preprocess_query: -20
+    all_fields: true
+    fields:
+      - localgov_directory_channels
+      - localgov_directory_title_sort
+      - rendered_item
+      - title
 tracker_settings:
   default:
     indexing_order: fifo

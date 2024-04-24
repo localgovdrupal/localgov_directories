@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - '3.x'
+  workflow_dispatch:
 
 env:
   LOCALGOV_DRUPAL_PROJECT: localgovdrupal/localgov_directories
