@@ -15,7 +15,7 @@ entity.localgov_directories_facets.collection:
   title: Directory Facets
   route_name: entity.localgov_directories_facets.collection
   base_route: system.admin_content
-  weight: 10
+  weight: 40
 entity.localgov_directories_facets_type.edit_form:
   title: Edit
   route_name: entity.localgov_directories_facets_type.edit_form
