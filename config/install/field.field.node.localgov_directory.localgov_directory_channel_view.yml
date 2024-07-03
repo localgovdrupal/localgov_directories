@@ -1,0 +1,55 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.localgov_directory_channel_view
+    - node.type.localgov_directory
+  module:
+    - viewfield
+id: node.localgov_directory.localgov_directory_channel_view
+field_name: localgov_directory_channel_view
+entity_type: node
+bundle: localgov_directory
+label: 'Channel view'
+description: 'The View to use to display the channel pages in this directory. Leave empty to use the default view for this channel page type.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  force_default: false
+  allowed_views:
+    content: '0'
+    block_content: '0'
+    dev_date_recur_search_api_nodes: '0'
+    localgov_directory_channel: '0'
+    localgov_events_listing: '0'
+    localgov_events_search: '0'
+    files: '0'
+    geo_entity_library: '0'
+    media: '0'
+    media_library: '0'
+    moderated_content: '0'
+    paragraphs_library: '0'
+    paragraphs_library_browser: '0'
+    user_admin_people: '0'
+    content_recent: '0'
+    services: '0'
+    taxonomy_term: '0'
+    topics: '0'
+    watchdog: '0'
+    who_s_new: '0'
+    who_s_online: '0'
+  allowed_display_types:
+    embed: embed
+    block: '0'
+    default: '0'
+    entity_browser: '0'
+    entity_reference: '0'
+    feed: '0'
+    page: '0'
+  handler: 'default:view'
+  handler_settings:
+    target_bundles: null
+    auto_create: false
+field_type: viewfield
