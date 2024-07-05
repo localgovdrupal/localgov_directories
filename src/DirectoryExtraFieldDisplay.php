@@ -202,14 +202,15 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    * Retrieves view, and sets render array.
    */
   protected function getViewEmbed(NodeInterface $node, $search_filter = FALSE) {
-    $view = Views::getView(Directory::CHANNEL_VIEW);
+    $view_id = $this->determineChannelView($node);
+    $view = Views::getView($view_id);
     $views_display = self::determineChannelViewDisplay($node);
     if (!$view || !$view->access($views_display)) {
       return;
     }
     $render = [
       '#type' => 'view',
-      '#name' => Directory::CHANNEL_VIEW,
+      '#name' => $view_id,
       '#display_id' => $views_display,
       '#arguments' => [$node->id()],
     ];
@@ -227,7 +228,8 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected function getFacetsBlock(NodeInterface $node) {
     // The facet manager build needs the results of the query. Which might not
     // have been run by our nicely lazy loaded views render array.
-    $view = Views::getView(Directory::CHANNEL_VIEW);
+    $view_id = $this->determineChannelView($node);
+    $view = Views::getView($view_id);
     $view->setArguments([$node->id()]);
     $views_display = self::determineChannelViewDisplay($node);
     $view->execute($views_display);
@@ -248,8 +250,9 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected function getSearchBlock(NodeInterface $node) {
     $forms = $form_list = [];
     foreach ($node->localgov_directory_channels as $delta => $channel) {
-      $view = Views::getView(Directory::CHANNEL_VIEW);
-      if ($view && ($channel_node = $channel->entity)) {
+      $view_id = $this->determineChannelView($node);
+      $view = Views::getView($view_id);
+        if ($view && ($channel_node = $channel->entity)) {
         $views_display = self::determineChannelViewDisplay($channel_node);
         $view->setDisplay($views_display);
         $view->setArguments([$channel_node->id()]);
