@@ -370,6 +370,47 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   }
 
   /**
+   * Determines the View to show on a directory channel.
+   *
+   * This uses, in order:
+   *  - The View referenced in the node's
+   *    \Drupal\localgov_directories\Constants::CHANNEL_VIEW_FIELD field.
+   *  - The values in the bundle info's 'localgov_directories' key. This can be
+   *    set by implementations of hook_entity_bundle_info_alter().
+   *  - The default value of
+   *    \Drupal\localgov_directories\Constants::CHANNEL_VIEW.
+   *
+   * @param \Drupal\node\NodeInterface $channel_node The channel node.
+   *
+   * @return string The ID of the view.
+   */
+  public static function determineChannelView(NodeInterface $channel_node): string {
+    $bundle = $channel_node->bundle();
+
+    if ($channel_node->hasField(Directory::CHANNEL_VIEW_FIELD) && !$channel_node->get(Directory::CHANNEL_VIEW_FIELD)->isEmpty()) {
+      // If the channel node has a value for its channel view reference field,
+      // return the view ID from that.
+      $view_id = $channel_node->get(Directory::CHANNEL_VIEW_FIELD)->target_id;
+    }
+    elseif (isset(\Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle]['default_directory_view'])) {
+      $bundle_info = \Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle];
+      if (!isset($bundle_info['localgov_directories']['default_directory_view']['target_id'])) {
+        throw new \Exception("The 'target_id' key must be set in the 'default_directory_view' array in bundle info.");
+      }
+
+      // If the bundle info has settings for the default directory view, use
+      // that.
+      $view_id = $bundle_info['localgov_directories']['default_directory_view']['target_id'];
+    }
+    else {
+      // Fall back on the built-in default.
+      $view_id = Directory::CHANNEL_VIEW;
+    }
+
+    return $view_id;
+  }
+
+  /**
    * Finds the relevant Views display.
    *
    * Determines if the given directory channel needs the usual Views display or
