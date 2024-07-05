@@ -417,9 +417,26 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    * a proximity search display.
    */
   public static function determineChannelViewDisplay(NodeInterface $channel_node): string {
+    $bundle = $channel_node->bundle();
 
-    $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
-    $views_display = $has_proximity_search ? Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY : Directory::CHANNEL_VIEW_DISPLAY;
+    if ($channel_node->hasField(Constants::CHANNEL_VIEW_FIELD) && !$channel_node->get(Constants::CHANNEL_VIEW_FIELD)->isEmpty()) {
+      // If the channel node has a value for its channel view reference field,
+      // return the display ID from that.
+      $views_display = $channel_node->get(Constants::CHANNEL_VIEW_FIELD)->display_id;
+    }
+    elseif (isset(\Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle]['default_directory_view'])) {
+      $bundle_info = \Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle];
+      if (!isset($bundle_info['localgov_directories']['default_directory_view']['display_id'])) {
+        throw new \Exception("The 'display_id' key must be set in the 'default_directory_view' array in bundle info.");
+      }
+
+      $views_display = $bundle_info['localgov_directories']['default_directory_view']['display_id'];
+    }
+    else {
+      $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
+      $views_display = $has_proximity_search ? Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY : Directory::CHANNEL_VIEW_DISPLAY;
+    }
+
     return $views_display;
   }
 
