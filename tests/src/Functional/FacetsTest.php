@@ -128,7 +128,7 @@ class FacetsTest extends BrowserTestBase {
       'summary' => 'One of the greatest joys known to man is to take a flight into ignorance in search of knowledge.',
     ];
 
-    $this->channel_node = $this->createNode([
+    $this->channelNode = $this->createNode([
       'title' => 'Directory channel',
       'type' => 'localgov_directory',
       'status' => NodeInterface::PUBLISHED,
@@ -167,7 +167,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -183,7 +183,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -199,7 +199,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -218,7 +218,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -249,7 +249,7 @@ class FacetsTest extends BrowserTestBase {
     $this->cronRun();
 
     // Check facets and check the right entries are shown.
-    $directory_url = $this->channel_node->toUrl()->toString();
+    $directory_url = $this->channelNode->toUrl()->toString();
     $this->drupalGet($directory_url);
 
     // Initially all four should be avalible.
@@ -336,7 +336,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -358,7 +358,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -380,7 +380,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -399,7 +399,7 @@ class FacetsTest extends BrowserTestBase {
         'status' => NodeInterface::PUBLISHED,
         'localgov_directory_channels' => [
           [
-            'target_id' => $this->channel_node->id(),
+            'target_id' => $this->channelNode->id(),
           ],
         ],
         'localgov_directory_facets_select' => [
@@ -421,7 +421,7 @@ class FacetsTest extends BrowserTestBase {
     $this->cronRun();
 
     // Check facets and check the right entries are shown.
-    $directory_url = $this->channel_node->toUrl()->toString();
+    $directory_url = $this->channelNode->toUrl()->toString();
     $this->drupalGet($directory_url);
 
     // Click facet 1.
