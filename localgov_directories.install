@@ -19,7 +19,10 @@ use Drupal\views\Entity\View;
 /**
  * Implements hook_install().
  */
-function localgov_directories_install() {
+function localgov_directories_install($is_syncing) {
+  if ($is_syncing) {
+    return;
+  }
   $services = \Drupal::moduleHandler()->moduleExists('localgov_services_navigation');
   if ($services) {
     localgov_directories_optional_fields_settings($services);

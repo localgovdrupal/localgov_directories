@@ -8,7 +8,10 @@
 /**
  * Implements hook_install().
  */
-function localgov_directories_venue_or_install() {
+function localgov_directories_venue_or_install($is_syncing) {
+  if ($is_syncing) {
+    return;
+  }
   // Enable the new, required, venue organisation reference field on the default
   // form.
   $venue_form_display = \Drupal::service('entity_display.repository')
