@@ -1,6 +1,9 @@
 langcode: en
 status: true
 dependencies:
+  enforced:
+    module:
+      - localgov_directories
   config:
     - core.entity_view_mode.node.search_result
     - field.field.node.localgov_directory.body

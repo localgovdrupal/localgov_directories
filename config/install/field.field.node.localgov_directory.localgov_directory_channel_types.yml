@@ -1,6 +1,9 @@
 langcode: en
 status: true
 dependencies:
+  enforced:
+    module:
+      - localgov_directories
   config:
     - field.storage.node.localgov_directory_channel_types
     - node.type.localgov_directory
