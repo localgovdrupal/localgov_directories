@@ -16,7 +16,7 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
 class EntityReferenceDirectoryEntryTypesTest extends KernelTestBase {
 
   use NodeCreationTrait;
-  use EntityReferenceTestTrait;
+  use EntityReferenceFieldCreationTrait;
 
   /**
    * {@inheritdoc}
