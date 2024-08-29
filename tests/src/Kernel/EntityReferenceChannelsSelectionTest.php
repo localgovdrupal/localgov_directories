@@ -6,7 +6,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
+use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 
 /**
@@ -17,10 +17,7 @@ use Drupal\Tests\node\Traits\NodeCreationTrait;
 class EntityReferenceChannelsSelectionTest extends KernelTestBase {
 
   use NodeCreationTrait;
-  // FIXME: Replace with EntityReferenceFieldCreationTrait when Drupal 10.1 is
-  // end of life.
-  // @phpstan-ignore-next-line.
-  use EntityReferenceTestTrait;
+  use EntityReferenceFieldCreationTrait;
 
   /**
    * {@inheritdoc}

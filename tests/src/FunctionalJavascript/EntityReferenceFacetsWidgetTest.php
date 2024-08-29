@@ -8,7 +8,7 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
 use Drupal\node\NodeInterface;
-use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
+use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 
@@ -21,11 +21,7 @@ class EntityReferenceFacetsWidgetTest extends WebDriverTestBase {
 
   use ContentTypeCreationTrait;
   use NodeCreationTrait;
-  // FIXME: Replace with EntityReferenceFieldCreationTrait when Drupal 10.1 is
-  // end of life.
-  // @phpstan-ignore-next-line.
-  use EntityReferenceTestTrait;
-
+  use EntityReferenceFieldCreationTrait;
 
   /**
    * Array of directory nodes.
