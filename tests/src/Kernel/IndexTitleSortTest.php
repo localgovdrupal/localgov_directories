@@ -11,7 +11,7 @@ use Drupal\node\Entity\NodeType;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Utility\Utility;
-use Drupal\Tests\field\Traits\EntityReferenceTestTrait;
+use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\search_api\Kernel\ResultsTrait;
 
@@ -24,10 +24,7 @@ class IndexTitleSortTest extends KernelTestBase {
 
   use NodeCreationTrait;
   use ResultsTrait;
-  // FIXME: Replace with EntityReferenceFieldCreationTrait when Drupal 10.1 is
-  // end of life.
-  // @phpstan-ignore-next-line.
-  use EntityReferenceTestTrait;
+  use EntityReferenceFieldCreationTrait;
 
   /**
    * {@inheritdoc}
