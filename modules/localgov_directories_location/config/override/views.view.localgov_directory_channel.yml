@@ -680,8 +680,6 @@ display:
               options: ''
           map_lazy_load:
             lazy_load: false
-          feature_properties:
-            values: ''
       row:
         type: fields
         options:
