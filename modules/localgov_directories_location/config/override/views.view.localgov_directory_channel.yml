@@ -6,7 +6,6 @@ dependencies:
     - field.storage.node.body
     - search_api.index.localgov_directories_index_default
   module:
-    - geo_entity
     - geofield
     - leaflet_views
     - search_api
@@ -178,7 +177,6 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: ''
-          default_argument_skip_url: false
           summary_options: {  }
           summary:
             sort_order: asc
@@ -247,10 +245,8 @@ display:
         options:
           view_modes:
             'entity:node':
-              localgov_directories_page: teaser
               localgov_directories_venue: teaser
               localgov_directory_page: search_result
-              localgov_directory_promo_page: teaser
       query:
         type: search_api_query
         options:
@@ -349,78 +345,6 @@ display:
             use_highlighting: false
             multi_type: separator
             multi_separator: ', '
-        location:
-          id: location
-          table: search_api_entity_geo_entity
-          field: location
-          relationship: localgov_location
-          group_type: group
-          admin_label: ''
-          entity_type: geo_entity
-          plugin_id: search_api_field
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: geofield_default
-          settings:
-            output_format: json
-            output_escape: true
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          field_rendering: true
-          fallback_handler: search_api
-          fallback_options:
-            link_to_item: false
-            use_highlighting: false
-            multi_type: separator
-            multi_separator: ', '
         search_api_rendered_item:
           id: search_api_rendered_item
           table: search_api_index_localgov_directories_index_default
@@ -475,6 +399,77 @@ display:
               localgov_directories_page: teaser
               localgov_directories_venue: teaser
               localgov_directory_promo_page: default
+        localgov_location_wkt:
+          id: localgov_location_wkt
+          table: search_api_index_localgov_directories_index_default
+          field: localgov_location_wkt
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_field
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: geofield_default
+          settings:
+            output_format: wkt
+            output_escape: true
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          field_rendering: false
+          fallback_handler: search_api
+          fallback_options:
+            link_to_item: false
+            use_highlighting: false
+            multi_type: separator
+            multi_separator: ', '
       pager:
         type: none
         options:
@@ -597,7 +592,7 @@ display:
         options:
           grouping: {  }
           data_source:
-            location: location
+            localgov_location_wkt: localgov_location_wkt
           entity_source: __base_table
           entity_source_submit: 'Update Entity Source'
           name_field: title
@@ -607,12 +602,14 @@ display:
           leaflet_popup:
             value: '#rendered_view_fields'
             options: '{"maxWidth":"300","minWidth":"50","autoPan":true}'
+            view_mode: full
           leaflet_map: 'OSM Mapnik'
           height: '400'
           height_unit: px
           hide_empty_map: true
           disable_wheel: false
           gesture_handling: false
+          fitbounds_options: '{"padding":[0,0]}'
           reset_map:
             control: false
             options: '{"position":"topleft","title":"Reset View"}'
@@ -670,18 +667,6 @@ display:
               position: topright
               input_size: 25
               providers:
-                file:
-                  weight: '0'
-                  checked: 0
-                gpx_file:
-                  weight: '0'
-                  checked: 0
-                geojson_file:
-                  weight: '0'
-                  checked: 0
-                kml_file:
-                  weight: '0'
-                  checked: 0
                 geo_entity_osm:
                   weight: '0'
                   checked: 0
@@ -712,18 +697,7 @@ display:
         fields: false
         filters: false
         filter_groups: false
-      relationships:
-        localgov_location:
-          id: localgov_location
-          table: search_api_datasource_localgov_directories_index_default_entity_node
-          field: localgov_location
-          relationship: none
-          group_type: group
-          admin_label: 'Location: Geo'
-          entity_type: node
-          plugin_id: search_api
-          required: false
-          skip_access: false
+      relationships: {  }
       display_description: ''
       display_extenders: {  }
     cache_metadata:
