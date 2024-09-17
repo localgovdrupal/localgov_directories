@@ -1,6 +1,9 @@
 langcode: en
 status: false
 dependencies:
+  enforced:
+    module:
+      - localgov_directories
   module:
     - node
 id: node.directory_index

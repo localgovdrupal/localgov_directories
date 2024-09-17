@@ -1,6 +1,9 @@
 langcode: en
 status: false
 dependencies:
+  enforced:
+    module:
+      - localgov_directories
   config:
     - field.storage.node.localgov_directory_channels
     - field.storage.node.localgov_directory_facets_select

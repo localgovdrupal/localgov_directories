@@ -1,6 +1,9 @@
 langcode: en
 status: true
 dependencies:
+  enforced:
+    module:
+      - localgov_directories
   module:
     - node
 id: node.localgov_directory_email

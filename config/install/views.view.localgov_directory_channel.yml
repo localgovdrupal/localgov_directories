@@ -1,6 +1,9 @@
 langcode: en
 status: true
 dependencies:
+  enforced:
+    module:
+      - localgov_directories
   config:
     - search_api.index.localgov_directories_index_default
   module:
