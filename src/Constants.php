@@ -23,6 +23,8 @@ class Constants {
 
   const CHANNEL_SELECTION_FIELD = 'localgov_directory_channels';
 
+  const CHANNEL_VIEW_FIELD = 'localgov_directory_channel_view';
+
   const TITLE_SORT_FIELD = 'localgov_directory_title_sort';
 
   const SEARCH_API_LOCATION_DATATYPE = 'location';

@@ -202,14 +202,15 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    * Retrieves view, and sets render array.
    */
   protected function getViewEmbed(NodeInterface $node, $search_filter = FALSE) {
-    $view = Views::getView(Directory::CHANNEL_VIEW);
+    $view_id = $this->determineChannelView($node);
+    $view = Views::getView($view_id);
     $views_display = self::determineChannelViewDisplay($node);
     if (!$view || !$view->access($views_display)) {
       return;
     }
     $render = [
       '#type' => 'view',
-      '#name' => Directory::CHANNEL_VIEW,
+      '#name' => $view_id,
       '#display_id' => $views_display,
       '#arguments' => [$node->id()],
     ];
@@ -227,7 +228,8 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected function getFacetsBlock(NodeInterface $node) {
     // The facet manager build needs the results of the query. Which might not
     // have been run by our nicely lazy loaded views render array.
-    $view = Views::getView(Directory::CHANNEL_VIEW);
+    $view_id = $this->determineChannelView($node);
+    $view = Views::getView($view_id);
     $view->setArguments([$node->id()]);
     $views_display = self::determineChannelViewDisplay($node);
     $view->execute($views_display);
@@ -248,8 +250,9 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected function getSearchBlock(NodeInterface $node) {
     $forms = $form_list = [];
     foreach ($node->localgov_directory_channels as $delta => $channel) {
-      $view = Views::getView(Directory::CHANNEL_VIEW);
-      if ($view && ($channel_node = $channel->entity)) {
+      $view_id = $this->determineChannelView($node);
+      $view = Views::getView($view_id);
+        if ($view && ($channel_node = $channel->entity)) {
         $views_display = self::determineChannelViewDisplay($channel_node);
         $view->setDisplay($views_display);
         $view->setArguments([$channel_node->id()]);
@@ -370,15 +373,73 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   }
 
   /**
+   * Determines the View to show on a directory channel.
+   *
+   * This uses, in order:
+   *  - The View referenced in the node's
+   *    \Drupal\localgov_directories\Constants::CHANNEL_VIEW_FIELD field.
+   *  - The values in the bundle info's 'localgov_directories' key. This can be
+   *    set by implementations of hook_entity_bundle_info_alter().
+   *  - The default value of
+   *    \Drupal\localgov_directories\Constants::CHANNEL_VIEW.
+   *
+   * @param \Drupal\node\NodeInterface $channel_node The channel node.
+   *
+   * @return string The ID of the view.
+   */
+  public static function determineChannelView(NodeInterface $channel_node): string {
+    $bundle = $channel_node->bundle();
+
+    if ($channel_node->hasField(Directory::CHANNEL_VIEW_FIELD) && !$channel_node->get(Directory::CHANNEL_VIEW_FIELD)->isEmpty()) {
+      // If the channel node has a value for its channel view reference field,
+      // return the view ID from that.
+      $view_id = $channel_node->get(Directory::CHANNEL_VIEW_FIELD)->target_id;
+    }
+    elseif (isset(\Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle]['default_directory_view'])) {
+      $bundle_info = \Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle];
+      if (!isset($bundle_info['localgov_directories']['default_directory_view']['target_id'])) {
+        throw new \Exception("The 'target_id' key must be set in the 'default_directory_view' array in bundle info.");
+      }
+
+      // If the bundle info has settings for the default directory view, use
+      // that.
+      $view_id = $bundle_info['localgov_directories']['default_directory_view']['target_id'];
+    }
+    else {
+      // Fall back on the built-in default.
+      $view_id = Directory::CHANNEL_VIEW;
+    }
+
+    return $view_id;
+  }
+
+  /**
    * Finds the relevant Views display.
    *
    * Determines if the given directory channel needs the usual Views display or
    * a proximity search display.
    */
   public static function determineChannelViewDisplay(NodeInterface $channel_node): string {
+    $bundle = $channel_node->bundle();
 
-    $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
-    $views_display = $has_proximity_search ? Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY : Directory::CHANNEL_VIEW_DISPLAY;
+    if ($channel_node->hasField(Constants::CHANNEL_VIEW_FIELD) && !$channel_node->get(Constants::CHANNEL_VIEW_FIELD)->isEmpty()) {
+      // If the channel node has a value for its channel view reference field,
+      // return the display ID from that.
+      $views_display = $channel_node->get(Constants::CHANNEL_VIEW_FIELD)->display_id;
+    }
+    elseif (isset(\Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle]['default_directory_view'])) {
+      $bundle_info = \Drupal::service('entity_type.bundle.info')->getBundleInfo('node')[$bundle];
+      if (!isset($bundle_info['localgov_directories']['default_directory_view']['display_id'])) {
+        throw new \Exception("The 'display_id' key must be set in the 'default_directory_view' array in bundle info.");
+      }
+
+      $views_display = $bundle_info['localgov_directories']['default_directory_view']['display_id'];
+    }
+    else {
+      $has_proximity_search = $channel_node->hasField(Directory::PROXIMITY_SEARCH_CFG_FIELD) && !empty($channel_node->{Directory::PROXIMITY_SEARCH_CFG_FIELD}->value);
+      $views_display = $has_proximity_search ? Directory::CHANNEL_VIEW_PROXIMITY_SEARCH_DISPLAY : Directory::CHANNEL_VIEW_DISPLAY;
+    }
+
     return $views_display;
   }
 

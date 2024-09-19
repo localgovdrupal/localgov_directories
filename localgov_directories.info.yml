@@ -14,6 +14,7 @@ dependencies:
   - drupal:telephone
   - drupal:views
   - pathauto:pathauto
+  - viewfield:viewfield
   - search_api:search_api
   - facets:facets
   - localgov_core:localgov_core

@@ -135,7 +135,7 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
   public function getCacheTags() {
 
     $host_node = $this->getContextValue('node');
-    $channel_view = Views::getView(Directory::CHANNEL_VIEW);
+    $channel_view = Views::getView(DirectoryExtraFieldDisplay::determineChannelView($host_node));
 
     $cache_tags = Cache::mergeTags(parent::getCacheTags(), $host_node->getCacheTags());
     $cache_tags = Cache::mergeTags($cache_tags, $channel_view->getCacheTags());
@@ -153,8 +153,10 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
    */
   public function getCacheContexts() {
 
-    $channel_view = Views::getView(Directory::CHANNEL_VIEW);
-    $channel_view->setDisplay(Directory::CHANNEL_VIEW_DISPLAY);
+    $host_node = $this->getContextValue('node');
+    $channel_view = Views::getView(DirectoryExtraFieldDisplay::determineChannelView($host_node));
+    $views_display = DirectoryExtraFieldDisplay::determineChannelViewDisplay($host_node);
+    $channel_view->setDisplay($views_display);
     $contexts = $channel_view->display_handler->getCacheMetadata()->getCacheContexts();
     return Cache::mergeContexts(parent::getCacheContexts(), $contexts);
   }
