@@ -2,11 +2,11 @@
 
 namespace Drupal\Tests\localgov_directories\Kernel;
 
-use Drupal\field\Entity\FieldConfig;
 use Drupal\KernelTests\KernelTestBase;
-use Drupal\node\Entity\NodeType;
 use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\node\Entity\NodeType;
 
 /**
  * Tests channels entity reference selection handler.

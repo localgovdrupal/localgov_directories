@@ -2,12 +2,12 @@
 
 namespace Drupal\Tests\localgov_directories\Functional;
 
+use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\Traits\Core\CronRunTrait;
+use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
 use Drupal\node\NodeInterface;
-use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\node\Traits\NodeCreationTrait;
-use Drupal\Tests\Traits\Core\CronRunTrait;
 
 /**
  * Tests facets on a directory channel as a filter.

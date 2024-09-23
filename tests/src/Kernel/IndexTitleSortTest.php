@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Drupal\Tests\localgov_directories\Kernel;
 
-use Drupal\field\Entity\FieldConfig;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\node\Traits\NodeCreationTrait;
+use Drupal\Tests\search_api\Kernel\ResultsTrait;
+use Drupal\field\Entity\FieldConfig;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Query\Query;
 use Drupal\search_api\Utility\Utility;
-use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
-use Drupal\Tests\node\Traits\NodeCreationTrait;
-use Drupal\Tests\search_api\Kernel\ResultsTrait;
 
 /**
  * Tests population of the search sort field.
