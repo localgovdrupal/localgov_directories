@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drupal\localgov_directories;
 
-use Drupal\block\BlockInterface;
 use Drupal\Core\Config\ConfigInstallerInterface;
 use Drupal\Core\Config\FileStorage as ConfigFileStorage;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -12,6 +11,7 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\block\BlockInterface;
 use Drupal\field\FieldConfigInterface;
 use Drupal\search_api\Datasource\DatasourceInterface;
 use Drupal\search_api\IndexInterface;

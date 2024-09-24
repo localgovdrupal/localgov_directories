@@ -3,14 +3,14 @@
 namespace Drupal\Tests\localgov_directories\FunctionalJavascript;
 
 use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
-use Drupal\field\Entity\FieldConfig;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
-use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
-use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
-use Drupal\node\NodeInterface;
 use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
 use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
+use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
+use Drupal\node\NodeInterface;
 
 /**
  * Tests the output of facet and channel widgets on directory entries.

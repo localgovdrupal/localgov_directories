@@ -2,11 +2,11 @@
 
 namespace Drupal\Tests\localgov_directories\Functional;
 
+use Drupal\Tests\BrowserTestBase;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
 use Drupal\node\NodeInterface;
 use Drupal\search_api\Entity\Index as SearchIndex;
-use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests the existence of the localgov_directories_facets facet edit page.

@@ -27,7 +27,7 @@ class LocalgovDirectoriesChannelsSelection extends DefaultSelection {
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, ModuleHandlerInterface $module_handler, AccountInterface $current_user, EntityFieldManagerInterface $entity_field_manager = NULL, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, EntityRepositoryInterface $entity_repository = NULL) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, ModuleHandlerInterface $module_handler, AccountInterface $current_user, ?EntityFieldManagerInterface $entity_field_manager = NULL, ?EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, ?EntityRepositoryInterface $entity_repository = NULL) {
     $configuration['target_bundles'] = NULL;
     $configuration['auto_create'] = NULL;
     $configuration['auto_create_bundle'] = NULL;
