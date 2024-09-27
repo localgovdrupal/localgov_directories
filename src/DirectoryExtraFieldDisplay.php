@@ -330,7 +330,7 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   public function preprocessFacetCheckboxes(array &$variables): void {
 
     $facet_id_list = Element::children($variables['element']);
-    $facet_options = array_filter($variables['element'], fn($facet_id) => in_array($facet_id, $facet_id_list), ARRAY_FILTER_USE_KEY);
+    $facet_options = array_filter($variables['element'], fn($facet_id) => in_array($facet_id, $facet_id_list, strict: TRUE), ARRAY_FILTER_USE_KEY);
     $variables['grouped_options'] = $this->groupDirFacetItems($facet_options);
   }
 
