@@ -8,6 +8,7 @@
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 use Drupal\facets\FacetInterface;
 use Drupal\field\FieldConfigInterface;
@@ -52,6 +53,9 @@ function localgov_directories_theme() {
     'facets_item_list__dropdown__localgov_directories_facets_proximity_search' => [
       'base hook' => 'facets_item_list',
       'template'  => 'facets-item-list--dropdown--localgov-directories-facets',
+    ],
+    'checkboxes__localgov_directories_facets' => [
+      'base hook' => 'checkboxes',
     ],
   ];
 }
@@ -215,6 +219,51 @@ function localgov_directories_preprocess_facets_item_list(array &$variables) {
     \Drupal::service('class_resolver')
       ->getInstanceFromDefinition(DirectoryExtraFieldDisplay::class)
       ->preprocessFacetList($variables);
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for hook_theme_suggestions_checkbox_alter().
+ */
+function localgov_directories_theme_suggestions_checkboxes_alter(array &$suggestions, array $variables) {
+
+  $is_dir_facet_checkbox = isset($variables['element']['#name']) ? ($variables['element']['#name'] === Directory::FACET_CONFIG_ENTITY_ID || $variables['element']['#name'] === Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH) : FALSE;
+  if ($is_dir_facet_checkbox) {
+    $suggestions[] = 'checkboxes__localgov_directories_facets';
+  }
+}
+
+/**
+ * Preprocess for LocalGov Directory facet checkboxes.
+ *
+ * Groups facet checkboxes by their parent LocalGov Directory facet types.
+ */
+function template_preprocess_checkboxes__localgov_directories_facets(array &$variables) {
+
+  \Drupal::service('class_resolver')
+    ->getInstanceFromDefinition(DirectoryExtraFieldDisplay::class)
+    ->preprocessFacetCheckboxes($variables);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for hook_form_facets_form_alter().
+ *
+ * Hides form submit buttons for an empty LocalGov Directory facet form.
+ *
+ * @see Drupal\facets\FacetManager\DefaultFacetManager::build()
+ */
+function localgov_directories_form_facets_form_alter(array &$form, FormStateInterface $form_state) {
+
+  $has_empty_dir_facet = FALSE;
+  if (isset($form['facets'][Directory::FACET_CONFIG_ENTITY_ID][0]['#attributes']['class'][0])) {
+    $has_empty_dir_facet = $form['facets'][Directory::FACET_CONFIG_ENTITY_ID][0]['#attributes']['class'][0] === Directory::FACET_EMPTY_CLASS;
+  }
+  elseif (isset($form['facets'][Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH][0]['#attributes']['class'][0])) {
+    $has_empty_dir_facet = $form['facets'][Directory::FACET_CONFIG_ENTITY_ID_FOR_PROXIMITY_SEARCH][0]['#attributes']['class'][0] === Directory::FACET_EMPTY_CLASS;
+  }
+
+  if ($has_empty_dir_facet) {
+    $form['#attached']['library'][] = 'localgov_directories/facets_form_checkboxes_empty';
   }
 }
 

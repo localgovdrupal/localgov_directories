@@ -12,6 +12,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\Core\Render\Element;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Security\TrustedCallbackInterface;
@@ -305,13 +306,47 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
       }
     }
 
+    $variables['items'] = $this->groupDirFacetItems($variables['items']);
+
+    if (!empty($show_reset_link)) {
+      // Add the reset link.
+      $variables['items']['show_reset_all']['items'][] = $show_reset_link;
+      $reset_all = $variables['items']['show_reset_all'];
+      // Place the reset link at the top of the facet filters.
+      array_unshift($variables['items'], $reset_all);
+      array_pop($variables['items']);
+    }
+  }
+
+  /**
+   * Groups facet checkboxes.
+   *
+   * Prepares variables for facet checkboxes grouped by LocalGov Directory facet
+   * types.
+   *
+   * @see templates/checkboxes--localgov-directories-facets.html.twig
+   * @see template_preprocess_checkboxes__localgov_directories_facets()
+   */
+  public function preprocessFacetCheckboxes(array &$variables): void {
+
+    $facet_id_list = Element::children($variables['element']);
+    $facet_options = array_filter($variables['element'], fn($facet_id) => in_array($facet_id, $facet_id_list), ARRAY_FILTER_USE_KEY);
+    $variables['grouped_options'] = $this->groupDirFacetItems($facet_options);
+  }
+
+  /**
+   * Groups facet items by LocalGov Directory facet types.
+   */
+  public function groupDirFacetItems(array $facet_items): array {
+
     $facet_storage = $this->entityTypeManager
       ->getStorage(Directory::FACET_CONFIG_ENTITY_ID);
     $group_items = [];
-    foreach ($variables['items'] as $key => $item) {
-      if ($entity = $facet_storage->load($item['value']['#attributes']['data-drupal-facet-item-value'])) {
-        assert($entity instanceof LocalgovDirectoriesFacets);
-        $group_items[$entity->bundle()]['items'][$key] = $item;
+    foreach ($facet_items as $key => $item) {
+      $facet_id = $item['value']['#attributes']['data-drupal-facet-item-value'] ?? $key;
+      if ($facet_entity = $facet_storage->load($facet_id)) {
+        assert($facet_entity instanceof LocalgovDirectoriesFacets);
+        $group_items[$facet_entity->bundle()]['items'][$key] = $item;
       }
     }
 
@@ -331,22 +366,14 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     $type_storage = $this->entityTypeManager
       ->getStorage(Directory::FACET_TYPE_CONFIG_ENTITY_ID);
     foreach ($group_items as $bundle => $items) {
-      $entity = $type_storage->load($bundle);
-      assert($entity instanceof LocalgovDirectoriesFacetsType);
-      $group_items[$bundle]['title'] = Html::escape($this->entityRepository->getTranslationFromContext($entity)->label());
-      $group_items[$bundle]['weight'] = $entity->get('weight');
+      $facet_type_entity = $type_storage->load($bundle);
+      assert($facet_type_entity instanceof LocalgovDirectoriesFacetsType);
+      $group_items[$bundle]['title'] = Html::escape($this->entityRepository->getTranslationFromContext($facet_type_entity)->label());
+      $group_items[$bundle]['weight'] = $facet_type_entity->get('weight');
     }
     uasort($group_items, static::compareFacetBundlesByWeight(...));
-    $variables['items'] = $group_items;
 
-    if (!empty($show_reset_link)) {
-      // Add the reset link.
-      $variables['items']['show_reset_all']['items'][] = $show_reset_link;
-      $reset_all = $variables['items']['show_reset_all'];
-      // Place the reset link at the top of the facet filters.
-      array_unshift($variables['items'], $reset_all);
-      array_pop($variables['items']);
-    }
+    return $group_items;
   }
 
   /**
