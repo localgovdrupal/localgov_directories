@@ -263,7 +263,7 @@ function localgov_directories_form_facets_form_alter(array &$form, FormStateInte
   }
 
   if ($has_empty_dir_facet) {
-    $form['#attached']['library'][] = 'localgov_directories/facets_form_checkboxes_empty';
+    $form['actions']['#attributes']['class'][] = 'hidden';
   }
 }
 

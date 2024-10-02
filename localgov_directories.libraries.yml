@@ -8,10 +8,3 @@ localgov_directories_search:
   dependencies:
     - core/drupalSettings
     - core/once
-
-# Hides submit buttons when there are no facet checkboxes to display.
-facets_form_checkboxes_empty:
-  version: 1.x
-  css:
-    state:
-      css/facets_form.css: {}
