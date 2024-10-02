@@ -68,17 +68,7 @@ class FacetsTest extends BrowserTestBase {
   protected function setUp() :void {
     parent::setUp();
 
-    // Set up admin user.
-    $admin_user = $this->drupalCreateUser([
-      'bypass node access',
-      'administer nodes',
-      'administer blocks',
-    ]);
-
-    // Place the facet block.
-    $this->drupalLogin($admin_user);
     $this->drupalPlaceBlock('facet_block:localgov_directories_facets', []);
-    $this->drupalLogout($admin_user);
 
     // Set up facet types.
     $facet_types = [
@@ -442,8 +432,7 @@ class FacetsTest extends BrowserTestBase {
     $dir_facet->setOnlyVisibleWhenFacetSourceIsVisible(FALSE);
     $dir_facet->setWidget('facets_form_checkbox');
     $dir_facet->save();
-    $facets_form_block = $this->drupalPlaceBlock(Directory::FACETS_FORM_DIR_FACET_BLOCK_PLUGIN_ID);
-    $this->drupalGet('admin/structure/block/manage/' . $facets_form_block->id());
+    $this->drupalPlaceBlock(Directory::FACETS_FORM_DIR_FACET_BLOCK_PLUGIN_ID);
 
     $this->createAtestDirectory();
 

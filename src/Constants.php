@@ -43,7 +43,7 @@ class Constants {
 
   const FACET_EMPTY_CLASS = 'facet-empty';
 
-  const FACETS_FORM_DIR_FACET_BLOCK_PLUGIN_ID = 'facets_form:search_api:search_api:views_embed__localgov_directory_channel__node_embed';
+  const FACETS_FORM_DIR_FACET_BLOCK_PLUGIN_ID = 'facets_form:search_api:views_embed__localgov_directory_channel__node_embed';
 
   const CHANNEL_VIEW = 'localgov_directory_channel';
 
