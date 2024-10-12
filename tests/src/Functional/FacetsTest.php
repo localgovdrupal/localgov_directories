@@ -5,6 +5,8 @@ namespace Drupal\Tests\localgov_directories\Functional;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\Traits\Core\CronRunTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
+use Drupal\facets\Entity\Facet;
+use Drupal\localgov_directories\Constants as Directory;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
 use Drupal\node\NodeInterface;
@@ -30,11 +32,7 @@ class FacetsTest extends BrowserTestBase {
    * @var array
    */
   protected static $modules = [
-    'block',
-    'localgov_search',
     'localgov_search_db',
-    'facets',
-    'localgov_directories',
     'localgov_directories_db',
     'localgov_directories_page',
   ];
@@ -70,17 +68,7 @@ class FacetsTest extends BrowserTestBase {
   protected function setUp() :void {
     parent::setUp();
 
-    // Set up admin user.
-    $admin_user = $this->drupalCreateUser([
-      'bypass node access',
-      'administer nodes',
-      'administer blocks',
-    ]);
-
-    // Place the facet block.
-    $this->drupalLogin($admin_user);
     $this->drupalPlaceBlock('facet_block:localgov_directories_facets', []);
-    $this->drupalLogout($admin_user);
 
     // Set up facet types.
     $facet_types = [
@@ -147,7 +135,6 @@ class FacetsTest extends BrowserTestBase {
         ],
       ],
     ]);
-
   }
 
   /**
@@ -158,101 +145,17 @@ class FacetsTest extends BrowserTestBase {
    */
   public function testFacetsGroupFilters() {
 
-    // Set up some directory entires.
-    $directory_nodes = [
-      // Entry 1 has facet 1 only.
-      [
-        'title' => 'Entry 1 ' . $this->randomMachineName(8),
-        'type' => 'localgov_directories_page',
-        'status' => NodeInterface::PUBLISHED,
-        'localgov_directory_channels' => [
-          [
-            'target_id' => $this->channelNode->id(),
-          ],
-        ],
-        'localgov_directory_facets_select' => [
-          [
-            'target_id' => $this->facetEntities[0]->id(),
-          ],
-        ],
-      ],
-      [
-        // Entry 2 has facet 2 only.
-        'title' => 'Entry 2 ' . $this->randomMachineName(8),
-        'type' => 'localgov_directories_page',
-        'status' => NodeInterface::PUBLISHED,
-        'localgov_directory_channels' => [
-          [
-            'target_id' => $this->channelNode->id(),
-          ],
-        ],
-        'localgov_directory_facets_select' => [
-          [
-            'target_id' => $this->facetEntities[1]->id(),
-          ],
-        ],
-      ],
-      // Entry 3 has facet 1 and 3.
-      [
-        'title' => 'Entry 3 ' . $this->randomMachineName(8),
-        'type' => 'localgov_directories_page',
-        'status' => NodeInterface::PUBLISHED,
-        'localgov_directory_channels' => [
-          [
-            'target_id' => $this->channelNode->id(),
-          ],
-        ],
-        'localgov_directory_facets_select' => [
-          [
-            'target_id' => $this->facetEntities[0]->id(),
-          ],
-          [
-            'target_id' => $this->facetEntities[2]->id(),
-          ],
-        ],
-      ],
-      // Entry 4 has all facets.
-      [
-        'title' => 'Entry 4 ' . $this->randomMachineName(8),
-        'type' => 'localgov_directories_page',
-        'status' => NodeInterface::PUBLISHED,
-        'localgov_directory_channels' => [
-          [
-            'target_id' => $this->channelNode->id(),
-          ],
-        ],
-        'localgov_directory_facets_select' => [
-          [
-            'target_id' => $this->facetEntities[0]->id(),
-          ],
-          [
-            'target_id' => $this->facetEntities[1]->id(),
-          ],
-          [
-            'target_id' => $this->facetEntities[2]->id(),
-          ],
-          [
-            'target_id' => $this->facetEntities[3]->id(),
-          ],
-        ],
-      ],
-    ];
+    $node_titles_w_nid = $this->createAtestDirectory();
+    $node_titles = array_values($node_titles_w_nid);
 
-    foreach ($directory_nodes as $node) {
-      $this->createNode($node);
-    }
-
-    // Get titles for comparison.
-    $node_titles = array_column($directory_nodes, 'title');
-
-    // Run cron so the directory entires are indexed.
+    // Run cron so the directory entries are indexed.
     $this->cronRun();
 
     // Check facets and check the right entries are shown.
     $directory_url = $this->channelNode->toUrl()->toString();
     $this->drupalGet($directory_url);
 
-    // Initially all four should be avalible.
+    // Initially all four should be available.
     $this->assertSession()->pageTextContains($node_titles[0]);
     $this->assertSession()->pageTextContains($node_titles[1]);
     $this->assertSession()->pageTextContains($node_titles[2]);
@@ -324,7 +227,7 @@ class FacetsTest extends BrowserTestBase {
    */
   public function testFacetSearchShowsAccessibleFacet() {
 
-    // Set up some directory entires.
+    // Set up some directory entries .
     $directory_nodes = [
       // Entry 1 has facet 1 and 3.
       [
@@ -417,7 +320,7 @@ class FacetsTest extends BrowserTestBase {
       $this->createNode($node);
     }
 
-    // Run cron so the directory entires are indexed.
+    // Run cron so the directory entries are indexed.
     $this->cronRun();
 
     // Check facets and check the right entries are shown.
@@ -514,6 +417,137 @@ class FacetsTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains($this->facetLabels[1]);
     $this->assertSession()->pageTextNotContains($this->facetLabels[2]);
     $this->assertSession()->pageTextContains($this->facetLabels[3]);
+  }
+
+  /**
+   * Tests setup of the Facets form checkbox widget.
+   */
+  public function testFacetsFormWidget(): void {
+
+    // Setup the Facets form checkbox widget (AKA "Checkboxes (inside form)")
+    // for directory facets.
+    $this->container->get('module_installer')->install(['facets_form']);
+
+    $dir_facet = Facet::load(Directory::FACET_CONFIG_ENTITY_ID);
+    $dir_facet->setOnlyVisibleWhenFacetSourceIsVisible(FALSE);
+    $dir_facet->setWidget('facets_form_checkbox');
+    $dir_facet->save();
+    $this->drupalPlaceBlock(Directory::FACETS_FORM_DIR_FACET_BLOCK_PLUGIN_ID);
+
+    $this->createAtestDirectory();
+
+    // Run cron so the directory entries are indexed.
+    $this->cronRun();
+
+    // Check presence of facet checkboxes within a form.
+    $directory_url = $this->channelNode->toUrl()->toString();
+    $this->drupalGet($directory_url);
+
+    $assert = $this->assertSession();
+    $facets_form = $assert->elementExists('css', 'form#facets-form');
+    $assert->elementExists('css', 'input#edit-localgov-directories-facets-1[type=checkbox]', $facets_form);
+  }
+
+  /**
+   * Sets up a test directory.
+   *
+   * Creates a directory complete with a 4 directory pages assigned to various
+   * LocalGov Directory facet values.
+   *
+   * @return array
+   *   A list of node titles keyed by their node ids.
+   */
+  public function createAtestDirectory(): array {
+
+    // Set up some directory entries.
+    $directory_node_values = [
+      // Entry 1 has facet 1 only.
+      [
+        'title' => 'Entry 1 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channelNode->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facetEntities[0]->id(),
+          ],
+        ],
+      ],
+      [
+        // Entry 2 has facet 2 only.
+        'title' => 'Entry 2 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channelNode->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facetEntities[1]->id(),
+          ],
+        ],
+      ],
+      // Entry 3 has facet 1 and 3.
+      [
+        'title' => 'Entry 3 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channelNode->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facetEntities[0]->id(),
+          ],
+          [
+            'target_id' => $this->facetEntities[2]->id(),
+          ],
+        ],
+      ],
+      // Entry 4 has all facets.
+      [
+        'title' => 'Entry 4 ' . $this->randomMachineName(8),
+        'type' => 'localgov_directories_page',
+        'status' => NodeInterface::PUBLISHED,
+        'localgov_directory_channels' => [
+          [
+            'target_id' => $this->channelNode->id(),
+          ],
+        ],
+        'localgov_directory_facets_select' => [
+          [
+            'target_id' => $this->facetEntities[0]->id(),
+          ],
+          [
+            'target_id' => $this->facetEntities[1]->id(),
+          ],
+          [
+            'target_id' => $this->facetEntities[2]->id(),
+          ],
+          [
+            'target_id' => $this->facetEntities[3]->id(),
+          ],
+        ],
+      ],
+    ];
+
+    foreach ($directory_node_values as $key => $node_values) {
+      $new_node = $this->createNode($node_values);
+      $directory_node_values[$key]['nid'] = $new_node->id();
+    }
+
+    // Get titles for comparison.
+    $node_titles = array_column($directory_node_values, 'title', 'nid');
+
+    return $node_titles;
   }
 
 }
