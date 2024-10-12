@@ -65,8 +65,8 @@ class FacetPreprocessTest extends UnitTestCase {
    *
    * @see DirectoryExtraFieldDisplay::__construct()
    */
-  public function setup(): void {
-    parent::setup();
+  public function setUp(): void {
+    parent::setUp();
 
     // Facet items.
     $facet_zero = $this->createMock(LocalgovDirectoriesFacets::class);
