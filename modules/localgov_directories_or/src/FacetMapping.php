@@ -76,7 +76,7 @@ class FacetMapping implements ContainerInjectionInterface {
       ->accessCheck(TRUE)
       ->execute();
     foreach ($facet_query as $facet_type) {
-      if (in_array($facet_type, $openreferral_facets) &&
+      if (in_array($facet_type, $openreferral_facets, TRUE) &&
         !$mapping_storage->load('localgov_directories_facets.' . $facet_type)
       ) {
         $facet_mapping = $mapping_storage->create([
@@ -92,7 +92,7 @@ class FacetMapping implements ContainerInjectionInterface {
         ]);
         $facet_mapping->save();
       }
-      if (!in_array($facet_type, $openreferral_facets) &&
+      if (!in_array($facet_type, $openreferral_facets, TRUE) &&
         ($facet_mapping = $mapping_storage->load('localgov_directories_facets.' . $facet_type))
       ) {
         $facet_mapping->delete();

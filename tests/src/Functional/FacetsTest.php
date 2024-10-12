@@ -80,7 +80,7 @@ class FacetsTest extends BrowserTestBase {
     // Place the facet block.
     $this->drupalLogin($admin_user);
     $this->drupalPlaceBlock('facet_block:localgov_directories_facets', []);
-    $this->drupalLogout($admin_user);
+    $this->drupalLogout();
 
     // Set up facet types.
     $facet_types = [
