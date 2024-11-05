@@ -1,0 +1,40 @@
+{#
+/**
+ * @file
+ * Default theme template for directory facet checkboxes.
+ *
+ * These checkboxes are used within the facets_form_checkbox facet widget.
+ *
+ * Available variables:
+ * - title: Optional list title.
+ * - grouped_options: checkboxes grouped by their corresponding LocalGov Directory facet type.  Each group array contains:
+ *   - title: Label of the facet type.
+ *   - items: Checkbox element.
+ *   - weight: Sorting weight of the facet type.
+ * - attributes: HTML attributes to be applied to the list.
+ *
+ * @see template_preprocess_checkboxes__localgov_directories_facets()
+ */
+#}
+<div class="facets-widget facets-widget--facets-form-checkbox">
+
+  {%- if title is not empty -%}
+    <h3>{{ title }}</h3>
+  {%- endif -%}
+
+  {% if grouped_options %}
+    <ul{{ attributes }}>
+    {%- for group_id, group_record in grouped_options -%}
+      <li>
+        <h4 class="facet-group__title">{{ group_record.title }}</h4>
+
+        <ul{{ attributes.addClass('facet-filter-checkboxes') }}>
+        {%- for checkbox in group_record.items -%}
+          <li>{{ checkbox }}</li>
+        {%- endfor -%}
+        </ul>
+      </li>
+    {%- endfor -%}
+    </ul>
+  {%- endif %}
+</div>

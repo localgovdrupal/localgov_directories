@@ -41,6 +41,10 @@ class Constants {
 
   const FACET_CONFIG_FILE_FOR_PROXIMITY_SEARCH = 'facets.facet.localgov_directories_facets_proximity_search';
 
+  const FACET_EMPTY_CLASS = 'facet-empty';
+
+  const FACETS_FORM_DIR_FACET_BLOCK_PLUGIN_ID = 'facets_form:search_api:views_embed__localgov_directory_channel__node_embed';
+
   const CHANNEL_VIEW = 'localgov_directory_channel';
 
   const CHANNEL_VIEW_DISPLAY = 'node_embed';
