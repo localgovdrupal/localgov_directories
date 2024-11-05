@@ -192,7 +192,7 @@ function localgov_directories_update_8004() {
     // Place under title field.
     $form_group_description = $form_display->getThirdPartySetting('field_group', 'group_description');
     if (!empty($form_group_description) &&
-        (($title_position = array_search('title', $form_group_description['children'])) !== FALSE)
+        (($title_position = array_search('title', $form_group_description['children'], TRUE)) !== FALSE)
     ) {
       array_splice($form_group_description['children'], $title_position + 1, 0, 'localgov_directory_title_sort');
       $form_display->setThirdPartySetting('field_group', 'group_description', $form_group_description);

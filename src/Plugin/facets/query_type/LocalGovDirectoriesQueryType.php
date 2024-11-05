@@ -24,6 +24,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
     $query = $this->query;
 
     // Only alter the query when there's an actual query object to alter.
+    // @phpstan-ignore-next-line.
     if (!empty($query)) {
       $operator = $this->facet->getQueryOperator();
       $field_identifier = $this->facet->getFieldIdentifier();
@@ -39,7 +40,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
       $active_items = $this->facet->getActiveItems();
 
       if (count($active_items)) {
-
+        $bundle = NULL;
         $type_storage = \Drupal::entityTypeManager()
           ->getStorage('localgov_directories_facets');
         $chosen_facets = $type_storage->loadMultiple($active_items);
@@ -47,14 +48,16 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
           $bundle[$directory_facet->bundle()][] = $directory_facet->id();
         }
 
-        $filter = NULL;
-        foreach ($bundle as $bundle_name => $group_items) {
-          unset($filter);
-          $filter = $query->createConditionGroup($operator, ['facet:' . $field_identifier . '.' . $bundle_name]);
-          foreach ($group_items as $value) {
-            $filter->addCondition($this->facet->getFieldIdentifier(), $value, $exclude ? '<>' : '=');
+        if ($bundle !== NULL) {
+          $filter = NULL;
+          foreach ($bundle as $bundle_name => $group_items) {
+            unset($filter);
+            $filter = $query->createConditionGroup($operator, ['facet:' . $field_identifier . '.' . $bundle_name]);
+            foreach ($group_items as $value) {
+              $filter->addCondition($this->facet->getFieldIdentifier(), $value, $exclude ? '<>' : '=');
+            }
+            $query->addConditionGroup($filter);
           }
-          $query->addConditionGroup($filter);
         }
       }
     }
@@ -93,7 +96,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
       // Remove any duplicate facets, or they show up multiple times.
       $group_facets_filtered = array_filter($group_facets, function ($item) use ($results) {
         $facet_ids = array_column($results, 'filter');
-        if (in_array($item['filter'], $facet_ids)) {
+        if (in_array($item['filter'], $facet_ids, TRUE)) {
           return FALSE;
         }
         return TRUE;
@@ -157,7 +160,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
         $cids = $condition->getTags();
 
         // @todo Check that we are only removing facet conditions.
-        if (in_array($filter_tag, $cids)) {
+        if (in_array($filter_tag, $cids, TRUE)) {
 
           // Store the removed conditions and remove it.
           $removed_conditions[$cid] = $conditions[$cid];
@@ -187,7 +190,7 @@ class LocalGovDirectoriesQueryType extends QueryTypePluginBase {
       ->execute();
     $found_facets = $facets['localgov_directory_facets_filter'] ?? [];
     $found_facets = array_filter($found_facets, function ($item) use ($group_facet_ids) {
-      if (in_array(intval(trim($item['filter'], '"')), $group_facet_ids)) {
+      if (in_array(intval(trim($item['filter'], '"')), array_map('intval', $group_facet_ids), TRUE)) {
         return TRUE;
       }
       return FALSE;

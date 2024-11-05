@@ -70,7 +70,7 @@ function localgov_directories_location_field_config_insert(FieldConfigInterface 
   if (in_array($new_field_name, [
     Directory::CHANNEL_SELECTION_FIELD,
     Directory::TITLE_SORT_FIELD,
-  ]) && $is_node_entity_type && $index) {
+  ], TRUE) && $is_node_entity_type && $index) {
     // The channel selection and title sort fields may have gone missing from
     // the search index when we added localgov_location.
     $proximity_search_setup->repairSearchIndex($index);
