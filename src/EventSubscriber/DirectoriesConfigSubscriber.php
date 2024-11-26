@@ -130,7 +130,7 @@ class DirectoriesConfigSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  public static function getSubscribedEvents() {
+  public static function getSubscribedEvents(): array {
     $events[ConfigEvents::STORAGE_TRANSFORM_IMPORT][] = ['onImportTransform'];
     $events[ConfigEvents::STORAGE_TRANSFORM_EXPORT][] = ['onExportTransform'];
     return $events;
