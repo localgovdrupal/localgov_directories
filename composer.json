@@ -12,7 +12,7 @@
         "drupal/search_api": "^1.35",
         "drupal/search_api_autocomplete": "^1.9",
         "drupal/search_api_location": "1.0.0-alpha4",
-        "localgovdrupal/localgov_core": "dev-fix/2.x/246-drupal-11-support as 2.13.11",
+        "localgovdrupal/localgov_core": "^2.12",
         "localgovdrupal/localgov_geo": "^2.0"
     },
     "require-dev": {
