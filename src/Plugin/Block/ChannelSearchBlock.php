@@ -83,7 +83,7 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
        *
        * phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod.Found
        */
-      public function getSearchBlock(NodeInterface $node) {
+      public function getSearchBlock(NodeInterface $node): array {
         // phpcs:enable Generic.CodeAnalysis.UselessOverridingMethod.Found
         return parent::getSearchBlock($node);
       }
