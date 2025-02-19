@@ -5,6 +5,13 @@ declare(strict_types=1);
 namespace Drupal\Tests\localgov_directories\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\field\Traits\EntityReferenceFieldCreationTrait;
+use Drupal\Tests\field_ui\Traits\FieldUiTestTrait;
+use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
+use Drupal\Tests\node\Traits\NodeCreationTrait;
+use Drupal\node\NodeInterface;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 
 /**
  * Tests for the Directory search block.
@@ -13,6 +20,11 @@ use Drupal\Tests\BrowserTestBase;
  * - Prepopulated search field bug scenario.
  */
 class SearchBlockTest extends BrowserTestBase {
+
+  use FieldUiTestTrait;
+  use ContentTypeCreationTrait;
+  use NodeCreationTrait;
+  use EntityReferenceFieldCreationTrait;
 
   /**
    * Tests the search field.
@@ -43,6 +55,83 @@ class SearchBlockTest extends BrowserTestBase {
   }
 
   /**
+   *
+   */
+  public function testSearchBlockAddedToEntryContentTypes() :void {
+
+    $adminUser = $this->drupalCreateUser([
+      'bypass node access',
+      'access content',
+      'administer content types',
+      'administer node fields',
+      'administer node form display',
+      'administer node display',
+      'administer nodes',
+    ]);
+    $this->drupalLogin($adminUser);
+
+    $dir_channel_node = $this->createNode([
+      'title' => 'I am a directory channel page',
+      'type'  => 'localgov_directory',
+      'status' => NodeInterface::PUBLISHED,
+      'localgov_directory_facets_enable' => [],
+    ]);
+    $dir_channel_node->save();
+    $dir_channel_page_path = $dir_channel_node->toUrl()->toString();
+
+    $this->drupalPlaceBlock('localgov_directories_channel_search_block', [
+      'id' => 'localgov_directories_channel_search_block',
+      'context_mapping' => ['node' => '@node.node_route_context:node'],
+      'visibility' => [
+        'entity_bundle:node' => [
+          'id' => 'entity_bundle:node',
+          'negate' => FALSE,
+          'context_mapping' => [
+            'node' => '@node.node_route_context:node',
+          ],
+          'bundles' => [
+            'localgov_directory', 'localgov_directory',
+          ],
+        ],
+      ],
+    ]);
+
+    // Create a directory entry content type.
+    $this->createContentType(['type' => 'directory_entry']);
+
+    $field_storage = FieldStorageConfig::load('node.localgov_directory_channels');
+    $field = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => 'directory_entry',
+      'label' => 'Channels',
+    ]);
+    $field->save();
+
+    // Allow directory entry to be inside directory channel.
+    $dir_channel_node->localgov_directory_channel_types = [
+      'target_id' => 'directory_entry',
+    ];
+    $dir_channel_node->save();
+
+    // Create a directory entry.
+    $dir_entry_node = $this->createNode([
+      'title' => 'I am a directory entry page',
+      'type'  => 'directory_entry',
+      'status' => NodeInterface::PUBLISHED,
+      'localgov_directory_channels' => [
+        'target_id' => $dir_channel_node->id(),
+      ],
+    ]);
+    $dir_entry_node->save();
+
+    // Verify the search block is present on the entry.
+    $dir_entry_node_path = $dir_entry_node->toUrl()->toString();
+    $this->drupalGet($dir_entry_node_path);
+    $this->assertSession()->pageTextContains('Search I am a directory channel page');
+
+  }
+
+  /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
@@ -51,6 +140,9 @@ class SearchBlockTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'localgov_directories',
+    'field_ui',
+    'block',
     'localgov_directories_db',
   ];
 

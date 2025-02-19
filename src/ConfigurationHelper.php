@@ -353,7 +353,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
     try {
       $visibility = $block_config->getVisibility();
       $visibility['entity_bundle:node']['bundles'][$content_type] = $content_type;
-      $block_config->setVisibilityConfig('entity_bundle:node', $visibility['node_type']);
+      $block_config->setVisibilityConfig('entity_bundle:node', $visibility['entity_bundle:node']);
       $block_config->save();
     }
     catch (\Exception $e) {
