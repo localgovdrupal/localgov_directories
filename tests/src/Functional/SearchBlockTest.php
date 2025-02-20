@@ -55,7 +55,7 @@ class SearchBlockTest extends BrowserTestBase {
   }
 
   /**
-   *
+   * Test the search block is added to a new directory entry content type.
    */
   public function testSearchBlockAddedToEntryContentTypes() :void {
 
@@ -77,10 +77,9 @@ class SearchBlockTest extends BrowserTestBase {
       'localgov_directory_facets_enable' => [],
     ]);
     $dir_channel_node->save();
-    $dir_channel_page_path = $dir_channel_node->toUrl()->toString();
 
     $this->drupalPlaceBlock('localgov_directories_channel_search_block', [
-      'id' => 'localgov_directories_channel_search_block',
+      'id' => 'localgov_directories_channel_search_block_stark',
       'context_mapping' => ['node' => '@node.node_route_context:node'],
       'visibility' => [
         'entity_bundle:node' => [
@@ -106,6 +105,15 @@ class SearchBlockTest extends BrowserTestBase {
       'label' => 'Channels',
     ]);
     $field->save();
+
+    // Remove the search from manage display.
+    // @todo Check if this should be removed after adjusting the block.
+    $entity_view_display = $this->container->get('entity_type.manager')
+      ->getStorage('entity_view_display')
+      ->load('node.directory_entry.default');
+    if ($entity_view_display) {
+      $entity_view_display->removeComponent('localgov_directory_search')->save();
+    }
 
     // Allow directory entry to be inside directory channel.
     $dir_channel_node->localgov_directory_channel_types = [

@@ -336,40 +336,46 @@ class ConfigurationHelper implements ContainerInjectionInterface {
    * The given block should appear in the sidebars of pages for the given
    * content type.
    *
-   * @param string $block_id
-   *   The block to update visibility for.
+   * @param string $plugin_id
+   *   The block plugin_id to update visibility for.
    * @param string $content_type
    *   The content type on which the block should be visible.
    *
    * @return bool
    *   True on success.
    */
-  public function blockAddContentType(string $block_id, string $content_type): bool {
-    $block_config = $this->entityTypeManager->getStorage('block')->load($block_id);
-    if (!$block_config instanceof BlockInterface) {
-      return FALSE;
-    }
+  public function blockAddContentType(string $plugin_id, string $content_type): bool {
+    $block_configs = $this->entityTypeManager->getStorage('block')->loadByProperties(['plugin' => $plugin_id]);
 
-    try {
-      $visibility = $block_config->getVisibility();
-      $visibility['entity_bundle:node']['bundles'][$content_type] = $content_type;
-      $block_config->setVisibilityConfig('entity_bundle:node', $visibility['entity_bundle:node']);
-      $block_config->save();
-    }
-    catch (\Exception $e) {
-      $this->logger->error('Failed to add %content-type content type to %block-id block: %error-msg', [
+    foreach ($block_configs as $block_config) {
+      if (!$block_config instanceof BlockInterface) {
+        continue;
+      }
+
+      // Get the block id.
+      $block_id = $block_config->id();
+
+      try {
+        $visibility = $block_config->getVisibility();
+        $visibility['entity_bundle:node']['bundles'][$content_type] = $content_type;
+        $block_config->setVisibilityConfig('entity_bundle:node', $visibility['entity_bundle:node']);
+        $block_config->save();
+      }
+      catch (\Exception $e) {
+        $this->logger->error('Failed to add %content-type content type to %block-id block: %error-msg', [
+          '%content-type' => $content_type,
+          '%block-id' => $block_id,
+          '%error-msg' => $e->getMessage(),
+        ]);
+
+        return FALSE;
+      }
+
+      $this->logger->notice('Added %content-type content type to %block-id block.', [
         '%content-type' => $content_type,
         '%block-id' => $block_id,
-        '%error-msg' => $e->getMessage(),
       ]);
-
-      return FALSE;
     }
-
-    $this->logger->notice('Added %content-type content type to %block-id block.', [
-      '%content-type' => $content_type,
-      '%block-id' => $block_id,
-    ]);
 
     return TRUE;
   }
