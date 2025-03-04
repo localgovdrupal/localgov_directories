@@ -2,7 +2,7 @@ name: 'LocalGov Directories Venue'
 type: module
 description: 'Provides a standard venue type for directory channels.'
 package: LocalGov Drupal
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - field_group:field_group
   - localgov_directories:localgov_directories
