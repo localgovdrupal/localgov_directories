@@ -83,7 +83,7 @@ class ProximitySearchSetup implements ContainerInjectionInterface {
 
     $entity_bundle = $field->getTargetBundle();
     $datasrc_cfg = $index_datasrc->getConfiguration();
-    $is_bundle_indexed = in_array($entity_bundle, $datasrc_cfg['bundles']['selected']);
+    $is_bundle_indexed = in_array($entity_bundle, $datasrc_cfg['bundles']['selected'], TRUE);
     if (!$is_bundle_indexed) {
       $datasrc_cfg['bundles']['selected'][] = $entity_bundle;
       $index_datasrc->setConfiguration($datasrc_cfg);

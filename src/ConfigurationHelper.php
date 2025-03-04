@@ -444,7 +444,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
     $configuration = $datasource->getConfiguration();
     $configuration['bundles']['default'] = FALSE;
-    if (!in_array($entity_bundle, $configuration['bundles']['selected'])) {
+    if (!in_array($entity_bundle, $configuration['bundles']['selected'], TRUE)) {
       $configuration['bundles']['selected'][] = $entity_bundle;
     }
     $datasource->setConfiguration($configuration);
@@ -469,7 +469,7 @@ class ConfigurationHelper implements ContainerInjectionInterface {
 
     $configuration = $datasource->getConfiguration();
     $configuration['bundles']['default'] = FALSE;
-    if (($key = array_search($entity_bundle, $configuration['bundles']['selected'])) !== FALSE) {
+    if (($key = array_search($entity_bundle, $configuration['bundles']['selected'], TRUE)) !== FALSE) {
       unset($configuration['bundles']['selected'][$key]);
     }
     $datasource->setConfiguration($configuration);

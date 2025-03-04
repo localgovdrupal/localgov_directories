@@ -39,7 +39,7 @@ class InstallTest extends KernelTestBase {
    * {@inheritdoc}
    */
   public function setUp(): void {
-    parent::setup();
+    parent::setUp();
 
     $this->installEntitySchema('node');
     $this->installEntitySchema('search_api_index');
