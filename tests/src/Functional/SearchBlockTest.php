@@ -20,7 +20,7 @@ class SearchBlockTest extends BrowserTestBase {
    * When a Directory channel page is loaded, the search field in the channel
    * search block should be empty.
    */
-  public function testIsSearchFieldEmpty() :void {
+  public function testIsSearchFieldEmpty(): void {
 
     $dir_channel_node = $this->createNode([
       'title' => 'I am a directory channel page',
