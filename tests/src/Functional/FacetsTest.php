@@ -65,7 +65,7 @@ class FacetsTest extends BrowserTestBase {
   /**
    * Set up users, node and facets.
    */
-  protected function setUp() :void {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalPlaceBlock('facet_block:localgov_directories_facets', []);
