@@ -6,6 +6,7 @@ namespace Drupal\localgov_directories\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Field\Plugin\Field\FieldType\EntityReferenceItem;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -83,7 +84,7 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
        *
        * phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod.Found
        */
-      public function getSearchBlock(NodeInterface $node) {
+      public function getSearchBlock(NodeInterface $node): array {
         // phpcs:enable Generic.CodeAnalysis.UselessOverridingMethod.Found
         return parent::getSearchBlock($node);
       }
@@ -180,7 +181,7 @@ class ChannelSearchBlock extends BlockBase implements ContainerFactoryPluginInte
 
     $cache_tags = array_reduce(
       $directory_channels,
-      function (array $carry, NodeInterface $directory_channel): array {
+      function (array $carry, EntityInterface $directory_channel): array {
         return Cache::mergeTags($carry, $directory_channel->getCacheTags());
       }, []
     );

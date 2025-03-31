@@ -83,13 +83,13 @@ class FacetPreprocessTest extends UnitTestCase {
     $mock_facet_storage = $this->createMock(EntityStorageInterface::class);
     $mock_facet_storage->expects($this->any())
       ->method('load')
-      ->will($this->returnValueMap([
+      ->willReturnMap([
         ['zero', $facet_zero],
         ['one', $facet_one],
         ['two', $facet_two],
         ['three', $facet_three],
         ['four', $facet_four],
-      ]));
+      ]);
 
     // Facet types.
     $facet_type_foo = $this->createMock(LocalgovDirectoriesFacetsType::class);
@@ -111,29 +111,29 @@ class FacetPreprocessTest extends UnitTestCase {
     $mock_facet_type_storage = $this->createMock(EntityStorageInterface::class);
     $mock_facet_type_storage->expects($this->any())
       ->method('load')
-      ->will($this->returnValueMap([
+      ->willReturnMap([
         ['foo', $facet_type_foo],
         ['bar', $facet_type_bar],
         ['baz', $facet_type_baz],
         ['qux', $facet_type_qux],
         ['jar', $facet_type_jar],
-      ]));
+      ]);
 
     // Finally, the dependencies.
     $this->mockEntityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
     $this->mockEntityTypeManager->expects($this->any())
       ->method('getStorage')
-      ->will($this->returnValueMap([
+      ->willReturnMap([
         ['localgov_directories_facets', $mock_facet_storage],
         ['localgov_directories_facets_type', $mock_facet_type_storage],
-      ]));
+      ]);
 
     $this->mockEntityRepository = $this->createMock(EntityRepositoryInterface::class);
     $this->mockEntityRepository->expects($this->any())
       ->method('getTranslationFromContext')
-      ->will($this->returnCallback(function ($arg) {
+      ->willReturnCallback(function ($arg) {
         return $arg;
-      }));
+      });
 
     $this->mockEntityFieldManager = $this->createMock(EntityFieldManagerInterface::class);
     $this->mockBlockPluginManager = $this->createMock(BlockManagerInterface::class);

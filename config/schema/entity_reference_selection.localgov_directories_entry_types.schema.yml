@@ -14,4 +14,4 @@ entity_reference_selection.localgov_directories_entry_types:
           label: 'Sort direction'
 
 entity_reference_selection.localgov_directories_entry_types.*:
-   type: entity_reference_selection.localgov_directories_entry_types
+  type: entity_reference_selection.localgov_directories_entry_types
