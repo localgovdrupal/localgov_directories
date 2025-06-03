@@ -108,12 +108,12 @@ class ProximitySearchSetup implements ContainerInjectionInterface {
    */
   public function addActivationField(): void {
 
-    if (!$this->etm->getStorage('field_storage_config')->load('node' . '.' . Directory::PROXIMITY_SEARCH_CFG_FIELD)) {
+    if (!$this->etm->getStorage('field_storage_config')->load('node.' . Directory::PROXIMITY_SEARCH_CFG_FIELD)) {
       $proximity_search_cfg_field_storage = Yaml::decode(file_get_contents($this->modulePath . '/config/install/field.storage.node.localgov_proximity_search_cfg.yml'));
       $this->etm->getStorage('field_storage_config')->create($proximity_search_cfg_field_storage)->save();
     }
 
-    if (!$this->etm->getStorage('field_config')->load('node' . '.' . Directory::CHANNEL_NODE_BUNDLE . '.' . Directory::PROXIMITY_SEARCH_CFG_FIELD)) {
+    if (!$this->etm->getStorage('field_config')->load('node.' . Directory::CHANNEL_NODE_BUNDLE . '.' . Directory::PROXIMITY_SEARCH_CFG_FIELD)) {
       $proximity_search_cfg_field = Yaml::decode(file_get_contents($this->modulePath . '/config/conditional/field.field.node.localgov_directory.localgov_proximity_search_cfg.yml'));
       $this->etm->getStorage('field_config')->create($proximity_search_cfg_field)->save();
 
@@ -130,7 +130,7 @@ class ProximitySearchSetup implements ContainerInjectionInterface {
   public function addActivationFieldDisplay(): void {
 
     // Add Proximity search activation field to Directory channel form.
-    $dir_channel_form_display = $this->etm->getStorage('entity_form_display')->load('node' . '.' . Directory::CHANNEL_NODE_BUNDLE . '.default');
+    $dir_channel_form_display = $this->etm->getStorage('entity_form_display')->load('node.' . Directory::CHANNEL_NODE_BUNDLE . '.default');
     if (!$dir_channel_form_display->getComponent(Directory::PROXIMITY_SEARCH_CFG_FIELD)) {
       $dir_channel_form_display_with_proximity_search = Yaml::decode(file_get_contents($this->modulePath . '/config/override/core.entity_form_display.node.localgov_directory.default.yml'));
 
@@ -140,7 +140,7 @@ class ProximitySearchSetup implements ContainerInjectionInterface {
     }
 
     // Hide the Proximity search activation field from Directory channel.
-    $dir_channel_view_display = $this->etm->getStorage('entity_view_display')->load('node' . '.' . Directory::CHANNEL_NODE_BUNDLE . '.default');
+    $dir_channel_view_display = $this->etm->getStorage('entity_view_display')->load('node.' . Directory::CHANNEL_NODE_BUNDLE . '.default');
     if (!$dir_channel_view_display->getComponent(Directory::PROXIMITY_SEARCH_CFG_FIELD)) {
       $dir_channel_view_display->removeComponent(Directory::PROXIMITY_SEARCH_CFG_FIELD)->save();
     }
