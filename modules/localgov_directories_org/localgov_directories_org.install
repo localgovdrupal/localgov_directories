@@ -2,11 +2,8 @@
 
 /**
  * @file
- * Update functions for the LocalGov Directories Promo Page.
+ * Update functions for the LocalGov Directories Organisation.
  */
-
-use Drupal\node\Entity\Node;
-use Drupal\pathauto\Entity\PathautoPattern;
 
 /**
  * Implements hook_install().
