@@ -11,7 +11,7 @@ use Drupal\pathauto\Entity\PathautoPattern;
 /**
  * Implements hook_install().
  */
-function localgov_directories_promo_page_install($is_syncing) {
+function localgov_directories_promo_page_install($is_syncing): void {
   if ($is_syncing) {
     return;
   }
