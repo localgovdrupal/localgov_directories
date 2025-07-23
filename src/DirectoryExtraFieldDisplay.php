@@ -23,6 +23,7 @@ use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
 use Drupal\node\NodeInterface;
 use Drupal\views\Views;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Adds views display for the directory channel.
@@ -74,6 +75,13 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
   protected $routeMatch;
 
   /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
    * DirectoryExtraFieldDisplay constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -88,14 +96,17 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
    *   Form Builder.
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   Current route match.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EntityFieldManagerInterface $entity_field_manager, BlockManagerInterface $plugin_manager_block, FormBuilderInterface $form_builder, RouteMatchInterface $route_match) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityRepositoryInterface $entity_repository, EntityFieldManagerInterface $entity_field_manager, BlockManagerInterface $plugin_manager_block, FormBuilderInterface $form_builder, RouteMatchInterface $route_match, RequestStack $request_stack) {
     $this->entityTypeManager = $entity_type_manager;
     $this->entityRepository = $entity_repository;
     $this->entityFieldManager = $entity_field_manager;
     $this->pluginBlockManager = $plugin_manager_block;
     $this->formBuilder = $form_builder;
     $this->routeMatch = $route_match;
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -108,7 +119,8 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
       $container->get('entity_field.manager'),
       $container->get('plugin.manager.block'),
       $container->get('form_builder'),
-      $container->get('current_route_match')
+      $container->get('current_route_match'),
+      $container->get('request_stack'),
     );
   }
 
@@ -353,7 +365,26 @@ class DirectoryExtraFieldDisplay implements ContainerInjectionInterface, Trusted
     // This is usually on a channel node. If so remove facets not active on
     // channel.
     $active_facets = NULL;
-    if (($channel = $this->routeMatch->getParameter('node'))
+    $route_name = $this->routeMatch->getRouteName();
+    $channel = match($route_name) {
+
+      // Embdeded on a page.
+      'entity.node.canonical' => $this->routeMatch->getParameter('node'),
+
+      // Handle views ajax request.
+      'views.ajax' => call_user_func(function () {
+        $query_str = $this->requestStack->getCurrentRequest()->getQueryString();
+        parse_str($query_str, $query);
+        if ($query['view_name'] == 'localgov_directory_channel' && $nid = intval($query['view_args'])) {
+          return $this->entityTypeManager->getStorage('node')->load($nid);
+        }
+        return NULL;
+      }),
+
+      // No valid channel found.
+      default => NULL,
+    };
+    if (!is_null($channel)
       && $channel instanceof NodeInterface
       && $channel->bundle() == 'localgov_directory'
     ) {
