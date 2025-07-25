@@ -1,5 +1,8 @@
 <?php
 
+use Drupal\search_api\Entity\Index;
+
+
 /**
  * @file
  * Post update hooks for LocalGov Directories.
@@ -47,5 +50,28 @@ function localgov_directories_post_update_replace_node_type_condition_again() {
         $block->save(TRUE);
       }
     }
+  }
+}
+
+/**
+ * Enables the new Sort Field processor.
+ *
+ * Existing functionality has moved into a processor that needs to enabled.
+ */
+function localgov_directories_post_update_enable_sort_processor() {
+  $index = Index::load('localgov_directories_index_default');
+  $processors = $index->getProcessors();
+  if (!isset($processors['localgov_directories_sort_field'])) {
+    $weight = array_reduce(
+      $processors,
+      fn ($weight, $processor) => $processor->getWeight('preprocess_index') < $weight ? $processor->getWeight('preprocess_index') : $weight,
+      0
+    );
+    $processor = \Drupal::getContainer()
+      ->get('search_api.plugin_helper')
+      ->createProcessorPlugin($index, 'localgov_directories_sort_field');
+    $processor->setWeight('preprocess_index', $weight);
+    $index->addProcessor($processor);
+    $index->save();
   }
 }
