@@ -1,11 +1,11 @@
 <?php
 
-use Drupal\search_api\Entity\Index;
-
 /**
  * @file
  * Post update hooks for LocalGov Directories.
  */
+
+use Drupal\search_api\Entity\Index;
 
 /**
  * Updates the node type visibility condition.
