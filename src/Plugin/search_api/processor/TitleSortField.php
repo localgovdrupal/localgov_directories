@@ -21,7 +21,7 @@ class TitleSortField extends ProcessorPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function preprocessIndexItems(array $items) {
+  public function preprocessIndexItems(array $items): void {
     foreach ($items as $item) {
       if ($field = $item->getField('localgov_directory_title_sort')) {
         $sort_value = $field->getValues();

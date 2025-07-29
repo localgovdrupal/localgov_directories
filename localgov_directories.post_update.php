@@ -2,7 +2,6 @@
 
 use Drupal\search_api\Entity\Index;
 
-
 /**
  * @file
  * Post update hooks for LocalGov Directories.
@@ -15,7 +14,7 @@ use Drupal\search_api\Entity\Index;
  * but we had installed condition plugins with this after it might have run.
  * No harm in running this multiple times.
  */
-function localgov_directories_post_update_replace_node_type_condition() {
+function localgov_directories_post_update_replace_node_type_condition(): void {
   $config_factory = \Drupal::configFactory();
   foreach ($config_factory->listAll('block.block.') as $block_config_name) {
     $block = $config_factory->getEditable($block_config_name);
@@ -36,7 +35,7 @@ function localgov_directories_post_update_replace_node_type_condition() {
  * Because we'd still been installing old config.
  * https://github.com/localgovdrupal/localgov_directories/pull/342/files.
  */
-function localgov_directories_post_update_replace_node_type_condition_again() {
+function localgov_directories_post_update_replace_node_type_condition_again(): void {
   $config_factory = \Drupal::configFactory();
   foreach ($config_factory->listAll('block.block.') as $block_config_name) {
     $block = $config_factory->getEditable($block_config_name);
@@ -58,7 +57,7 @@ function localgov_directories_post_update_replace_node_type_condition_again() {
  *
  * Existing functionality has moved into a processor that needs to enabled.
  */
-function localgov_directories_post_update_enable_sort_processor() {
+function localgov_directories_post_update_enable_sort_processor(): void {
   $index = Index::load('localgov_directories_index_default');
   $processors = $index->getProcessors();
   if (!isset($processors['localgov_directories_sort_field'])) {
