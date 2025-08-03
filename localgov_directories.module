@@ -60,7 +60,7 @@ function localgov_directories_theme() {
     ],
     'bef_checkboxes_directory_facets' => [
       'render element' => 'element',
-      'base hook' => 'bef_checkboxes',
+      'base_hook' => 'bef_checkboxes',
     ],
   ];
 }
@@ -328,12 +328,13 @@ function template_preprocess_bef_checkboxes_directory_facets(array &$variables):
   $facet_group_elements = [];
 
   // Split up the facet checkboxes into groups based on the facet group.
-  foreach ($facet_groups as $key => $options) {
+  foreach ($facet_groups as $key => $values) {
     $facet_group_elements[$key] = [
       '#type' => 'fieldset',
-      '#title' => $key,
+      '#title' => $values['title'],
+      '#weight' => $values['weight'],
     ];
-    $options = array_keys($options);
+    $options = array_keys($values['items']);
     $facet_group_elements[$key]['children'] = array_map(function ($item) use ($element) {
       return $element[$item];
     }, $options);

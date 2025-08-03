@@ -4,10 +4,10 @@ namespace Drupal\localgov_directories\Plugin\better_exposed_filters\filter;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\better_exposed_filters\Plugin\better_exposed_filters\filter\RadioButtons;
-use Drupal\localgov_directories\Constants as Directory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\DependencyInjection\ClassResolverInterface;
+use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 
 /**
  * Localgov directories facets widget implementation.
@@ -20,18 +20,27 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class DirectoryFacetsCheckboxes extends RadioButtons implements ContainerFactoryPluginInterface {
 
   /**
-   * Entity type manager service.
+   * Class resolver service.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   * @var \Drupal\Core\DependencyInjection\ClassResolverInterface
    */
-  protected $entityTypeManager;
+  protected $classResolver;
 
   /**
-   * {@inheritdoc}
+   * Constructs a DirectoryFacetsCheckboxes object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param Drupal\Core\DependencyInjection\ClassResolverInterface $class_resolver
+   *   Class resolver service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct(array $configuration, string $plugin_id, $plugin_definition, ClassResolverInterface $class_resolver) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityTypeManager = $entity_type_manager;
+    $this->classResolver = $class_resolver;
   }
 
   /**
@@ -42,7 +51,7 @@ class DirectoryFacetsCheckboxes extends RadioButtons implements ContainerFactory
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('entity_type.manager'),
+      $container->get('class_resolver'),
     );
   }
 
@@ -59,21 +68,14 @@ class DirectoryFacetsCheckboxes extends RadioButtons implements ContainerFactory
     parent::exposedFormAlter($form, $form_state);
 
     if (!empty($form[$field_id]['#options'])) {
-      $facet_storage = $this->entityTypeManager->getStorage(Directory::FACET_CONFIG_ENTITY_ID);
-      $grouped_options = [];
-      foreach ($form[$field_id]['#options'] as $key => $option) {
-        $facet = $facet_storage->load($key);
-        $facet_type = $facet->bundle();
-        $grouped_options[$facet_type][$key] = $option;
-      }
-      $facet_type_storage = $this->entityTypeManager->getStorage(Directory::FACET_TYPE_CONFIG_ENTITY_ID);
-      foreach ($grouped_options as $facet_type => $options) {
-        $facet_type_entity = $facet_type_storage->load($facet_type);
-        $facet_type_label = $facet_type_entity->label();
-        $grouped_options[$facet_type_label] = $options;
-        unset($grouped_options[$facet_type]);
-      }
-      $form[$field_id]['#localgov_directory_facet_groups'] = $grouped_options;
+
+      // Use the groupDirFacetItems from the DirectoryExtraFieldDisplay class.
+      // This is the same as the facets block, which will group and filter
+      // the avalible facets to the relevant directory channel.
+      $grouped_items = $this->classResolver
+        ->getInstanceFromDefinition(DirectoryExtraFieldDisplay::class)
+        ->groupDirFacetItems($form[$field_id]['#options']);
+      $form[$field_id]['#localgov_directory_facet_groups'] = $grouped_items;
       $form[$field_id]['#theme'] = 'bef_checkboxes_directory_facets';
     }
   }
