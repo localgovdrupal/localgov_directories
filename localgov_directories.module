@@ -19,6 +19,7 @@ use Drupal\localgov_roles\RolesHelper;
 use Drupal\node\NodeInterface;
 use Drupal\pathauto\Entity\PathautoPattern;
 use Drupal\search_api\IndexInterface;
+use Drupal\user\RoleInterface;
 
 /**
  * Implements hook_theme().
@@ -320,4 +321,14 @@ function localgov_directories_leaflet_map_view_style_alter(&$js_settings, $leafl
  */
 function localgov_directories_facets_search_api_query_type_mapping_alter($backend_plugin_id, array &$query_types) {
   $query_types['localgov_directories'] = 'localgov_directories_query_type';
+}
+
+/**
+ * Set default permissions for anonymous and authenticated users.
+ */
+function localgov_directories_set_default_permissions(): void {
+
+  // Default grant permissions to view directory facets.
+  user_role_grant_permissions(RoleInterface::ANONYMOUS_ID, ['view directory facets']);
+  user_role_grant_permissions(RoleInterface::AUTHENTICATED_ID, ['view directory facets']);
 }

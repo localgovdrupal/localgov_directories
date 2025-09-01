@@ -38,6 +38,9 @@ function localgov_directories_install($is_syncing) {
       'priority' => '0.5',
     ]);
   }
+
+  // Allow anonymous and authenticated users to view directory facets.
+  localgov_directories_set_default_permissions();
 }
 
 /**
@@ -314,4 +317,15 @@ function localgov_directories_update_8008() {
   ) {
     \Drupal::keyValue('system.schema')->set('localgov_directories_db', 8000);
   }
+}
+
+/**
+ * Allow anonymous and authenticated users to view directory facets.
+ */
+function localgov_directories_update_8009(): void {
+  localgov_directories_set_default_permissions();
+
+  // Clear caches so removal of directory facets entity canonical route is
+  // picked up.
+  drupal_flush_all_caches();
 }
