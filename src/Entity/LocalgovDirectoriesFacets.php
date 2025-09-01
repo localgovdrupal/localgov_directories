@@ -47,7 +47,6 @@ use Drupal\user\UserInterface;
  *   links = {
  *     "add-form" = "/admin/content/directories/facets/add/{localgov_directories_facets_type}",
  *     "add-page" = "/admin/content/directories/facets/add",
- *     "canonical" = "/admin/content/directories/facets/{localgov_directories_facets}",
  *     "edit-form" = "/admin/content/directories/facets/{localgov_directories_facets}/edit",
  *     "delete-form" = "/admin/content/directories/facets/{localgov_directories_facets}/delete",
  *     "collection" = "/admin/content/directories/facets"
