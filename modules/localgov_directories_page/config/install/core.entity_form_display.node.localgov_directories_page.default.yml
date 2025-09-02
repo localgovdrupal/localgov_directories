@@ -59,7 +59,7 @@ third_party_settings:
         description: ''
         formatter: closed
         required_fields: true
-      label: Description
+      label: Content
     group_enquiries:
       children:
         - localgov_directory_name

@@ -36,7 +36,9 @@ class LocalgovDirectoriesFacetsForm extends ContentEntityForm {
 
     $entity = $this->getEntity();
     $result = $entity->save();
-    $link = $entity->toLink($this->t('View'))->toRenderable();
+
+    // Since the canionical route has been removed, link to the edit form.
+    $link = $entity->toLink($this->t('Edit'), 'edit-form')->toRenderable();
 
     $message_arguments = ['%label' => $this->entity->label()];
     $logger_arguments = $message_arguments + ['link' => $this->renderer->render($link)];
