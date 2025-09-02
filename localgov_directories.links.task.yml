@@ -1,15 +1,11 @@
-entity.localgov_directories_facets.view:
-  title: View
-  route_name: entity.localgov_directories_facets.canonical
-  base_route: entity.localgov_directories_facets.canonical
 entity.localgov_directories_facets.edit_form:
   title: Edit
   route_name: entity.localgov_directories_facets.edit_form
-  base_route: entity.localgov_directories_facets.canonical
+  base_route: entity.localgov_directories_facets.edit_form
 entity.localgov_directories_facets.delete_form:
   title: Delete
   route_name: entity.localgov_directories_facets.delete_form
-  base_route: entity.localgov_directories_facets.canonical
+  base_route: entity.localgov_directories_facets.edit_form
   weight: 10
 entity.localgov_directories_facets.collection:
   title: Directory Facets
