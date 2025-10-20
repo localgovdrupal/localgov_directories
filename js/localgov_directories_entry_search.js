@@ -3,9 +3,9 @@
  *   Manages channel search boxes on entry nodes.
  */
 
-(function (drupalSettings) {
+(function localgovDirectoriesSearchScript(drupalSettings) {
   Drupal.behaviors.localgovDirectoriesSearch = {
-    attach: function attach(context, settings) {
+    attach(context) {
       // Build a select list with options from all the search boxes.
       const formIds = Object.keys(
         drupalSettings.localgovDirectories.directoriesSearch,
@@ -14,7 +14,7 @@
       if (formIds.length > 1) {
         Object.keys(
           drupalSettings.localgovDirectories.directoriesSearch,
-        ).forEach(function (formId) {
+        ).forEach((formId) => {
           const channel = document.createElement('option');
           channel.value = formId;
           channel.text = Drupal.checkPlain(
@@ -25,14 +25,14 @@
         // Swap the select list into the title.
         Object.keys(
           drupalSettings.localgovDirectories.directoriesSearch,
-        ).forEach(function (formId) {
+        ).forEach((formId) => {
           const label = document.getElementById(`${formId}--channel`);
           label.innerHTML = channelsDropdown.outerHTML;
           label.childNodes[0].value = formId;
           // With an event that hides the current, unhides the selected,
           // and keeps the value of the selectors correct for the search
           // they are on.
-          label.childNodes[0].addEventListener('change', function () {
+          label.childNodes[0].addEventListener('change', () => {
             const previousId = label.id.slice(0, -9);
             const previous = document.getElementById(previousId);
             previous.style.display = 'none';
@@ -54,7 +54,7 @@
         const returnLink = document.createElement('a');
         returnLink.href = document.referrer;
         returnLink.innerText = Drupal.t('Back to search results');
-        once('directory-return-link', searchForm).forEach(function (form) {
+        once('directory-return-link', searchForm).forEach((form) => {
           form.insertBefore(returnLink, form.firstChild);
         });
       }
