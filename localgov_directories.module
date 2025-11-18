@@ -125,8 +125,8 @@ function localgov_directories_pathauto_pattern_alter(PathautoPattern $pattern, a
   // it has opt-ed in with the field add the (optional) parent to the path.
   $entity = reset($context['data']);
   assert($entity instanceof ContentEntityInterface);
-  if ($entity->hasField('localgov_directory_channels') && strpos($pattern->getPattern(), '[node:localgov_directory_channels:0:entity:url:relative]') === FALSE) {
-    $pattern->setPattern('[node:localgov_directory_channels:0:entity:url:relative]/' . $pattern->getPattern());
+  if ($entity->hasField('localgov_directory_channels') && strpos($pattern->getPattern(), '[node:localgov_directory_channels:0:entity:url:path]') === FALSE) {
+    $pattern->setPattern('[node:localgov_directory_channels:0:entity:url:path]/' . $pattern->getPattern());
   }
 }
 
