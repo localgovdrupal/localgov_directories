@@ -21,7 +21,7 @@
         "localgovdrupal/localgov_openreferral": "^2.0",
         "localgovdrupal/localgov_paragraphs": "^2.3",
         "drupal/facets_form": "^1.0",
-        "drupal/better_exposed_filters: "^7.0"
+        "drupal/better_exposed_filters": "^7.0"
     },
     "suggest": {
         "drupal/facets_form": "Displays facets as checkboxes within a form.",
