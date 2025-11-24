@@ -1,0 +1,13 @@
+{% set classes = [
+  'form-checkboxes',
+  'bef-checkboxes',
+  'bef-checkboxes-directory-facets',
+  show_select_all_none ? 'bef-select-all-none',
+  show_select_all_none_nested ? 'bef-select-all-none-nested',
+  display_inline ? 'form--inline'
+] %}
+<div{{ wrapper_attributes.addClass(classes) }}>
+  {% for facet_group in localgov_directory_facet_groups %}
+    {{ facet_group }}
+  {% endfor %}
+</div>
