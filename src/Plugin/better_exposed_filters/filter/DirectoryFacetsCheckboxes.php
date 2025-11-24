@@ -6,7 +6,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\better_exposed_filters\Plugin\better_exposed_filters\filter\RadioButtons;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 
 /**
