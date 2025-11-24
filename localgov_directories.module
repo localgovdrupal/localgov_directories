@@ -58,6 +58,10 @@ function localgov_directories_theme() {
     'checkboxes__localgov_directories_facets' => [
       'base hook' => 'checkboxes',
     ],
+    'bef_checkboxes_directory_facets' => [
+      'render element' => 'element',
+      'base_hook' => 'bef_checkboxes',
+    ],
   ];
 }
 
@@ -313,4 +317,27 @@ function localgov_directories_set_default_permissions(): void {
   // Default grant permissions to view directory facets.
   user_role_grant_permissions(RoleInterface::ANONYMOUS_ID, ['view directory facets']);
   user_role_grant_permissions(RoleInterface::AUTHENTICATED_ID, ['view directory facets']);
+}
+
+/**
+ * Implements hook_template_preprocess_bef_checkboxes_directory_facets().
+ */
+function template_preprocess_bef_checkboxes_directory_facets(array &$variables): void {
+  $element = $variables['element'];
+  $facet_groups = $element['#localgov_directory_facet_groups'];
+  $facet_group_elements = [];
+
+  // Split up the facet checkboxes into groups based on the facet group.
+  foreach ($facet_groups as $key => $values) {
+    $facet_group_elements[$key] = [
+      '#type' => 'fieldset',
+      '#title' => $values['title'],
+      '#weight' => $values['weight'],
+    ];
+    $options = array_keys($values['items']);
+    $facet_group_elements[$key]['children'] = array_map(function ($item) use ($element) {
+      return $element[$item];
+    }, $options);
+  }
+  $variables['localgov_directory_facet_groups'] = $facet_group_elements;
 }
