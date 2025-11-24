@@ -15,6 +15,7 @@ use Drupal\Tests\UnitTestCase;
 use Drupal\localgov_directories\DirectoryExtraFieldDisplay;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacets;
 use Drupal\localgov_directories\Entity\LocalgovDirectoriesFacetsType;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Unit tests for the DirectoryExtraFieldDisplay class.
@@ -40,7 +41,7 @@ class FacetPreprocessTest extends UnitTestCase {
    */
   public function testFacetTypeSorting() {
 
-    $test_obj = new DirectoryExtraFieldDisplay($this->mockEntityTypeManager, $this->mockEntityRepository, $this->mockEntityFieldManager, $this->mockBlockPluginManager, $this->mockFormBuilder, $this->mockRouteMatch);
+    $test_obj = new DirectoryExtraFieldDisplay($this->mockEntityTypeManager, $this->mockEntityRepository, $this->mockEntityFieldManager, $this->mockBlockPluginManager, $this->mockFormBuilder, $this->mockRouteMatch, $this->mockRequestStack);
 
     $facet_tpl_variables = [
       'items' => [
@@ -139,6 +140,7 @@ class FacetPreprocessTest extends UnitTestCase {
     $this->mockBlockPluginManager = $this->createMock(BlockManagerInterface::class);
     $this->mockFormBuilder        = $this->createMock(FormBuilderInterface::class);
     $this->mockRouteMatch         = $this->createMock(RouteMatchInterface::class);
+    $this->mockRequestStack       = $this->createMock(RequestStack::class);
   }
 
   /**
@@ -182,5 +184,12 @@ class FacetPreprocessTest extends UnitTestCase {
    * @var \Drupal\Core\Routing\RouteMatchInterface
    */
   protected $mockRouteMatch;
+
+  /**
+   * Mock Request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $mockRequestStack;
 
 }
