@@ -1,6 +1,9 @@
 langcode: en
 status: true
 dependencies:
+  enforced:
+    module:
+      - localgov_directories
   config:
     - field.storage.node.body
     - node.type.localgov_directory
