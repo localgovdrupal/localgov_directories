@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_hide_map
+    - node.type.localgov_directory
+id: node.localgov_directory.field_hide_map
+field_name: field_hide_map
+entity_type: node
+bundle: localgov_directory
+label: 'Hide Map'
+description: 'Set to "Yes" if you wish to hide the map for this Directory Channel'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'Yes'
+  off_label: 'No'
+field_type: boolean

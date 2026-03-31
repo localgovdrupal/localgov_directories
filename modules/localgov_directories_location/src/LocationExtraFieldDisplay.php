@@ -58,6 +58,11 @@ class LocationExtraFieldDisplay implements TrustedCallbackInterface {
    * Retrieves view, and sets render array.
    */
   protected function getViewEmbed(NodeInterface $node) {
+    $hide_map = $node->field_hide_map->value;
+    if ($hide_map) {
+      return;
+    }
+    
     $view = Views::getView('localgov_directory_channel');
     if (!$view || !$view->access('embed_map')) {
       return;
